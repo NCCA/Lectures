@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="/jmacey/js/joint.js/joint.min.css" />
+    <link rel="stylesheet" type="text/css" href="/jmacey/js/jquery-ui/jquery-ui.min.css" />
+    <script type="text/javascript" src="/jmacey/js/joint.js/lodash.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/joint.js/backbone-min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/jquery-ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/joint.js/joint.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/joint.js/UMLFunctions.js"></script>
+    <script type="text/javascript" src="/jmacey/js/reveal.js/plugin/highlight/highlight.js"></script>
+    <link rel="stylesheet" href="/jmacey//js/reveal.js/lib/css/zenburn.css">
+    <script>hljs.initHighlightingOnLoad();</script>
+
+<title></title>
+</head>
+
+<body>
+<div class="example" >
+	  <div id="paper" class="paper"></div>
+</div><!--end example-->
+
+<!--  get rid of the remove from the links -->
+<style>
+.link-tools .tool-remove { display: none }
+.popup_msg
+{
+position:absolute;
+z-index:10;
+width:172px;
+height:102px;
+text-align:center;
+color:'black';
+display:none;
+}
+</style>
+
+
+<script>
+
+createCodeDivFromFile("Cook", "Cook.h","cookCodeBlock", "code/Builder/Cook.h");
+createCodeDivFromFile("PizzaBuilder", "PizzaBuilder.h","pizzaBuilderCodeBlock", "code/Builder/PizzaBuilder.h");
+createCodeDivFromFile("HawaiianPizzaBuilder", "HawaiianPizzaBuilder.h","HawaiianPizzaBuilderCodeBlock", "code/Builder/HawaiianPizzaBuilder.h");
+createCodeDivFromFile("SpicyPizzaBuilder", "SpicyPizzaBuilder.h","SpicyPizzaBuilderCodeBlock", "code/Builder/SpicyPizzaBuilder.h");
+
+createCodeDivFromFile("Pizza", "Pizza.h","PizzaCodeBlock", "code/Builder/Pizza.h");
+createCodeDivFromFile("main", "main.cpp","mainCodeBlock", "code/Builder/main.cpp");
+
+
+// init the UML drawing using paper as the div
+initUML('#paper',1024,800, 'false');
+var w=200;
+var h=100;
+var classes = {
+    //text1 :  addText(310,380,'creates',20),
+
+    Director : createClass('Cook',50,40,w,h,['- m_pizzaBuilder; :  PizzaBuilder* '],
+                                            ['+ setPizzaBuilder( pb : PizzaBuilder*)',
+                                            '+ getPizza() : Pizza*',
+                                            '+ constructPizza()']),
+    Builder : createClass('PizzaBuilder',340,40,w,h+30,['- m_pizza : Pizza* '],
+                                                    ['+ getPizza() : Pizza* ',
+                                                    '+ createNewPizzaProduct()',
+                                                    '+ buildDough() <pure virtual>',
+                                                    '+ buildSauce() <pure virtual>',
+                                                    '+ buildTopping() <pure virtual>'
+                                                    ]),
+
+
+    HawaiianPizzaBuilder : createClass('HawaiianPizzaBuilder',200,220,w,h,[],[ '+ buildDough()',
+                                                                                '+ buildSauce()',
+                                                                                '+ buildTopping()']),
+    SpicyPizzaBuilder : createClass('SpicyPizzaBuilder',500,220,w,h,[],['+ buildDough()',
+                                                                                '+ buildSauce()',
+                                                                                '+ buildTopping()']),
+    
+    Pizza : createClass('Pizza',340,370,w+20,h+20,['- m_dough :std::string','- m_sauce : std::string','- m_topping : std::string '],
+    ['+ setDough(_dough :const std::string &)',
+    '+ setSauce(_sauce :const std::string &)',
+    '+ setTopping(_topping :const std::string &)',
+    '+ open()']),
+    main : createRectangle('main',50,410,w,h/2,'main'),
+
+
+};
+
+var relations = [
+     addAggregation(classes.Builder.id,classes.Director.id),
+     addGeneralization(classes.HawaiianPizzaBuilder.id,classes.Builder.id),
+     addImplementation(classes.HawaiianPizzaBuilder.id, classes.Pizza.id),
+     addGeneralization(classes.SpicyPizzaBuilder.id,classes.Builder.id),
+     addImplementation(classes.SpicyPizzaBuilder.id, classes.Pizza.id),
+     addImplementation(classes.main.id, classes.Pizza.id),
+
+];
+
+addToGraph(classes);
+addToGraph(relations);
+
+// These are the names of the cells for clicking on
+var activeCells=['Cook','PizzaBuilder','HawaiianPizzaBuilder','SpicyPizzaBuilder','Pizza','main'];
+var desktopMobileClickMode='cell:pointerclick';
+if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+ // some code..
+ desktopMobileClickMode='cell:pointerdown cell:pointerclick';
+}
+
+paper.on(desktopMobileClickMode , 
+    function(cellView, evt, x, y) 
+    { 
+
+    console.log('cell view ' + cellView.model.get('name') + ' was clicked');
+    // get the name
+    var name= cellView.model.get('name');
+    if( activeCells.indexOf(name) != -1)
+    {
+        $( function() 
+        {
+            $( "#"+name ).dialog({width : 'auto'});
+        } );
+    }
+   
+    }
+);
+
+
+//use this code to hide code divs on load.
+//Shorthand for $( document ).ready()
+$(function() {
+    _.each(activeCells,function(name) {
+        $('#'+name).hide();
+    });
+});
+
+
+$("code").each(function (i, e) {
+    hljs.highlightBlock(e);
+    
+});
+
+
+
+</script>
+
+</body>
+
+</html>

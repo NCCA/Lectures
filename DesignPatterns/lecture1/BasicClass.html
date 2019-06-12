@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="/jmacey/js/joint.js/joint.min.css" />
+    <link rel="stylesheet" type="text/css" href="/jmacey/js/jquery-ui/jquery-ui.min.css" />
+    <script type="text/javascript" src="/jmacey/js/joint.js/lodash.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/joint.js/backbone-min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/jquery-ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/joint.js/joint.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/reveal.js/plugin/highlight/highlight.js"></script>
+    <link rel="stylesheet" href="/jmacey//js/reveal.js/lib/css/zenburn.css">
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    
+
+    <title></title>
+</head>
+
+<body>
+<div class="example">
+	  <div id="paper" class="paper"></div>
+</div><!--end example-->
+
+<style>
+
+</style>
+
+
+<div id="dialog" title="Vec3.h">
+<pre><code class="c++"  >
+
+#ifndef VEC3_H_
+#define VEC3_H_
+#include "Types.h"
+#include <array>
+
+
+namespace ngl
+{
+// pre-declare the vector class
+class Vec4;
+class Mat3;
+
+
+
+class NGL_DLLEXPORT Vec3
+{
+
+public:
+
+  Vec3()=default;
+  Vec3(const Vec3& _v)=default;
+  Vec3(Real _x,  Real _y, Real _z) noexcept:
+        m_x(_x),m_y(_y),m_z(_z){}
+  void set( Real _x,  Real _y,  Real _z) noexcept;
+  void set( const Vec3& _v) noexcept;
+  void set( const Vec4& _v) noexcept;
+  Real dot(const Vec3 &_b  )const noexcept;
+  void null() noexcept;
+  Real& operator[]( const int& _i )  noexcept;
+  const Real& operator[]( const int& _i ) const  noexcept{ return m_openGL[_i]; }
+
+  void normalize() noexcept;
+  Real inner(const Vec3& _v)const noexcept;
+  Mat3 outer(const Vec3 &_v)  const noexcept;
+  public :
+#pragma pack(push,1)
+
+  union
+  {
+    struct
+    {
+      Real m_x; //!< x component
+      Real m_y; //!< y component
+      Real m_z; //!< z component
+
+    };
+    struct
+    {
+      Real m_r; //!< r component
+      Real m_g; //!< g component
+      Real m_b; //!< b component
+
+    };
+#pragma pack(pop)
+   std::array&lt;Real,3&gt; m_openGL={{0.0f,0.0f,0.0f}};
+  };
+};
+} // end namespace ngl
+#endif
+
+//----------------------------------------------------------------------------------------------------------------------
+    
+</code></pre>
+
+</div>
+
+
+<script>
+
+var graph = new joint.dia.Graph();
+
+var paper = new joint.dia.Paper({
+    el: $('#paper'),
+    width: 1024,
+    height: 800,
+    gridSize: 1,
+    model: graph
+});
+
+
+
+
+var uml = joint.shapes.uml;
+
+
+var classes = {
+
+                           
+     
+    Vec3: new uml.Class({
+        position: { x:630  , y: 190 },
+        size: { width: 160, height: 100 },
+        name: 'Vec3',
+        attributes: ['+ m_x : float','+ m_y : float','+ m_z : float'],
+        methods: ['+ Vec3()','+ dot() : float','+ cross() : Vec3'],
+       attrs: {
+          '.uml-class-name-rect' : { fill : '#f2f2f2'},
+          '.uml-class-attrs-rect' : { fill : '#ffffff'},
+          '.uml-class-methods-rect' : { fill : '#ffffff'},          
+        }
+
+    })
+};
+
+classes.Vec3.on('change', function(element) {
+    console.log(element.id, ':', element.get('position'));
+});
+
+paper.on('cell:pointerclick', 
+    function(cellView, evt, x, y) { 
+//        alert('cell view ' + cellView.model.id + ' was clicked'); 
+    console.log('cell view ' + cellView.model.get('name') + ' was clicked');
+    // get the name
+    var name= cellView.model.get('name');
+    if( name == 'Vec3')
+    {
+        $( function() {
+            $( "#dialog" ).dialog({width : 'auto'});
+        } );
+    }
+  
+  }
+);
+
+
+_.each(classes, function(c) { graph.addCell(c); });
+
+
+/*
+var relations = [
+    new uml.Generalization({ source: { id: classes.man.id }, target: { id: classes.person.id }}),
+    new uml.Generalization({ source: { id: classes.woman.id }, target: { id: classes.person.id }}),
+    new uml.Implementation({ source: { id: classes.person.id }, target: { id: classes.mammal.id }}),
+    new uml.Aggregation({ source: { id: classes.person.id }, target: { id: classes.address.id }}),
+    new uml.Composition({ source: { id: classes.person.id }, target: { id: classes.bloodgroup.id }})
+];
+
+_.each(relations, function(r) { graph.addCell(r); });
+*/
+</script>
+
+</body>
+
+</html>

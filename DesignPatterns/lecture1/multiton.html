@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="/jmacey/js/joint.js/joint.min.css" />
+    <link rel="stylesheet" type="text/css" href="/jmacey/js/jquery-ui/jquery-ui.min.css" />
+    <script type="text/javascript" src="/jmacey/js/joint.js/lodash.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/joint.js/backbone-min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/jquery-ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/joint.js/joint.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/joint.js/UMLFunctions.js"></script>
+    <script type="text/javascript" src="/jmacey/js/reveal.js/plugin/highlight/highlight.js"></script>
+    <link rel="stylesheet" href="/jmacey//js/reveal.js/lib/css/zenburn.css">
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    
+
+<title></title>
+</head>
+
+<body>
+<div class="example" >
+	  <div id="paper" class="paper"></div>
+</div><!--end example-->
+
+<!--  get rid of the remove from the links -->
+<style>
+.link-tools .tool-remove { display: none }
+.popup_msg
+{
+position:absolute;
+z-index:10;
+width:172px;
+height:102px;
+text-align:center;
+color:'black';
+display:none;
+}
+html, body {
+     -webkit-backface-visibility: visible;
+}
+</style>
+
+
+
+
+<script>
+
+// init the UML drawing using paper as the div
+initUML('#paper',800,200, 'false');
+var w=220;
+var h=100;
+var classes = {
+
+   
+
+    Multiton : createClass('Multiton',350,0,w,h,['- m_instances : std::map<Key,Multiton *>'],
+                                                ['- Multiton()','+ getInstance() : Multiton *']),
+
+
+};
+
+
+
+addToGraph(classes);
+
+
+
+
+</script>
+
+</body>
+
+</html>

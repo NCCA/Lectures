@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="/jmacey/js/joint.js/joint.min.css" />
+    <link rel="stylesheet" type="text/css" href="/jmacey/js/jquery-ui/jquery-ui.min.css" />
+    <script type="text/javascript" src="/jmacey/js/joint.js/lodash.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/joint.js/backbone-min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/jquery-ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/joint.js/joint.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/joint.js/UMLFunctions.js"></script>
+    <script type="text/javascript" src="/jmacey/js/reveal.js/plugin/highlight/highlight.js"></script>
+    <link rel="stylesheet" href="/jmacey//js/reveal.js/lib/css/zenburn.css">
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    
+
+    <title></title>
+</head>
+
+<body>
+<div class="example">
+	  <div id="paper" class="paper"></div>
+</div><!--end example-->
+
+<!--  get rid of the remove from the links -->
+<style>
+.link-tools .tool-remove { display: none }
+</style>
+
+
+<script>
+
+
+
+
+// init the UML drawing using paper as the div
+initUML('#paper',1024,800, 'false');
+var w=100;
+var h=50;
+var classes = {
+
+    text1 :  addText(240,50,'A class hierachy \nusing inheritance',20),
+    text2 :  addText(600,20,'One to many relationship',20),
+    text3 :  addText(610,50,'1',20),
+    text4 :  addText(670,50,'*',20),
+    text5 :  addText(640,220,'Zero or One to many relationship',20),
+    text6 :  addText(620,250,'0..1',20),
+    text7 :  addText(670,250,'*',20),
+
+    SuperClass : createClass('Superclass',30,10,w,h,[],[]),
+    SubClass : createClass('Subclass',30,120,100,50,[],[]),
+
+    SuperClass2 : createClass('Parent',120,200,w,h,[],[]),
+    SubClass2 : createClass('Child',20,320,w,h,[],[]),
+    SubClass3 : createClass('Derived',130,320,w,h,[],[]),
+    SubClass4 : createClass('Subclass',240,320,w,h,[],[]),
+
+    class1 : createClass('class',500,40,w,h,[],[]),
+    class2 : createClass('class',700,40,w,h,[],[]),
+    class3 : createClass('class',500,240,w,h,[],[]),
+    class4 : createClass('class',700,240,w,h,[],[]),
+
+
+};
+
+var relations = [
+    addGeneralization(classes.SubClass.id,classes.SuperClass.id),
+    addGeneralization(classes.SubClass2.id,classes.SuperClass2.id),
+    addGeneralization(classes.SubClass3.id,classes.SuperClass2.id),
+    addGeneralization(classes.SubClass4.id,classes.SuperClass2.id),
+    addAggregation(classes.class1.id,classes.class2.id),
+    addAggregation(classes.class3.id,classes.class4.id)
+
+
+];
+
+var g1 = new joint.shapes.basic.Rect({
+    position: { x: 10, y: 1 },
+    size: { width: 350, height: 400 },
+    attrs: { rect: { fill: 'white' } }
+});
+
+var g2 = new joint.shapes.basic.Rect({
+    position: { x: 480, y: 1 },
+    size: { width: 350, height: 400 },
+    attrs: { rect: { fill: 'white' } }
+});
+
+g1.toFront();
+g1.toFront();
+graph.addCells([g1,g2]);
+
+
+
+
+_.each([classes.SubClass,classes.SuperClass,classes.text1, 
+        classes.SuperClass2,classes.SubClass2,
+        classes.SubClass3,classes.SubClass4], function(c) { g1.embed(c); });
+
+_.each([classes.text2,classes.text3,classes.text4, 
+        classes.text5,classes.text6,
+        classes.text7,classes.class1,classes.class2,classes.class3,classes.class4], function(c) { g2.embed(c); });
+        
+
+addToGraph(classes);
+addToGraph(relations);
+
+
+graph.on('change:position', function(cell) {
+
+    var parentId = cell.get('parent');
+    if (!parentId) return;
+
+    var parent = graph.getCell(parentId);
+    var parentBbox = parent.getBBox();
+    var cellBbox = cell.getBBox();
+
+    if (parentBbox.containsPoint(cellBbox.origin()) &&
+        parentBbox.containsPoint(cellBbox.topRight()) &&
+        parentBbox.containsPoint(cellBbox.corner()) &&
+        parentBbox.containsPoint(cellBbox.bottomLeft())) {
+
+        // All the four corners of the child are inside
+        // the parent area.
+        return;
+    }
+
+    // Revert the child position.
+    cell.set('position', cell.previous('position'));
+});
+
+
+</script>
+
+</body>
+
+</html>
