@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Split panels</title>
+  <link rel="shortcut icon" href="/jmacey/favicon.ico"> 
+  <script src="/jmacey/js/jquery/jquery.min.js"></script>
+<script src="/jmacey/js/jquery-ui/jquery-ui.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
+
+<link rel="stylesheet" href="split.css">
+<script type="text/javascript">
+
+
+    $(window).load(function(){
+      
+$('.left_inner').resizable();
+$('.right_top_inner').resizable();
+$('.right_bottom_inner').resizable();
+
+    });
+
+</script>
+
+
+</head>
+<body>
+<main class="grid">
+    <aside class='left'>
+        <div class="left_inner">
+      drag the bottom right handle to resize
+         </div>
+    </aside>
+    <section class="right_top">
+      <div class="right_top_inner">right_top_inner</div>
+    </section>
+    <section class="right_bottom">
+      <div class="right_bottom_inner">right_bottom_inner</div>
+    </section>
+  </main>
+
+ 
+</body>
+</html>

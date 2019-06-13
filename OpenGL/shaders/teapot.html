@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Constant Shader</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				color: #fff;
+				font-family: Monospace;
+				font-size: 13px;
+				text-align: center;
+				font-weight: bold;
+
+				background-color: #000;
+				margin: 0px;
+				overflow: hidden;
+			}
+			#tabs {border: none}
+			#div1, #div2 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  outline: solid 1px #ccc; /* just for making the divs visible */
+  margin: 5px; /* just for making the divs visible */
+}
+#div1 {
+  height: 100px;
+  top: 0;
+}
+#div2 {
+  top: 110px;
+  bottom: 0;
+}
+</style>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+  $( function() {
+    $( "#tabs" ).tabs();
+  } );
+
+$('#div1').resizable({
+  handles: 's',
+  resize: resizeEventHandler
+});
+function resizeEventHandler(event, ui){
+  var new_height = ui.size.height;
+  $('#div2').css('top', new_height + 10);
+}
+$( ".selector" ).tabs({
+  heightStyle: "auto"
+});
+  </script>
+		<script src="/jmacey/js/three.js/three.min.js"></script>
+		<script src="/jmacey/OpenGL/js/OrbitControls.js"></script>
+		<script src="/jmacey/OpenGL/js/WebGL.js"></script>
+		<script src='/jmacey/OpenGL/js/dat.gui.min.js'></script>
+		<script src='/jmacey/OpenGL/js/TeapotBufferGeometry.js'></script>
+    <script src="/jmacey/js/codemirror/codemirror.js"></script>
+		<script src="/jmacey/js/codemirror/mode/glsl/webGL-clike.js"></script>
+    <link rel="stylesheet" href="/jmacey/js/codemirror/codemirror.css">
+    <link rel="stylesheet" href="/jmacey/js/codemirror/theme/monokai.css">
+    <style type="text/css">
+      .CodeMirror {border: 0px solid black; font-size:14px; text-align: left!important; }
+    </style>
+
+	</head>
+	<body>
+
+
+<div id="tabs" style="height : 10%;" >
+  <ul>
+    <li><a href="#VertexShader">VertexShader</a></li>
+    <li><a href="#FragmentShader">FragmentShader</a></li>
+  </ul>
+<div id="VertexShader" >
+<textarea id="vertexShader"  autofocus onfocus="addVertexShader(this);">
+precision highp float;
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+attribute vec3 position;
+attribute vec3 normal;
+attribute vec2 uv;
+void main()
+{
+ gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}</textarea>
+</div>
+
+<div id="FragmentShader">
+<textarea id="fragmentShader"   autofocus onfocus="addFragmentShader(this);">
+precision highp float;
+void main() 
+{
+  gl_FragColor = vec4(1.0,0.0,0.0,0.0);
+}</textarea> 
+</div>
+</div>
+
+<div id="glframe"></div>
+
+<script>
+var vertexEditor,fragmentEditor;
+
+
+function addVertexShader(textID)
+{
+    vertexEditor = CodeMirror.fromTextArea(textID, 
+		{
+    mode: "x-shader/x-vertex",
+    lineNumbers: true,
+    theme : "monokai"
+  });
+ //vertexEditor.setSize(400, 250);
+ vertexEditor.on('change',function(){
+  // get value right from instance
+  vertexShader.value = vertexEditor.getValue();
+
+});
+}
+
+function addFragmentShader(textID)
+{
+    fragmentEditor = CodeMirror.fromTextArea(textID, 
+		{
+    mode: "x-shader/x-fragment",
+    lineNumbers: true,
+    theme : "monokai"
+  });
+ //fragmentEditor.setSize(400, 250);
+ fragmentEditor.on('change',function(){
+  // get value right from instance
+  fragmentShader.value = fragmentEditor.getValue();
+	//	console.log(fragmentShader.value)
+
+});
+
+}
+
+addVertexShader(document.getElementById("vertexShader"));
+addFragmentShader(document.getElementById("fragmentShader"));
+
+
+			if ( WEBGL.isWebGLAvailable() === false ) {
+
+				document.body.appendChild( WEBGL.getWebGLErrorMessage() );
+
+			}
+
+			var camera, scene, renderer;
+			var cameraControls;
+			var effectController;
+			var teapotSize = 1;
+			var ambientLight, light;
+
+			var tess = - 1;	// force initialization
+			var bBottom;
+			var bLid;
+			var bBody;
+			var bFitLid;
+			var bNonBlinn;
+			var shading;
+			var material;
+
+			var teapot, textureCube;
+			var shader;
+			// allocate these just once
+			var diffuseColor = new THREE.Color();
+			var specularColor = new THREE.Color();
+
+			init();
+			render();
+
+			function init() {
+
+				//var container = document.createElement( 'div' );
+				var container = document.getElementById('glframe');
+
+				document.body.appendChild( container );
+
+				var canvasWidth = window.innerWidth;
+				var canvasHeight = window.innerHeight;
+
+				// CAMERA
+				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 80000 );
+				camera.position.set( - 4, 1, 1 );
+
+				// LIGHTS
+				ambientLight = new THREE.AmbientLight( 0x333333 );	// 0.2
+
+				light = new THREE.DirectionalLight( 0xFFFFFF, 1.0 );
+				// direction is set in GUI
+
+				// RENDERER
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( canvasWidth/2, canvasHeight/2 );
+				renderer.gammaInput = true;
+				renderer.gammaOutput = true;
+				container.appendChild( renderer.domElement );
+
+				// EVENTS
+				window.addEventListener( 'resize', onWindowResize, false );
+
+				// CONTROLS
+				cameraControls = new THREE.OrbitControls( camera, renderer.domElement );
+				cameraControls.enablePan=false;
+				cameraControls.addEventListener( 'change', render );
+
+			
+			
+				// MATERIALS
+				var materialColor = new THREE.Color();
+				materialColor.setRGB( 1.0, 1.0, 1.0 );
+
+
+
+
+
+				// scene itself
+				scene = new THREE.Scene();
+				scene.background = new THREE.Color( 0xAFAFAF );
+
+			//	scene.add( ambientLight );
+			//	scene.add( light );
+
+				// GUI
+				setupGui();
+/*
+				shader = new THREE.RawShaderMaterial( {
+
+				uniforms: {
+				time: { value: 1.0 },
+				resolution: { value: new THREE.Vector2() },
+				colour : { value : new THREE.Vector3()}
+				},
+
+	vertexShader: document.getElementById( 'vertexShader' ).textContent ,
+	fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+//	vertexShader: vertexEditor.getValue().textContent ,
+//	fragmentShader: fragmentEditor.getValue().textContent
+
+} );
+*/
+}
+
+			// EVENT HANDLERS
+
+			function onWindowResize() {
+
+				var canvasWidth = window.innerWidth;
+				var canvasHeight = window.innerHeight;
+
+				renderer.setSize( canvasWidth/2, canvasHeight/2 );
+
+				camera.aspect = (canvasWidth/2)  / (canvasHeight/2);
+				camera.updateProjectionMatrix();
+
+				render();
+
+			}
+
+			function setupGui() {
+
+				effectController = {
+
+					shininess: 40.0,
+					ka: 0.17,
+					kd: 0.51,
+					ks: 0.2,
+					metallic: true,
+
+					hue:	0.121,
+					saturation: 0.73,
+					lightness: 0.66,
+
+					lhue:	0.04,
+					lsaturation: 0.01,	// non-zero so that fractions will be shown
+					llightness: 1.0,
+
+					// bizarrely, if you initialize these with negative numbers, the sliders
+					// will not show any decimal places.
+					lx: 0.32,
+					ly: 0.39,
+					lz: 0.7,
+					newTess: 15,
+					bottom: true,
+					lid: true,
+					body: true,
+					fitLid: false,
+					nonblinn: false,
+					newShading: "glossy"
+				};
+/*
+				var h;
+
+				var gui = new dat.GUI();
+
+				// material (color)
+
+				h = gui.addFolder( "Colour" );
+
+				h.add( effectController, "Red", 0.0, 1.0, 0.025 ).name( "Red" ).onChange( render );
+				h.add( effectController, "Green", 0.0, 1.0, 0.025 ).name( "Green" ).onChange( render );
+				h.add( effectController, "Blue", 0.0, 1.0, 0.025 ).name( "Blue" ).onChange( render );
+/*
+				// light (point)
+
+				h = gui.addFolder( "Lighting" );
+
+				h.add( effectController, "lhue", 0.0, 1.0, 0.025 ).name( "hue" ).onChange( render );
+				h.add( effectController, "lsaturation", 0.0, 1.0, 0.025 ).name( "saturation" ).onChange( render );
+				h.add( effectController, "llightness", 0.0, 1.0, 0.025 ).name( "lightness" ).onChange( render );
+				h.add( effectController, "ka", 0.0, 1.0, 0.025 ).name( "ambient" ).onChange( render );
+
+				// light (directional)
+
+				h = gui.addFolder( "Light direction" );
+
+				h.add( effectController, "lx", - 1.0, 1.0, 0.025 ).name( "x" ).onChange( render );
+				h.add( effectController, "ly", - 1.0, 1.0, 0.025 ).name( "y" ).onChange( render );
+				h.add( effectController, "lz", - 1.0, 1.0, 0.025 ).name( "z" ).onChange( render );
+/*
+				h = gui.addFolder( "Tessellation control" );
+				h.add( effectController, "newTess", [ 2, 3, 4, 5, 6, 8, 10, 15, 20, 30, 40, 50 ] ).name( "Tessellation Level" ).onChange( render );
+				h.add( effectController, "lid" ).name( "display lid" ).onChange( render );
+				h.add( effectController, "body" ).name( "display body" ).onChange( render );
+				h.add( effectController, "bottom" ).name( "display bottom" ).onChange( render );
+				h.add( effectController, "fitLid" ).name( "snug lid" ).onChange( render );
+				h.add( effectController, "nonblinn" ).name( "original scale" ).onChange( render );
+
+				// shading
+
+				gui.add( effectController, "newShading", [ "wireframe", "flat", "smooth", "glossy" ] ).name( "Shading" ).onChange( render );
+*/
+			}
+
+
+			//
+
+			function render() {
+    requestAnimationFrame(render);
+
+				//	scene.background = null;
+
+				var myshader = new THREE.RawShaderMaterial( {
+
+				uniforms: {
+				time: { value: 1.0 },
+				resolution: { value: new THREE.Vector2() },
+				colour : { value : new THREE.Vector3()}
+				},
+
+	vertexShader: document.getElementById( 'vertexShader' ).value ,
+	fragmentShader: document.getElementById( 'fragmentShader' ).value
+
+} );
+
+		createNewTeapot(myshader);
+
+/*
+				diffuseColor.setHSL( effectController.hue, effectController.saturation, effectController.lightness );
+				if ( effectController.metallic ) {
+
+					// make colors match to give a more metallic look
+					specularColor.copy( diffuseColor );
+
+				} else {
+
+					// more of a plastic look
+					specularColor.setRGB( 1, 1, 1 );
+
+				}
+*/
+				//diffuseColor.multiplyScalar( effectController.kd );
+			//	material.color.copy( diffuseColor );
+
+			//	specularColor.multiplyScalar( effectController.ks );
+
+				// Ambient's actually controlled by the light for this demo
+		//		ambientLight.color.setHSL( effectController.hue, effectController.saturation, effectController.lightness * effectController.ka );
+
+	//			light.position.set( effectController.lx, effectController.ly, effectController.lz );
+//				light.color.setHSL( effectController.lhue, effectController.lsaturation, effectController.llightness );
+
+			
+
+				renderer.render( scene, camera );
+
+			}
+
+			// Whenever the teapot changes, the scene is rebuilt from scratch (not much to it).
+			function createNewTeapot(shader) {
+
+				if ( teapot !== undefined ) {
+					teapot.geometry.dispose();
+					scene.remove( teapot );
+
+				}
+
+				var teapotGeometry = new THREE.TeapotBufferGeometry( teapotSize);
+
+				teapot = new THREE.Mesh(teapotGeometry,shader);
+
+				scene.add( teapot );
+
+			}
+
+		</script>
+	</body>
+</html>

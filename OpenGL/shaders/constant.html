@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Constant Shader</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+		<script src="/jmacey/js/jquery/jquery.min.js"></script>
+		<script src="/jmacey/js/jquery-ui/jquery-ui.min.js"></script>
+		<script src="/jmacey/js/three.js/three.min.js"></script>
+		<script src="/jmacey/OpenGL/js/OrbitControls.js"></script>
+		<script src="/jmacey/OpenGL/js/WebGL.js"></script>
+		<script src='/jmacey/OpenGL/js/dat.gui.min.js'></script>
+		<script src='/jmacey/OpenGL/js/TeapotBufferGeometry.js'></script>
+    <script src="/jmacey/js/codemirror/codemirror.js"></script>
+		<script src="/jmacey/js/codemirror/mode/glsl/webGL-clike.js"></script>
+		<link rel="stylesheet" hfref="shaders.css">
+
+		<script>
+		$( function() { $( "#tabs" ).tabs();} );
+		$( ".selector" ).tabs({ heightStyle: "auto" });
+		
+		</script>
+    <link rel="stylesheet" href="/jmacey/js/codemirror/codemirror.css">
+    <link rel="stylesheet" href="/jmacey/js/codemirror/theme/monokai.css">
+   
+</head>
+
+<body>
+
+<div id="tabs" style="height : 10%;" >
+  <ul>
+    <li><a href="#VertexShader">VertexShader</a></li>
+    <li><a href="#FragmentShader">FragmentShader</a></li>
+  </ul>
+<div id="VertexShader" >
+<textarea id="vertexShader"  autofocus onfocus="addVertexShader(this);">
+#version 300 es
+precision highp float;
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+uniform mat3 normalMatrix;
+
+in vec3 position;
+
+void main()
+{
+	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}</textarea>
+</div>
+
+<div id="FragmentShader">
+<textarea id="fragmentShader"   autofocus onfocus="addFragmentShader(this);">
+#version 300 es
+precision highp float;
+
+layout (location =0) out vec4 fragColour;
+void main ()
+{
+  fragColour= vec4(1.0,0.0,0.0,1.0);
+}
+</textarea> 
+</div>
+</div>
+
+<div id="glframe"></div>
+<div  class = 'moveGUI'></div>
+<script>
+var vertexEditor,fragmentEditor;
+var needsUpdate=true;
+
+function addVertexShader(textID)
+{
+    vertexEditor = CodeMirror.fromTextArea(textID, 
+		{
+    mode: "x-shader/x-vertex",
+    lineNumbers: false,
+    theme : "monokai"
+  });
+ //vertexEditor.setSize(400, 250);
+ vertexEditor.on('change',function(){
+  // get value right from instance
+  vertexShader.value = vertexEditor.getValue();
+	needsUpdate=true;
+});
+}
+
+function addFragmentShader(textID)
+{
+    fragmentEditor = CodeMirror.fromTextArea(textID, 
+		{
+    mode: "x-shader/x-fragment",
+    lineNumbers: false,
+    theme : "monokai"
+  });
+ //fragmentEditor.setSize(400, 250);
+ fragmentEditor.on('change',function(){
+  // get value right from instance
+  fragmentShader.value = fragmentEditor.getValue();
+	needsUpdate=true;
+});
+
+}
+addVertexShader(document.getElementById("vertexShader"));
+addFragmentShader(document.getElementById("fragmentShader"));
+
+
+if ( WEBGL.isWebGLAvailable() === false ) 
+{
+	document.body.appendChild( WEBGL.getWebGLErrorMessage() );
+}
+
+var camera, scene, renderer;
+var cameraControls;
+var teapotSize = 1;
+
+
+var teapot;
+var shader;
+
+init();
+render();
+
+function init() 
+{
+
+	//var container = document.createElement( 'div' );
+	var container = document.getElementById('glframe');
+
+	document.body.appendChild( container );
+
+
+	var canvasWidth = window.innerWidth/2;
+	var canvasHeight = window.innerHeight/2;
+
+	// CAMERA
+	camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 80000 );
+	camera.position.set( 4, 1, 1 );
+
+	var canvas = document.createElement( 'canvas' );
+	var context = canvas.getContext( 'webgl2' );
+	renderer = new THREE.WebGLRenderer( { canvas: canvas, context: context } );
+
+
+	// RENDERER
+	//renderer = new THREE.WebGLRenderer( {  context: context ,antialias: true } );
+	renderer.setPixelRatio( window.devicePixelRatio );
+	renderer.setSize( canvasWidth, canvasHeight );
+	renderer.gammaInput = true;
+	renderer.gammaOutput = true;
+	container.appendChild( renderer.domElement );
+
+	// EVENTS
+	window.addEventListener( 'resize', onWindowResize, false );
+
+	// CONTROLS
+	cameraControls = new THREE.OrbitControls( camera, renderer.domElement );
+	cameraControls.enablePan=false;
+	cameraControls.addEventListener( 'change', render );
+
+	// scene itself
+	scene = new THREE.Scene();
+	scene.background = new THREE.Color( 0xAFAFAF );
+	setupGui()
+	var cubeGeometry = new THREE.BoxBufferGeometry( 0.1, 0.1, 0.1 );
+	var cubeMaterial = new THREE.MeshLambertMaterial( { color: 'rgb(255,254,255)', emissive: 0x200000 } );
+	cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
+	scene.add( cube );
+
+}
+
+// EVENT HANDLERS
+
+function onWindowResize() 
+{
+	var canvasWidth = window.innerWidth;
+	var canvasHeight = window.innerHeight;
+	renderer.setSize( canvasWidth/2, canvasHeight/2 );
+	camera.aspect = (canvasWidth/2)  / (canvasHeight/2);
+	camera.updateProjectionMatrix();
+	render();
+}
+
+function setupGui() 
+{
+
+
+}
+
+
+
+function render() 
+{
+	requestAnimationFrame(render);
+	var uniforms={
+	};
+	if(needsUpdate == true)
+	{
+		var myshader = new THREE.RawShaderMaterial( 
+		{
+			uniforms: uniforms,
+			vertexShader: document.getElementById( 'vertexShader' ).value ,
+			fragmentShader: document.getElementById( 'fragmentShader' ).value
+		});
+
+	createNewTeapot(myshader);
+	needsUpdate=false;
+	}
+
+	renderer.render( scene, camera );
+}
+
+	// Whenever the shader is updated
+	function createNewTeapot(shader) 
+	{
+	if ( teapot !== undefined ) 
+	{
+		teapot.geometry.dispose();
+		scene.remove( teapot );
+	}
+
+		var teapotGeometry = new THREE.TeapotBufferGeometry( teapotSize);
+		teapot = new THREE.Mesh(teapotGeometry,shader);
+		scene.add( teapot );
+	}
+
+		</script>
+	</body>
+</html>

@@ -1,0 +1,310 @@
+
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+	<title>Playground</title>
+	<meta charset="utf-8"></meta>
+	<script src="/jmacey/js/jquery/jquery.min.js"></script>
+<script src="/jmacey/js/ace/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="/jmacey/js/ace/src-min/theme-clouds_midnight.js" type="text/javascript" charset="utf-8"></script>
+<script src="/jmacey/js/ace/src-min/mode-glsl.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="/jmacey/js/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+
+		<script src="/jmacey/js/three.js/three.min.js"></script>
+		<script src="/jmacey/OpenGL/js/OrbitControls.js"></script>
+		<script src="/jmacey/OpenGL/js/WebGL.js"></script>
+		<script src='/jmacey/OpenGL/js/dat.gui.min.js'></script>
+		<script src='/jmacey/OpenGL/js/TeapotBufferGeometry.js'></script>
+
+</head>
+
+<body style="background: #191919">
+
+
+<link href="playground.css" rel="stylesheet" type="text/css"/>
+
+<div id="edit-vert" style="display: none; float: left; margin: 4px 8px 4px 4px; width: 750px; height: 300px; "><pre id="editor-vert"></pre></div>
+
+<div id="edit-frag" style="display: none; float: left; margin: 4px 8px 4px 4px; width: 750px; height: 300px; "><pre id="editor-frag"></pre></div>
+
+
+
+<div id="div2" style="display: none; overflow: auto; height: 100%">
+<div style="float: left; width: 512px; margin: 8px">
+	<div id="glframe" style="width: 512px; height: 512px; float: left; position: relative;">
+	<script>
+
+var needsUpdate=true;
+var editor1,editor2;
+if ( WEBGL.isWebGLAvailable() === false ) 
+{
+	document.body.appendChild( WEBGL.getWebGLErrorMessage() );
+}
+
+var camera, scene, renderer;
+var cameraControls;
+var teapotSize = 1;
+
+
+var teapot;
+var shader;
+
+//init();
+//render();
+
+function init() 
+{
+
+	//var container = document.createElement( 'div' );
+	var container = document.getElementById('glframe');
+
+	document.body.appendChild( container );
+
+
+	var canvasWidth = window.innerWidth/2;
+	var canvasHeight = window.innerHeight/2;
+
+	// CAMERA
+	camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 80000 );
+	camera.position.set( 4, 1, 1 );
+
+	var canvas = document.createElement( 'canvas' );
+	var context = canvas.getContext( 'webgl2' );
+	renderer = new THREE.WebGLRenderer( { canvas: canvas, context: context } );
+
+
+	// RENDERER
+	//renderer = new THREE.WebGLRenderer( {  context: context ,antialias: true } );
+	renderer.setPixelRatio( window.devicePixelRatio );
+	renderer.setSize( canvasWidth, canvasHeight );
+	renderer.gammaInput = true;
+	renderer.gammaOutput = true;
+	container.appendChild( renderer.domElement );
+
+	// EVENTS
+	window.addEventListener( 'resize', onWindowResize, false );
+
+	// CONTROLS
+	cameraControls = new THREE.OrbitControls( camera, renderer.domElement );
+	cameraControls.enablePan=false;
+	cameraControls.addEventListener( 'change', render );
+
+	// scene itself
+	scene = new THREE.Scene();
+	scene.background = new THREE.Color( 0xAFAFAF );
+	setupGui()
+	var cubeGeometry = new THREE.BoxBufferGeometry( 0.1, 0.1, 0.1 );
+	var cubeMaterial = new THREE.MeshLambertMaterial( { color: 'rgb(255,254,255)', emissive: 0x200000 } );
+	cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
+	scene.add( cube );
+
+}
+
+// EVENT HANDLERS
+
+function onWindowResize() 
+{
+	var canvasWidth = window.innerWidth;
+	var canvasHeight = window.innerHeight;
+	renderer.setSize( canvasWidth/2, canvasHeight/2 );
+	camera.aspect = (canvasWidth/2)  / (canvasHeight/2);
+	camera.updateProjectionMatrix();
+	render();
+}
+
+function setupGui() 
+{
+
+	ctrls = 
+	{
+	colour1r : 1.0,
+	colour1g : 0.0,
+	colour1b : 0.0,
+	colour2r : 1.0,
+	colour2g : 1.0,
+	colour2b : 1.0,
+	Ldr:	1.0,
+	Ldg: 1.0,
+	Ldb: 1.0,
+	lightPosx : 0.0,
+	lightPosy : 1.0,
+	lightPosz : 2.0,
+	checkSize : 20.0,
+	checkOn : true
+	
+	};
+	var h;
+
+	var gui = new dat.GUI();
+
+	// material (color)
+
+	h = gui.addFolder( "Colour 1" );
+
+	h.add( ctrls, "colour1r", 0.0, 1.0, 0.1 ).name( "red" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "colour1g", 0.0, 1.0, 0.1 ).name( "green" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "colour1b", 0.0, 1.0, 0.1 ).name( "blue" ).onChange( function(){ needsUpdate=true;  } );
+
+	h = gui.addFolder( "Colour 2" );
+
+	h.add( ctrls, "colour2r", 0.0, 1.0, 0.1 ).name( "red" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "colour2g", 0.0, 1.0, 0.1 ).name( "green" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "colour2b", 0.0, 1.0, 0.1 ).name( "blue" ).onChange( function(){ needsUpdate=true;  } );
+
+
+	h = gui.addFolder( "Ld" );
+
+	h.add( ctrls, "Ldr", 0.0, 1.0, 0.1 ).name( "red" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "Ldg", 0.0, 1.0, 0.1 ).name( "green" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "Ldb", 0.0, 1.0, 0.1 ).name( "blue" ).onChange( function(){ needsUpdate=true;  } );
+	h = gui.addFolder( "lightPos" );
+	h.add( ctrls, "lightPosx", -10.0, 10.0, 0.5 ).name( "x" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "lightPosy", -10.0, 10.0, 0.5 ).name( "y" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "lightPosz", -10.0, 10.0, 0.5 ).name( "z" ).onChange( function(){ needsUpdate=true;  } );
+	h = gui.addFolder( "CheckSize" );
+	h.add( ctrls, "checkSize", 0.1, 40.0, 0.1 ).name( "size" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "checkOn" ).name( "Check On" ).onChange( function(){ needsUpdate=true;  } );
+	var customContainer = $('.moveGUI').append($(gui.domElement));
+
+}
+
+
+
+function render() 
+{
+	requestAnimationFrame(render);
+	var uniforms={
+	
+		lightDiffuse : {type: "v3", value : new THREE.Vector3(ctrls.Ldr, ctrls.Ldg, ctrls.Ldb,1.0)},
+		lightPos : {type: "v3", value : new THREE.Vector3(ctrls.lightPosx, ctrls.lightPosy, ctrls.lightPosz,1.0)},
+		colour1 : {type : "v4", value : new THREE.Vector4(ctrls.colour1r,ctrls.colour1g,ctrls.colour1b,0)},
+		colour2 : {type : "v4", value : new THREE.Vector4(ctrls.colour2r,ctrls.colour2g,ctrls.colour2b,0)},
+		
+		checkSize : {type : "f", value : 10.0 },
+		checkOn :   { type : "i", value : 1}
+	};
+	if(needsUpdate == true)
+	{
+		var myshader = new THREE.RawShaderMaterial( 
+		{
+			uniforms: uniforms,
+			vertexShader: editor1.getValue() ,
+			fragmentShader: editor2.getValue()
+		});
+
+	createNewTeapot(myshader);
+	needsUpdate=false;
+	}
+	uniforms.colour1.value= new THREE.Vector4(ctrls.colour1r,ctrls.colour1g,ctrls.colour1b);
+	uniforms.colour2.value= new THREE.Vector4(ctrls.colour2r,ctrls.colour2g,ctrls.colour2b);
+	uniforms.lightDiffuse.value= new THREE.Vector4(ctrls.Ldr,ctrls.Ldg,ctrls.Ldb);
+	uniforms.lightPos.value= new THREE.Vector4(ctrls.lightPosx,ctrls.lightPosy,ctrls.lightPosz);
+	uniforms.checkSize.value= ctrls.checkSize;
+	uniforms.checkOn.value=ctrls.checkOn  ? 1 : 0;
+	cube.position.x = ctrls.lightPosx;
+	cube.position.y = ctrls.lightPosy;
+	cube.position.z = ctrls.lightPosz;
+
+	renderer.render( scene, camera );
+}
+
+	// Whenever the shader is updated
+	function createNewTeapot(shader) 
+	{
+	if ( teapot !== undefined ) 
+	{
+		teapot.geometry.dispose();
+		scene.remove( teapot );
+	}
+
+		var teapotGeometry = new THREE.TeapotBufferGeometry( teapotSize);
+		teapot = new THREE.Mesh(teapotGeometry,shader);
+		scene.add( teapot );
+	}
+
+		</script>
+
+	</div>
+</div>
+
+
+
+<script>
+
+function FetchFile(url, cache)
+{
+	var text = $.ajax({
+  		url:   url,
+  		async: false,
+        dataType: "text",
+        mimeType: "text/plain",
+  		cache: cache,
+ 	}).responseText;
+
+ 	return text;
+}
+
+function initEditor() {
+
+  $("#editor-vert").text(FetchFile('vertex.glsl'))
+  $("#editor-frag").text(FetchFile('fragment.glsl'))
+
+}
+window.onload = function() {
+	initEditor();
+
+	$("#edit-frag").resizable({ minWidth: 400 });
+	$("#edit-frag").show();
+	$("#edit-vert").resizable({ minWidth: 400 });
+	$("#edit-vert").show();
+
+	 editor1 = ace.edit("edit-vert");
+	editor1.setTheme("ace/theme/clouds_midnight");
+
+	var Mode = require("ace/mode/glsl").Mode;
+	editor1.getSession().setMode(new Mode());
+	editor1.getSession().setUseWrapMode(true);
+	editor1.setShowPrintMargin(false);
+
+	editor1.renderer.setHScrollBarAlwaysVisible(true);
+	editor1.renderer.setVScrollBarAlwaysVisible(true);
+
+	 editor2 = ace.edit("edit-frag");
+	editor2.setTheme("ace/theme/clouds_midnight");
+
+	editor2.getSession().setMode(new Mode());
+	editor2.getSession().setUseWrapMode(true);
+	editor2.setShowPrintMargin(false);
+
+	editor2.renderer.setHScrollBarAlwaysVisible(false);
+	editor2.renderer.setVScrollBarAlwaysVisible(false);
+
+  
+	$("#edit-frag").bind("resize", function(event, ui) {
+		editor1.resize();
+	});
+	$("#edit-vert").bind("resize", function(event, ui) {
+		editor2.resize();
+	});
+
+
+    $("#display").show();
+
+	var rebuild = function() {
+		var text = editor1.getSession().getValue();
+
+	}
+
+	$("#edit-vert").css("height", window.innerHeight/2);
+	$("#edit-frag").css("height", window.innerHeight/2);
+  $("#display").show();
+
+init();
+render();
+}
+</script>
+
+</body>
+</html>

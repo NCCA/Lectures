@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>GLSL Editor</title>
+		<link href="/favicon.gif" rel="shortcut icon"/>
+		<style>
+			body {
+				height: 100%;
+    			margin: 0;
+	  			background: #171e22;
+			}
+			#glsl_editor {
+				height: 100%;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="glsl_editor"></div>
+	</body>
+
+	<link type="text/css" rel="stylesheet" href="/jmacey/js/glslEditor/glslEditor.css">
+    <script type="text/javascript" src="/jmacey/js/glslEditor/glslEditor.js"></script>
+    <script type="text/javascript">
+    	var glslEditor = new GlslEditor('#glsl_editor', {
+    		canvas_size: 400,
+            canvas_draggable: true,
+            canvas_resizable: true,
+    		    theme: 'default',
+            watchHash: true,
+            fileDrops: true,
+    		menu: false
+		});
+		glslEditor.open("frag1.frag");
+       
+    </script>
+</html>

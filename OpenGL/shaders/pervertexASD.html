@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Per-vertex ASD Shader</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+		<script src="/jmacey/js/jquery/jquery.min.js"></script>
+		<script src="/jmacey/js/jquery-ui/jquery-ui.min.js"></script>
+		<script src="/jmacey/js/three.js/three.min.js"></script>
+		<script src="/jmacey/OpenGL/js/OrbitControls.js"></script>
+		<script src="/jmacey/OpenGL/js/WebGL.js"></script>
+		<script src='/jmacey/OpenGL/js/dat.gui.min.js'></script>
+		<script src='/jmacey/OpenGL/js/TeapotBufferGeometry.js'></script>
+    <script src="/jmacey/js/codemirror/codemirror.js"></script>
+		<script src="/jmacey/js/codemirror/mode/glsl/webGL-clike.js"></script>
+		<link rel="stylesheet" hfref="shaders.css">
+
+		<script>
+		$( function() { $( "#tabs" ).tabs();} );
+		$( ".selector" ).tabs({ heightStyle: "auto" });
+		
+		</script>
+    <link rel="stylesheet" href="/jmacey/js/codemirror/codemirror.css">
+    <link rel="stylesheet" href="/jmacey/js/codemirror/theme/monokai.css">
+   
+</head>
+
+<body>
+
+<div id="tabs" style="height : 10%;" >
+  <ul>
+    <li><a href="#VertexShader">VertexShader</a></li>
+    <li><a href="#FragmentShader">FragmentShader</a></li>
+  </ul>
+<div id="VertexShader" >
+<textarea id="vertexShader"  autofocus onfocus="addVertexShader(this);">
+#version 300 es
+precision highp float;
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+uniform mat3 normalMatrix;
+
+in vec3 position;
+in vec3 normal;
+in vec2 uv;
+
+struct LightInfo
+{
+	// Light position in eye coords.
+	vec3 position;
+	// Ambient light intensity
+	vec3 La;
+	// Diffuse light intensity
+	vec3 Ld;
+	// Specular light intensity
+	vec3 Ls;
+};
+uniform LightInfo light;
+
+struct MaterialInfo
+{
+	// Ambient reflectivity
+	vec3 Ka;
+	// Diffuse reflectivity
+	vec3 Kd;
+	// Specular reflectivity
+	vec3 Ks;
+	// Specular shininess factor
+	float shininess;
+};
+uniform MaterialInfo material;
+
+// light output per vert
+out vec3 lightIntensity;
+
+void main()
+{
+	// Convert normal and position to eye coords
+	vec3 tnorm = normalize( normalMatrix * normal);
+	vec4 eyeCoords = modelViewMatrix * vec4(position,1.0);
+	vec3 s = normalize(vec3(light.position - eyeCoords.xyz));
+	vec3 v = normalize(-eyeCoords.xyz);
+
+	vec3 r = reflect( -s, tnorm );
+	vec3 ambient = light.La * material.Ka;
+	float sDotN = max( dot(s,tnorm), 0.0 );
+	vec3 diffuse = light.Ld * material.Kd * sDotN;
+	vec3 spec = vec3(0.0);
+	if( sDotN > 0.0 )
+	{
+		spec = light.Ls * material.Ks * pow( max( dot(r,v), 0.0 ), material.shininess );
+	}
+  lightIntensity = ambient+ diffuse + spec;
+
+	// Convert position to clip coordinates and pass along
+	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}</textarea>
+</div>
+
+<div id="FragmentShader">
+<textarea id="fragmentShader"   autofocus onfocus="addFragmentShader(this);">
+#version 300 es
+precision highp float;
+in vec3 lightIntensity;
+/// @brief our output fragment colour
+layout (location =0)out vec4 fragColour;
+
+void main ()
+{
+	fragColour=vec4(lightIntensity,1.0);
+}</textarea> 
+</div>
+</div>
+
+<div id="glframe"></div>
+<div  class = 'moveGUI'></div>
+<script>
+var vertexEditor,fragmentEditor;
+var needsUpdate=true;
+
+function addVertexShader(textID)
+{
+    vertexEditor = CodeMirror.fromTextArea(textID, 
+		{
+    mode: "x-shader/x-vertex",
+    lineNumbers: false,
+		tabSize : 2,
+    theme : "monokai"
+  });
+ //vertexEditor.setSize(400, 250);
+ vertexEditor.on('change',function(){
+  // get value right from instance
+  vertexShader.value = vertexEditor.getValue();
+	needsUpdate=true;
+});
+}
+
+function addFragmentShader(textID)
+{
+    fragmentEditor = CodeMirror.fromTextArea(textID, 
+		{
+    mode: "x-shader/x-fragment",
+    lineNumbers: false,
+		tabSize : 2,
+    theme : "monokai"
+  });
+ //fragmentEditor.setSize(400, 250);
+ fragmentEditor.on('change',function(){
+  // get value right from instance
+  fragmentShader.value = fragmentEditor.getValue();
+	needsUpdate=true;
+});
+
+}
+addVertexShader(document.getElementById("vertexShader"));
+addFragmentShader(document.getElementById("fragmentShader"));
+
+
+if ( WEBGL.isWebGLAvailable() === false ) 
+{
+	document.body.appendChild( WEBGL.getWebGLErrorMessage() );
+}
+
+var camera, scene, renderer;
+var cameraControls;
+var teapotSize = 1;
+
+
+var teapot;
+var shader;
+
+init();
+render();
+
+function init() 
+{
+
+	//var container = document.createElement( 'div' );
+	var container = document.getElementById('glframe');
+
+	document.body.appendChild( container );
+
+
+	var canvasWidth = window.innerWidth/2;
+	var canvasHeight = window.innerHeight/2;
+
+	// CAMERA
+	camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 80000 );
+	camera.position.set(4, 1, 1 );
+
+	var canvas = document.createElement( 'canvas' );
+	var context = canvas.getContext( 'webgl2' );
+	renderer = new THREE.WebGLRenderer( { canvas: canvas, context: context } );
+
+
+	// RENDERER
+	//renderer = new THREE.WebGLRenderer( {  context: context ,antialias: true } );
+	renderer.setPixelRatio( window.devicePixelRatio );
+	renderer.setSize( canvasWidth, canvasHeight );
+	renderer.gammaInput = true;
+	renderer.gammaOutput = true;
+	container.appendChild( renderer.domElement );
+
+	// EVENTS
+	window.addEventListener( 'resize', onWindowResize, false );
+
+	// CONTROLS
+	cameraControls = new THREE.OrbitControls( camera, renderer.domElement );
+	cameraControls.enablePan=false;
+	cameraControls.addEventListener( 'change', render );
+
+	// scene itself
+	scene = new THREE.Scene();
+	scene.background = new THREE.Color( 0xAFAFAF );
+	setupGui()
+	var cubeGeometry = new THREE.BoxBufferGeometry( 0.1, 0.1, 0.1 );
+	var cubeMaterial = new THREE.MeshLambertMaterial( { color: 'rgb(255,254,255)', emissive: 0x200000 } );
+	cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
+	scene.add( cube );
+
+}
+
+// EVENT HANDLERS
+
+function onWindowResize() 
+{
+	var canvasWidth = window.innerWidth;
+	var canvasHeight = window.innerHeight;
+	renderer.setSize( canvasWidth/2, canvasHeight/2 );
+	camera.aspect = (canvasWidth/2)  / (canvasHeight/2);
+	camera.updateProjectionMatrix();
+	render();
+}
+
+function setupGui() 
+{
+
+	ctrls = 
+	{
+	Kdr:	1.0,
+	Kdg: 1.0,
+	Kdb: 1.0,
+	Kar:	0.1,
+	Kag: 0.1,
+	Kab: 0.1,
+	Ksr:	1.0,
+	Ksg: 1.0,
+	Ksb: 1.0,
+
+	Ldr:	1.0,
+	Ldg: 1.0,
+	Ldb: 1.0,
+	Lar:	0.1,
+	Lag: 0.1,
+	Lab: 0.1,
+	Lsr:	1.0,
+	Lsg: 1.0,
+	Lsb: 1.0,
+	lightPosx : 0.0,
+	lightPosy : 2.0,
+	lightPosz : 0.0,
+  shininess : 50.0
+
+	
+	};
+	var h;
+
+var gui = new dat.GUI();
+	// material (color)
+	h = gui.addFolder( "Ka" );
+
+	h.add( ctrls, "Kar", 0.0, 1.0, 0.1 ).name( "red" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "Kag", 0.0, 1.0, 0.1 ).name( "green" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "Kab", 0.0, 1.0, 0.1 ).name( "blue" ).onChange( function(){ needsUpdate=true;  } );
+
+	h = gui.addFolder( "Kd" );
+
+	h.add( ctrls, "Kdr", 0.0, 1.0, 0.1 ).name( "red" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "Kdg", 0.0, 1.0, 0.1 ).name( "green" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "Kdb", 0.0, 1.0, 0.1 ).name( "blue" ).onChange( function(){ needsUpdate=true;  } );
+	h = gui.addFolder( "Ks" );
+
+	h.add( ctrls, "Ksr", 0.0, 1.0, 0.1 ).name( "red" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "Ksg", 0.0, 1.0, 0.1 ).name( "green" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "Ksb", 0.0, 1.0, 0.1 ).name( "blue" ).onChange( function(){ needsUpdate=true;  } );
+	h = gui.addFolder( "Shininess" );
+	h.add( ctrls, "shininess", 0.0, 500.0, 10.0 ).name( "shininess" ).onChange( function(){ needsUpdate=true;  } );
+
+	h = gui.addFolder( "Light Diffuse" );
+
+	h.add( ctrls, "Ldr", 0.0, 1.0, 0.1 ).name( "red" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "Ldg", 0.0, 1.0, 0.1 ).name( "green" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "Ldb", 0.0, 1.0, 0.1 ).name( "blue" ).onChange( function(){ needsUpdate=true;  } );
+	h = gui.addFolder( "Light Ambient" );
+
+	h.add( ctrls, "Lar", 0.0, 1.0, 0.1 ).name( "red" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "Lag", 0.0, 1.0, 0.1 ).name( "green" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "Lab", 0.0, 1.0, 0.1 ).name( "blue" ).onChange( function(){ needsUpdate=true;  } );
+	h = gui.addFolder( "Light Specular" );
+
+	h.add( ctrls, "Lsr", 0.0, 1.0, 0.1 ).name( "red" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "Lsg", 0.0, 1.0, 0.1 ).name( "green" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "Lsb", 0.0, 1.0, 0.1 ).name( "blue" ).onChange( function(){ needsUpdate=true;  } );
+
+	h = gui.addFolder( "lightPos" );
+	h.add( ctrls, "lightPosx", -10.0, 10.0, 0.5 ).name( "lightPosx" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "lightPosy", -10.0, 10.0, 0.5 ).name( "lightPosy" ).onChange( function(){ needsUpdate=true;  } );
+	h.add( ctrls, "lightPosz", -10.0, 10.0, 0.5 ).name( "lightPosz" ).onChange( function(){ needsUpdate=true;  } );
+
+
+	var customContainer = $('.moveGUI').append($(gui.domElement));
+
+}
+
+
+
+function render() 
+{
+	requestAnimationFrame(render);
+	var uniforms= {
+  	light: { value : {
+					position: new THREE.Vector3(ctrls.lightPosx, ctrls.lightPosy, ctrls.lightPosz),
+					La:  new THREE.Vector3(ctrls.Lar, ctrls.Lag, ctrls.Lab),
+					Ld:  new THREE.Vector3(ctrls.Ldr, ctrls.Ldg, ctrls.Ldb),
+					Ls:  new THREE.Vector3(ctrls.Lsr, ctrls.Lsg, ctrls.Lsb),
+		}
+		},
+		material: { value : {
+					Ka:  new THREE.Vector3(ctrls.Kar, ctrls.Kag, ctrls.Kab),
+					Kd:  new THREE.Vector3(ctrls.Kdr, ctrls.Kdg, ctrls.Kdb),
+					Ks:  new THREE.Vector3(ctrls.Ksr, ctrls.Ksg, ctrls.Ksb),
+					shininess : ctrls.shininess
+		}
+		}
+	};
+	if(needsUpdate == true)
+	{
+		var myshader = new THREE.RawShaderMaterial( 
+		{
+			uniforms: uniforms,
+			vertexShader: document.getElementById( 'vertexShader' ).value ,
+			fragmentShader: document.getElementById( 'fragmentShader' ).value
+		});
+  console.log(uniforms["material.Ka"])
+	createNewTeapot(myshader);
+	needsUpdate=false;
+	}
+	cube.position.x = ctrls.lightPosx;
+	cube.position.y = ctrls.lightPosy;
+	cube.position.z = ctrls.lightPosz;
+
+	renderer.render( scene, camera );
+}
+
+	// Whenever the shader is updated
+	function createNewTeapot(shader) 
+	{
+	if ( teapot !== undefined ) 
+	{
+		teapot.geometry.dispose();
+		scene.remove( teapot );
+	}
+
+		var teapotGeometry = new THREE.TeapotBufferGeometry( teapotSize);
+		teapot = new THREE.Mesh(teapotGeometry,shader);
+		scene.add( teapot );
+	}
+
+		</script>
+	</body>
+</html>
