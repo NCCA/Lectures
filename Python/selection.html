@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Selection</title>
+    <script src="/jmacey/js/python/skulpt.min.js" type="text/javascript"></script> 
+    <script src="/jmacey/js/python/skulpt-stdlib.js" type="text/javascript"></script> 
+    <script src="/jmacey/js/codemirror/codemirror.js"></script>
+    <link rel="stylesheet" href="/jmacey/js/codemirror/codemirror.css">
+    <script src="/jmacey/js/codemirror/mode/python/python.js"></script>
+    <link rel="stylesheet" href="/jmacey/js/codemirror/theme/monokai.css">
+
+    <style type="text/css">
+      .CodeMirror {border: 1px solid black; font-size:18px}
+    </style>
+</head>
+<body>
+
+ <div id="mycanvas"  height="200" width="800" style="border-style: solid;"></div>
+
+
+
+<form>
+<p>    
+<!-- As we are using python indentation matters for the code --->
+<textarea id="helloWorld" cols="40"  autofocus onfocus="addCodeMirror(this);">
+import turtle
+wn = turtle.Screen()
+turtle = turtle.Turtle()
+
+type = "Triangle"
+
+if type == "Square" :
+	turtle.forward(100)
+	turtle.left(90)
+	turtle.forward(100)
+	turtle.left(90)
+	turtle.forward(100)
+	turtle.left(90)
+	turtle.forward(100)
+	turtle.done()
+	
+
+elif type=="Triangle" :
+	turtle.forward(100)
+	turtle.right(120)
+	turtle.forward(100)
+	turtle.right(120)
+	turtle.forward(100)
+	turtle.done()
+
+else :
+	print "nothing selected"
+
+
+wn.exitonclick()
+</textarea><br/>
+<br/><button type="button" onclick="runit('helloWorld','helloWorldOut')">Run</button> <br/>
+<textarea id="helloWorldOut" overflow-y="scroll" cols="65" rows="0"  style="font-size: 18pt" overflow="auto"; word-wrap= "normal"; white-space="pre";>  </textarea> 
+</p>
+</form>
+<script src="/jmacey/js/reveal.js/pythonsetup.js"></script>
+    
+</body>
+</html>

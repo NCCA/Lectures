@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Hello World</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js" type="text/javascript"></script> 
+    <script src="/jmacey/js/python/skulpt.min.js" type="text/javascript"></script> 
+    <script src="/jmacey/js/python/ -stdlib.js" type="text/javascript"></script> 
+    <script src="/jmacey/js/codemirror/codemirror.js"></script>
+    <link rel="stylesheet" href="/jmacey/js/codemirror/codemirror.css">
+    <script src="/jmacey/js/codemirror/mode/python/python.js"></script>
+    <link rel="stylesheet" href="/jmacey/js/codemirror/theme/monokai.css">
+
+    <style type="text/css">
+      .CodeMirror {border: 1px solid black; font-size:18px}
+    </style>
+</head>
+<body>
+
+
+
+<script type="text/javascript"> 
+// output functions are configurable.  This one just appends some text
+// to a pre element.
+
+var editor;
+
+
+function addCodeMirror(textID){
+    editor = CodeMirror.fromTextArea(textID, {
+    mode: "python",
+    lineNumbers: true,
+    theme : "monokai",
+    height : 20
+
+
+
+  });
+   editor.setSize(800, 250);
+}
+
+
+function getCodeMirrorText(textID){
+return editor.getValue();
+}
+
+
+
+function builtinRead(x) {
+    if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+            throw "File not found: '" + x + "'";
+    return Sk.builtinFiles["files"][x];
+}
+
+// Here's everything you need to run a python program in skulpt
+// grab the code from your textarea
+// get a reference to your pre element for output
+// configure the output function
+// call Sk.importMainWithBody()
+function runit( code,  out) { 
+
+  var prog = getCodeMirrorText(); //document.getElementById(code).value; 
+  var mypre = document.getElementById(out); 
+  function outf(text) { 
+    var mypre = document.getElementById(out); 
+    mypre.innerHTML = mypre.innerHTML + text; 
+} 
+  
+  
+  mypre.innerHTML = ''; 
+   
+   Sk.pre = out;
+Sk.canvas = "mycanvas";
+Sk.externalLibraries = {
+            webgl : {
+                path: '/jmacey/js/python/webgl/__init__.js',
+                dependencies: ['/jmacey/js/python/math.js'],
+
+            }
+};
+
+   Sk.configure({output:outf, read:builtinRead}); 
+   (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
+   
+   var myPromise = Sk.misceval.asyncToPromise(function() {
+       return Sk.importMainWithBody("<stdin>", false, prog, true);
+   });
+
+   myPromise.then(function(mod) {
+       console.log('success');
+   },
+       function(err) {
+       console.log(err.toString());
+       var mypre = document.getElementById("helloWorldOut");
+       mypre.innerHTML = mypre.innerHTML + err.toString();
+
+   });
+} 
+
+
+</script> 
+<form>
+<p>    
+<!-- As we are using python indentation matters for the code --->
+   <canvas id="mycanvas" height="300" width="400"></canvas>
+
+
+
+<textarea id="helloWorld" cols="40"  autofocus onfocus="addCodeMirror(this);">
+import webgl
+from math import sin
+
+gl = webgl.Context("mycanvas")
+trianglesVerticeBuffer = gl.createBuffer()
+trianglesColorBuffer = gl.createBuffer()
+program = None
+uViewMatrix = None
+uProjMatrix = None
+viewMatrix = webgl.Matrix4x4([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0])
+projMatrix = webgl.Matrix4x4([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0])
+
+def setup():
+  print viewMatrix
+  print projMatrix
+  global program, uViewMatrix, uProjMatrix
+  vs = gl.createShader(gl.VERTEX_SHADER) 
+  gl.shaderSource(vs, "" + 
+  "attribute vec3 aVertexPosition;" + 
+  "attribute vec3 aVertexColor;" +
+  "" +
+  "uniform mat4 uViewMatrix;" +
+  "uniform mat4 uProjMatrix;" +
+  "" + 
+  "varying highp vec4 vColor;" + 
+  "void main(void) {" + 
+  "  gl_Position = uProjMatrix * uViewMatrix * vec4(aVertexPosition, 1.0);" + 
+  "  vColor = vec4(aVertexColor, 1.0);" + 
+  "}")
+  gl.compileShader(vs)
+  print "Vertex shader COMPILE_STATUS: " + str(gl.getShaderParameter(vs, gl.COMPILE_STATUS))
+  fs = gl.createShader(gl.FRAGMENT_SHADER) 
+  gl.shaderSource(fs, "" + 
+  "varying highp vec4 vColor;" + 
+  "void main(void) {" + 
+  "  gl_FragColor = vColor;" + 
+  "}")
+  gl.compileShader(fs)
+  print "Fragment shader COMPILE_STATUS: " + str(gl.getShaderParameter(fs, gl.COMPILE_STATUS))
+
+  program = gl.createProgram()
+  gl.attachShader(program, vs)
+  gl.attachShader(program, fs)
+  gl.linkProgram(program)
+  print "Program LINK_STATUS: " + str(gl.getProgramParameter(program, gl.LINK_STATUS))
+  gl.useProgram(program)
+
+  triangleVerticeColors = [1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0]
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, trianglesColorBuffer)
+  gl.bufferData(gl.ARRAY_BUFFER, webgl.Float32Array(triangleVerticeColors), gl.STATIC_DRAW)
+
+  uViewMatrix = gl.getUniformLocation(program, "uViewMatrix")
+  uProjMatrix = gl.getUniformLocation(program, "uProjMatrix")
+  projMatrix.perspective(45, 4.0/3.0, 0.1, 100.0)
+  viewMatrix.identity()
+  viewMatrix.translate([0.0, 0.0, -2.0])
+  gl.clearColor(0.0, 0.0, 0.0, 1.0);  
+  gl.viewport(0, 0, 400, 300);
+
+def draw(gl, elapsed):
+  gl.clear(gl.COLOR_BUFFER_BIT);  
+  translation = sin(elapsed * 2.0 * 3.14159 / 10000.0)/2.0;
+  triangleVertices = [-0.5 + translation,  0.5, -0.5,
+                       0.0 + translation,  0.0, -0.5,
+                      -0.5 + translation, -0.5, -0.5,
+                       0.5 + translation,  0.5,  0.5,
+                       0.0 + translation,  0.0,  0.5,
+                       0.5 + translation, -0.5,  0.5]
+  gl.bindBuffer(gl.ARRAY_BUFFER, trianglesVerticeBuffer)
+  gl.bufferData(gl.ARRAY_BUFFER, webgl.Float32Array(triangleVertices), gl.DYNAMIC_DRAW)
+
+  gl.uniformMatrix4fv(uProjMatrix, False, projMatrix)
+  gl.uniformMatrix4fv(uViewMatrix, False, viewMatrix)
+
+  vertexPositionAttribute = gl.getAttribLocation(program, "aVertexPosition")
+  gl.enableVertexAttribArray(vertexPositionAttribute)
+  gl.bindBuffer(gl.ARRAY_BUFFER, trianglesVerticeBuffer)
+  gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, False, 0, 0)
+
+  vertexColorAttribute = gl.getAttribLocation(program, "aVertexColor")
+  gl.enableVertexAttribArray(vertexColorAttribute)
+  gl.bindBuffer(gl.ARRAY_BUFFER, trianglesColorBuffer)
+  gl.vertexAttribPointer(vertexColorAttribute, 3, gl.FLOAT, False, 0, 0)
+
+  gl.drawArrays(gl.TRIANGLES, 0, 6)
+
+setup()
+
+gl.setDrawFunc(draw);</textarea><br/>
+<textarea id="helloWorldOut" overflow-y="scroll" cols="65" rows="5"  style="font-size: 18pt" overflow="auto"; word-wrap= "normal"; white-space="pre";>  </textarea> 
+<br/><button type="button" onclick="runit('helloWorld','helloWorldOut')">Run</button> 
+</p>
+</form>
+    
+	</body>
+</html>

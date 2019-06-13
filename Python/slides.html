@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Introduction to Python</title>
+    <link rel="stylesheet" href="/jmacey/js/reveal.js/css/reveal.css">
+    <link rel="stylesheet" href="/jmacey//js/reveal.js/css/theme/white.css" id="theme">
+    <link rel="stylesheet" href="/jmacey//js/reveal.js/lib/css/zenburn.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js" type="text/javascript"></script> 
+    <!-- to print uncomment this and pass ?print-pdf#/ to the command line
+    <!--- <link rel="stylesheet" href="/jmacey//js/reveal.js/css/print/pdf.css"> --->
+
+</head>
+
+
+    <div class="reveal">
+    <div class="slides">
+     
+    <!-- Slides are separated by newline + three dashes + newline, vertical slides identical but two dashes -->
+    <section data-markdown="slides.md" data-markdown data-separator="^\n---\n$" data-separator-vertical="^\n--\n$"></section> 
+
+    <script src="/jmacey/js/reveal.js/lib/js/head.min.js"></script>
+    <script src="/jmacey/js/reveal.js/js/reveal.js"></script>
+<style type="text/css">
+#mySlideLeft {
+  left:-8.33%;
+  text-align: left;
+  float: left;
+  width:50%;
+  z-index:-10;
+  border : 0px;
+}
+
+#mySlideRight {
+  left:31.25%;
+  top: 75px;
+  float: right;
+  text-align: left;
+  z-index:-10;
+  width:50%;
+  border : 0px;
+
+}
+.reveal section img { background:none; border:none; box-shadow:none; }
+
+}
+</style>
+
+<script>
+
+    Reveal.initialize({
+                        controls: true,
+                        progress: true,
+                        history: true,
+                        center: false,
+                        math: {
+                        mathjax: 'https://cdn.mathjax.org/mathjax/latest/MathJax.js',
+                        config: 'TeX-AMS_HTML-full'  // See http://docs.mathjax.org/en/latest/config-files.html
+                        },
+            menu: {
+					markers: true,
+					openSlideNumber: true,
+					themes: [
+						{ name: 'Black', theme: '/jmacey/js/reveal.js/css/theme/black.css' },
+						{ name: 'White', theme: '/jmacey/js/reveal.js/css/theme/white.css' },
+						{ name: 'League', theme: '/jmacey/js/reveal.js/css/theme/league.css' },
+						{ name: 'Sky', theme: '/jmacey/js/reveal.js/css/theme/sky.css' },
+						{ name: 'Beige', theme: '/jmacey/js/reveal.js/css/theme/beige.css' },
+						{ name: 'Simple', theme: '/jmacey/js/reveal.js/css/theme/simple.css' },
+						{ name: 'Serif', theme: '/jmacey/js/reveal.js/css/theme/serif.css' },
+						{ name: 'Blood', theme: '/jmacey/js/reveal.js/css/theme/blood.css' },
+						{ name: 'Night', theme: '/jmacey/js/reveal.js/css/theme/night.css' },
+						{ name: 'Moon', theme: '/jmacey/js/reveal.js/css/theme/moon.css' },
+						{ name: 'Solarized', theme: '/jmacey/js/reveal.js/css/theme/solarized.css' }
+			        ]
+			        
+				},
+            
+            // Optional libraries used to extend on reveal.js
+            dependencies: [
+                            { src: '/jmacey//js/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                            { src: '/jmacey//js/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                            { src: '/jmacey//js/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                            { src: '/jmacey//js/reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                            { src: '/jmacey//js/reveal.js/plugin/notes/notes.js' },
+                            { src: '/jmacey//js/reveal.js/plugin/math/math.js', async: true },
+                            { src: '/jmacey//js/reveal.js/plugin/menu/menu.js' }
+
+                            ]
+    });
+    Reveal.addEventListener( 'slidechanged', function( event ) {
+
+    } );
+
+		</script>
+
+    
+	</body>
+</html>

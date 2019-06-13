@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Iteration</title>
+    <script src="/jmacey/js/python/skulpt.min.js" type="text/javascript"></script> 
+    <script src="/jmacey/js/python/skulpt-stdlib.js" type="text/javascript"></script> 
+    <script src="/jmacey/js/codemirror/codemirror.js"></script>
+    <link rel="stylesheet" href="/jmacey/js/codemirror/codemirror.css">
+    <script src="/jmacey/js/codemirror/mode/python/python.js"></script>
+    <link rel="stylesheet" href="/jmacey/js/codemirror/theme/monokai.css">
+
+    <style type="text/css">
+      .CodeMirror {border: 1px solid black; font-size:18px}
+    </style>
+</head>
+<body>
+
+ <div id="mycanvas"  height="200" width="800"	style="border-style: solid;"></div>
+
+
+<form>
+<p>    
+<!-- As we are using python indentation matters for the code --->
+<textarea id="helloWorld" cols="40"  autofocus onfocus="addCodeMirror(this);">
+import turtle
+wn = turtle.Screen()
+turtle = turtle.Turtle()
+
+#code taken from http://docs.python.org/dev/library/turtle.html
+
+
+turtle.color('red', 'yellow')
+turtle.begin_fill()
+count=0
+while True:
+    turtle.forward(200)
+    turtle.left(170)
+    count=count+1
+    if count > 22 :
+        break   
+turtle.end_fill()
+turtle.done()
+wn.exitonclick()
+
+</textarea><br/>
+<br/><button type="button" onclick="runit('helloWorld','helloWorldOut')">Run</button> <br/>
+<textarea id="helloWorldOut" overflow-y="scroll" cols="65" rows="0"  style="font-size: 18pt" overflow="auto"; word-wrap= "normal"; white-space="pre";>  </textarea> 
+</p>
+</form>
+<script src="/jmacey/js/reveal.js/pythonsetup.js"></script>
+    
+</body>
+</html>

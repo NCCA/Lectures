@@ -1,0 +1,191 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <title></title>
+</head>
+
+<body>
+
+<style>
+.bit{
+    height:100px;
+    width:100px;
+    font-size : 30px;
+    color: white;
+    background-color: black;
+}
+.result{
+    height:150px;
+    width:150px;
+    font-size : 40px;
+    color: black;
+    background-color: white;
+    text-decoration: none;
+    display: block;
+    margin: auto;
+}
+.center {
+   
+    display: block;
+    margin: auto;
+    width: 100%;
+}
+
+</style>
+<H2> Click the bits to set the values </H2>
+<div>
+  <button class="bit" id="sign"  onclick="updateData(this)" value="+">0</button>  
+  <button class="bit" id="64"  onclick="updateData(this);" value="0">0</button>  
+  <button class="bit" id="32" onclick="updateData(this);" value="0">0</button>  
+  <button class="bit" id="16" onclick="updateData(this);" value="0">0</button>  
+  <button class="bit" id="8"  onclick="updateData(this);" value="0">0</button>  
+  <button class="bit" id="4"  onclick="updateData(this);" value="0">0</button>  
+  <button class="bit" id="2"  onclick="updateData(this);" value="0">0</button>  
+  <button class="bit" id="1"  onclick="updateData(this);" value="0">0</button>  
+  <button class="result" id="output"  disabled value="0">=0</button>  
+</div>
+<div class="center">
+  <button id="clear" onclick="clearButtons();"> clear </button>
+  <button id="countUp" onclick="countUp();"> count up </button>
+  <button id="countUp" onclick="countDown();"> count down </button>
+  <input type="number" id="numbers" onchange="setNumbers(this)"/> 
+</div>
+
+<script>
+
+var bits=[
+document.getElementById("1"),
+document.getElementById("2"),
+document.getElementById("4"),
+document.getElementById("8"),
+document.getElementById("16"),
+document.getElementById("32"),
+document.getElementById("64"),
+document.getElementById("sign")
+];
+var counterActive=false;
+
+function setOutput()
+{
+  var result=0;
+  var power=1;
+  for (i=0; i<7; ++i)
+  {
+    power=Math.pow(2,i);
+    result+=parseInt(bits[i].value * power);
+  }
+  var sign='+';
+  if(bits[7].value=='1')
+   {
+     sign='-';
+     result=(128-result);
+  }
+
+  document.getElementById("output").innerHTML = "= "+sign+" "+result;
+
+}
+
+function updateData(id)
+{
+  if(id.value =='1')
+    {
+      id.value='0';
+      id.innerHTML='0';
+    }
+  else
+    {
+    id.value='1';
+    id.innerHTML='1';
+    }
+   setOutput(); 
+}
+
+
+
+function clearButtons()
+{
+  for(i=0; i<8; ++i)
+  {
+    bits[i].value=0;
+    bits[i].innerHTML='0';
+
+  }
+  setOutput();
+}
+
+function countUp()
+{
+  var i=0;
+  {
+    if(counterActive == true) return;
+    counterActive=true;
+    var interval=setInterval(function()
+    {
+    
+    var binary=(i >>> 0).toString(2);
+    var data=String("00000000"+binary).slice(-8);
+    for(j=0; j<8; ++j)
+    {
+      bits[j].value=data[7-j];
+      bits[j].innerHTML=data[7-j];
+    }
+    //console.log(data);
+    setOutput();
+    if(++i >255)
+      {
+        clearInterval(interval);
+        counterActive=false;
+      }
+    },100);
+  
+  }
+}
+
+function countDown()
+{
+  var i=255;
+  {
+    if(counterActive == true) return;
+    counterActive=true;
+
+    var interval=setInterval(function()
+    {
+    var binary=(i >>> 0).toString(2);
+    var data=String("00000000"+binary).slice(-8);
+    for(j=0; j<8; ++j)
+    {
+      bits[j].value=data[7-j];
+      bits[j].innerHTML=data[7-j];
+    }
+    //console.log(data);
+    setOutput();
+    if(i-- ==0)
+      {
+        clearInterval(interval);
+        counterActive=false;
+      }
+    },100);
+  
+  }
+}
+
+function setNumbers(id)
+{
+  var i=id.value;
+  var binary=(i >>> 0).toString(2);
+  var data=String("00000000"+binary).slice(-8);
+  for(j=0; j<8; ++j)
+  {
+    bits[j].value=data[7-j];
+    bits[j].innerHTML=data[7-j];
+  }
+  console.log(data);
+  setOutput();
+}
+</script>
+
+
+</body>
+
+</html>
