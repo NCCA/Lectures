@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="/jmacey/js/joint.js/joint.min.css" />
+    <link rel="stylesheet" type="text/css" href="/jmacey/js/jquery-ui/jquery-ui.min.css" />
+    <script type="text/javascript" src="/jmacey/js/joint.js/lodash.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/joint.js/backbone-min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/jquery-ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/joint.js/joint.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/joint.js/UMLFunctions.js"></script>
+    <script type="text/javascript" src="/jmacey/js/reveal.js/plugin/highlight/highlight.js"></script>
+    <link rel="stylesheet" href="/jmacey//js/reveal.js/lib/css/zenburn.css">
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    
+
+<title></title>
+</head>
+
+<body>
+<div class="example" >
+	  <div id="paper" class="paper"></div>
+</div><!--end example-->
+
+<!--  get rid of the remove from the links -->
+<style>
+.link-tools .tool-remove { display: none }
+.popup_msg
+{
+position:absolute;
+z-index:10;
+width:172px;
+height:102px;
+text-align:center;
+color:'black';
+display:none;
+}
+html, body {
+     -webkit-backface-visibility: visible;
+}
+</style>
+<!--  note the -webkit-backface hack for iframes in iOS -->
+
+<script>
+createCodeDiv("Renderer","Renderer.h",`
+#ifndef RENDERER_H
+#define RENDERER_H
+
+#include &lt;string&gt;
+
+///
+/// An abstract interface for a 3D renderer based on the martin reddy book
+/// See http://APIBook.com/ for the latest version.
+
+class Renderer
+{
+public:
+  virtual ~Renderer() {}
+  virtual bool loadScene(const std::string &filename) = 0;
+  virtual void setViewportSize(int _w, int _h) = 0;
+  virtual void setCameraPos(float _x, float _y, float _z) = 0;
+  virtual void setLookAt(float _x, float _y, float _z) = 0;
+  virtual void render() = 0;
+};
+
+#endif
+`);
+
+createCodeDiv("OpenGLRenderer","OpenGLRenderer.h",`
+#ifndef OPENGLRENDERER_H
+#define OPENGLRENDERER_H
+#include &lt;iostream&gt;
+#include "Renderer.h"
+
+class OpenGLRenderer : public Renderer
+{
+public:
+
+  bool loadScene(const std::string &_filename) {return true;}
+  void setViewportSize(int _w, int _h) {;}
+  void setCameraPos(float _x, float _y, float _z) {;}
+  void setLookAt(float _x, float _y, float _z) {;}
+  void render() {std::cout<<"OpenGL Render\\n";}
+  ~OpenGLRenderer(){std::cout<<"OpenGL dtor called\\n";}
+};
+
+#endif`);
+
+createCodeDiv("DirectXRenderer","DirectXRenderer.h",`
+#ifndef DIRECTXRENDERER_H
+#define DIRECTXRENDERER_H
+#include &lt;iostream&gt;
+#include "Renderer.h"
+
+class DirectXRenderer : public Renderer
+{
+public:
+
+  bool loadScene(const std::string &_filename) {return true;}
+  void setViewportSize(int _w, int _h) {;}
+  void setCameraPos(float _x, float _y, float _z) {;}
+  void setLookAt(float _x, float _y, float _z) {;}
+  void render() {std::cout<<"DirectXRenderer Render\\n";}
+  ~DirectXRenderer(){std::cout<<"DirectXRenderer dtor called\\n";}
+};
+#endif`);
+
+createCodeDivFromFile("maincpp", "main.cpp","mainCodeBlock", "code/RenderFactory/RenderFactoryMain.cpp");
+createCodeDivFromFile("RenderFactory1", "RenderFactory.cpp","renderfactoryCPP", "code/RenderFactory/RenderFactory.cpp");
+createCodeDivFromFile("RenderFactory2", "RenderFactory.h","renderfactoryH", "code/RenderFactory/RenderFactory.h");
+
+
+// init the UML drawing using paper as the div
+initUML('#paper',1024,800, 'false');
+var w=250;
+var h=100;
+var classes = {
+    Factory : createClass('RenderFactory',10,60,w+30,h,[],['+ createRenderer(_type : const std::string ) : Renderer *']),
+
+    ConCreator : createClass('OpenGLRenderer',540,340,w,h,[],['+ OpenGLRenderer() : Renderer', '~OpenGLRenderer()']),
+    ConCreator2 : createClass('DirectXRenderer',240,340,w,h,[],['+ DirectXRenderer() : Renderer', '~DirectXRenderer()']),
+    Creator : createAbstractClass('Renderer',350,40,w,h+40,[],[
+                                                            '+ ~Renderer()',
+                                                            '+ loadScene(_filename : std::string)',
+                                                            '+ setViewportSize( _w :int , _h : int)',
+                                                            '+ setCameraPos(_x : float, _y : float , _z : float)',
+                                                            '+ setLookAt(_x : float, _y : float, _z : float)',
+                                                            '+ render()'
+                                                            
+                                                            ]),
+    main : createRectangle("maincpp",60,200,w/2,h/2,"main.cpp")
+
+
+};
+
+var relations = [
+    addGeneralization(classes.ConCreator.id,classes.Creator.id),
+    addGeneralization(classes.ConCreator2.id,classes.Creator.id),
+    addImplementation(classes.Creator.id,classes.Factory.id),
+    addImplementation(classes.main.id,classes.Factory.id)
+];
+
+
+addToGraph(classes);
+addToGraph(relations);
+
+// These are the names of the cells for clicking on
+var activeCells=['Renderer','OpenGLRenderer','DirectXRenderer','maincpp','RenderFactory1','RenderFactory2'];
+var desktopMobileClickMode='cell:pointerclick';
+if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+ // some code..
+ desktopMobileClickMode='cell:pointerdown cell:pointerclick';
+}
+
+paper.on(desktopMobileClickMode , 
+    function(cellView, evt, x, y) 
+    { 
+
+    console.log('cell view ' + cellView.model.get('name') + ' was clicked');
+    // get the name
+    var name= cellView.model.get('name');
+    if( activeCells.indexOf(name) != -1)
+    {
+        $( function() 
+        {
+            $( "#"+name ).dialog({width : 'auto'});
+        } );
+    }
+    if( cellView.model.get('name')=='RenderFactory')
+    {
+       $( function() 
+        {
+            $( "#RenderFactory1" ).dialog({width : 'auto'});
+            $( "#RenderFactory2" ).dialog({width : 'auto'});
+        } ); 
+    }
+    }
+);
+
+
+//use this code to hide code divs on load.
+//Shorthand for $( document ).ready()
+$(function() {
+    _.each(activeCells,function(name) {
+        $('#'+name).hide();
+    });
+});
+
+
+$("code").each(function (i, e) {
+    hljs.highlightBlock(e);
+    
+});
+
+</script>
+
+</body>
+
+</html>

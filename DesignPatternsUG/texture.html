@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="/jmacey/js/joint.js/joint.min.css" />
+    <link rel="stylesheet" type="text/css" href="/jmacey/js/jquery-ui/jquery-ui.min.css" />
+    <script type="text/javascript" src="/jmacey/js/joint.js/lodash.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/joint.js/backbone-min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/jquery-ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/joint.js/joint.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/joint.js/UMLFunctions.js"></script>
+    <script type="text/javascript" src="/jmacey/js/reveal.js/plugin/highlight/highlight.js"></script>
+    <link rel="stylesheet" href="/jmacey//js/reveal.js/lib/css/zenburn.css">
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    
+
+<title></title>
+</head>
+
+<body>
+<div class="example" >
+	  <div id="paper" class="paper"></div>
+</div><!--end example-->
+
+<!--  get rid of the remove from the links -->
+<style>
+.link-tools .tool-remove { display: none }
+.popup_msg
+{
+position:absolute;
+z-index:10;
+width:172px;
+height:102px;
+text-align:center;
+color:'black';
+display:none;
+}
+html, body {
+     -webkit-backface-visibility: visible;
+}
+</style>
+<!--  note the -webkit-backface hack for iframes in iOS -->
+
+<script>
+createCodeDivFromFile("maincpp", "main.cpp","mainCodeBlock", "code/Texture/main.cpp");
+createCodeDivFromFile("TextureCPP", "RenderFactory.cpp","renderfactoryCPP", "code/Texture/Texture.cpp");
+createCodeDivFromFile("TextureH", "RenderFactory.h","renderfactoryH", "code/Texture/Texture.h");
+
+
+// init the UML drawing using paper as the div
+initUML('#paper',1024,800, 'false');
+var w=250;
+var h=100;
+var classes = {
+    Factory : createClass('Texture',240,60,w+60,h,['- m_textures : static std::unordered_map<std::string,Texture*> ',
+                                                '- m_name : std::string'],
+                                                    ['+ getTexture(_type : const std::string &) :  static Texture*',
+                                                     '+ printCurrentTexture()',
+                                                     '- Texture(_type const std::string &)'
+    ]),
+
+    main : createRectangle("maincpp",330,220,w/2,h/2,"main.cpp")
+
+
+};
+
+var relations = [
+    addImplementation(classes.main.id,classes.Factory.id)
+];
+
+
+addToGraph(classes);
+addToGraph(relations);
+
+// These are the names of the cells for clicking on
+var activeCells=['maincpp'];
+var desktopMobileClickMode='cell:pointerclick';
+if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+ // some code..
+ desktopMobileClickMode='cell:pointerdown cell:pointerclick';
+}
+
+paper.on(desktopMobileClickMode , 
+    function(cellView, evt, x, y) 
+    { 
+
+    console.log('cell view ' + cellView.model.get('name') + ' was clicked');
+    // get the name
+    var name= cellView.model.get('name');
+    if( activeCells.indexOf(name) != -1)
+    {
+        $( function() 
+        {
+            $( "#"+name ).dialog({width : 'auto'});
+        } );
+    }
+    if( cellView.model.get('name')=='Texture')
+    {
+       $( function() 
+        {
+            $( "#TextureCPP" ).dialog({width : 'auto'});
+            $( "#TextureH" ).dialog({width : 'auto'});
+        } ); 
+    }
+    }
+);
+
+
+//use this code to hide code divs on load.
+//Shorthand for $( document ).ready()
+$(function() {
+    _.each(activeCells,function(name) {
+        $('#'+name).hide();
+    });
+});
+
+
+$("code").each(function (i, e) {
+    hljs.highlightBlock(e);
+    
+});
+
+</script>
+
+</body>
+
+</html>

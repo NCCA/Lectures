@@ -1,0 +1,6 @@
+<html>
+
+<body>
+<iframe width="800px" height="200px" src="https://godbolt.org/e#g:!((g:!((g:!((h:codeEditor,i:(j:1,lang:c%2B%2B,source:'%23include+%3Ciostream%3E%0A%0Atemplate%3Ctypename+T%3E%0Avoid+f(T+s)%0A%7B%0A++++std::cout+%3C%3C+s+%3C%3C+!'%5Cn!'%3B%0A%7D%0A%0Aint+main()%0A%7B%0A++++f%3Cdouble%3E(1)%3B+//+instantiates+and+calls+f%3Cdouble%3E(double)%0A++++f%3C%3E(!'a!')%3B+//+instantiates+and+calls+f%3Cchar%3E(char)%0A++++f(7)%3B+//+instantiates+and+calls+f%3Cint%3E(int)%0A++++void+(*ptr)(std::string)+%3D+f%3B+//+instantiates+f%3Cstring%3E(string)%0A%7D'),l:'5',n:'0',o:'C%2B%2B+source+%231',t:'0')),k:60.035419126328215,l:'4',n:'0',o:'',s:0,t:'0'),(g:!((h:compiler,i:(compiler:g63,filters:(b:'0',binary:'1',commentOnly:'0',demangle:'0',directives:'0',execute:'1',intel:'0',libraryCode:'1',trim:'0'),lang:c%2B%2B,libs:!((name:fmt,ver:trunk)),options:'-std%3Dc%2B%2B14',source:1),l:'5',n:'0',o:'x86-64+gcc+6.3+(Editor+%231,+Compiler+%231)+C%2B%2B',t:'0')),k:39.964580873671785,l:'4',n:'0',o:'',s:0,t:'0')),l:'2',n:'0',o:'',t:'0')),version:4"></iframe>
+</body>
+</html>
