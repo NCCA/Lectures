@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <script type="text/javascript" src="/jmacey/js/simcirjs/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/simcirjs/simcir.js"></script>
+    <link rel="stylesheet" type="text/css" href="/jmacey/js/simcirjs/simcir.css" />
+    <script type="text/javascript" src="/jmacey/js/simcirjs/simcir-basicset.js"></script>
+    <link rel="stylesheet" type="text/css" href="/jmacey/js/simcirjs/simcir-basicset.css" />
+    <script type="text/javascript" src="/jmacey/js/simcirjs/simcir-library.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div class="simcir">
+{
+  "width":800,
+  "height":400,
+  "showToolbox":false,
+  
+  "devices":[
+    {"type":"Toggle","id":"dev0","x":96,"y":168,"label":"Toggle A"},
+    {"type":"Toggle","id":"dev1","x":96,"y":232,"label":"Toggle B"},
+    {"type":"LED","id":"dev2","x":152,"y":128,"label":"A"},
+    {"type":"LED","id":"dev3","x":152,"y":272,"label":"B"},
+    {"type":"DC","id":"dev4","x":16,"y":168,"label":"Power"},
+    {"type":"AND","id":"dev5","x":240,"y":176,"label":"AND"},
+    {"type":"LED","id":"dev6","x":328,"y":176,"label":"Result"}
+  ],
+  "connectors":[
+    {"from":"dev0.in0","to":"dev4.out0"},
+    {"from":"dev1.in0","to":"dev4.out0"},
+    {"from":"dev2.in0","to":"dev0.out0"},
+    {"from":"dev3.in0","to":"dev1.out0"},
+    {"from":"dev5.in0","to":"dev0.out0"},
+    {"from":"dev5.in1","to":"dev1.out0"},
+    {"from":"dev6.in0","to":"dev5.out0"}
+  ]
+}    </div>
+  </body>
+</html>

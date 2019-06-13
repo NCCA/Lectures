@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <script type="text/javascript" src="/jmacey/js/simcirjs/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/simcirjs/simcir.js"></script>
+    <link rel="stylesheet" type="text/css" href="/jmacey/js/simcirjs/simcir.css" />
+    <script type="text/javascript" src="/jmacey/js/simcirjs/simcir-basicset.js"></script>
+    <link rel="stylesheet" type="text/css" href="/jmacey/js/simcirjs/simcir-basicset.css" />
+    <script type="text/javascript" src="/jmacey/js/simcirjs/simcir-library.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div class="simcir">
+{
+  "width":800,
+  "height":400,
+  "showToolbox":false,
+  
+  "devices":[
+    {"type":"NOT","id":"dev0","x":240,"y":152,"label":"NOT"},
+    {"type":"LED","id":"dev1","x":328,"y":152,"label":"LED"},
+    {"type":"Toggle","id":"dev2","x":152,"y":152,"label":"Toggle"},
+    {"type":"DC","id":"dev3","x":56,"y":152,"label":"DC"},
+    {"type":"LED","id":"dev4","x":200,"y":80,"label":"LED"}
+  ],
+  "connectors":[
+    {"from":"dev0.in0","to":"dev2.out0"},
+    {"from":"dev1.in0","to":"dev0.out0"},
+    {"from":"dev2.in0","to":"dev3.out0"},
+    {"from":"dev4.in0","to":"dev2.out0"}
+  ]
+}    </div>
+  </body>
+</html>

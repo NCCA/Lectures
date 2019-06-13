@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Hello World</title>
+    <script src="/jmacey/js/codemirror/codemirror.js"></script>
+    <link rel="stylesheet" href="/jmacey/js/codemirror/codemirror.css">
+    <script src="/jmacey/js/codemirror/mode/python/python.js"></script>
+    <link rel="stylesheet" href="/jmacey/js/codemirror/theme/monokai.css">
+
+    <style type="text/css">
+      .CodeMirror {border: 1px solid black; font-size:18px}
+    </style>
+</head>
+<body>
+
+
+
+<form>
+<p>    
+<!-- As we are using python indentation matters for the code --->
+<textarea id="helloWorld" cols="40" rows="4"  autofocus onfocus="addCodeMirror(this);">
+alert( 'Hello World!')
+</textarea><br/>
+<br/><button type="button" onclick=" eval(getCodeMirrorText('helloWorld'));">Run</button> 
+</p>
+</form>
+
+<script src="./pythonsetup.js"></script>
+
+
+</body>
+</html>
