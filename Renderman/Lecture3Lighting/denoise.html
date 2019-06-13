@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="/jmacey/js/imageSlider//foundation.css" rel="stylesheet" type="text/css" />
+  <link href="/jmacey/js/imageSlider/twentytwenty.css" rel="stylesheet" type="text/css" />
+    <script src="/jmacey/js/jquery/jquery.min.js"></script>
+    <script src="/jmacey/js/imageSlider/jquery.event.move.js"></script>
+    <script src="/jmacey/js/imageSlider/jquery.twentytwenty.js"></script>
+
+</head>
+<body>
+
+
+<div id="denoise" class='twentytwenty-container'>
+    <img src="images/before.png" />
+    <img src="images/after.png" />
+</div>
+
+    
+
+<script>
+$(window).load(function() {
+  $("#denoise").twentytwenty();
+});
+</script>
+</body>
+</html>
