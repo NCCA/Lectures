@@ -6,33 +6,33 @@
     <link rel="shortcut icon" href="/jmacey/favicon.ico" type="image/x-icon">
     <style type="text/css">
 
-.link { 
-    fill: none;
-    stroke: #666;
-    stroke-width: 1.5px;
-}
-circle {
-    fill: ivory;
-    stroke: #333;
-    stroke-width: 1.5px;
-}
-text {
-    position:relative;
-    text-baseline:middle;
-    text-anchor:middle;
-    font: 12px sans-serif;
-    /*pointer-events: none;*/
-}
-text a {
-  fill: navy;
-}
-text a:visited {
-  fill:darkpurple;
-}
-text a:hover, text a:active {
-  text-decoration: underline;
-  fill:darkred;
-}
+    .link { 
+        fill: none;
+        stroke: #666;
+        stroke-width: 1.5px;
+    }
+    circle {
+        fill: ivory;
+        stroke: #333;
+        stroke-width: 1.5px;
+    }
+    text {
+        position:relative;
+        text-baseline:middle;
+        text-anchor:middle;
+        font: 12px sans-serif;
+        /*pointer-events: none;*/
+    }
+    text a {
+      fill: navy;
+    }
+    text a:visited {
+      fill:darkpurple;
+    }
+    text a:hover, text a:active {
+      text-decoration: underline;
+      fill:darkred;
+    }
 </style>
 </head>
 
@@ -46,10 +46,6 @@ var w = window,
     width = w.innerWidth || e.clientWidth || g.clientWidth,
     height = w.innerHeight|| e.clientHeight|| g.clientHeight;
     height-=40;
-//var width = window.innerWidth, 
-//    height = window.innerHeight;
-
-
 
 
 var force = d3.layout.force()
@@ -96,6 +92,7 @@ window.addEventListener("resize", function(event)
 {
     width = w.innerWidth || e.clientWidth || g.clientWidth,
     height = w.innerHeight|| e.clientHeight|| g.clientHeight;        height-=40;
+    // TODO get this to resize everything
 /*
     svg.attr("width", width).attr("height", height);
     svg0.attr("width", width).attr("height", height);
@@ -124,33 +121,34 @@ svg0.append("text")
         .style("text-decoration", "bold")  
         .text("Drag nodes to re-arrange click text link to open lecture");
 
-function update(links) {
-    // Compute the distinct nodes from the links.
-    links.forEach(function (link) {
-        link.source = nodes[link.source];
-        link.target = nodes[link.target];
-    });
+function update(links) 
+{
+  // Compute the distinct nodes from the links.
+  links.forEach(function (link) 
+  {
+      link.source = nodes[link.source];
+      link.target = nodes[link.target];
+  });
 
 
-    force.nodes(nodes)
-        .links(links)
-        .start();
+  force.nodes(nodes)
+      .links(links)
+      .start();
 
-    // -------------------------------
 
-    // Compute the data join. This returns the update selection.
-    path = path.data(force.links());
+  // Compute the data join. This returns the update selection.
+  path = path.data(force.links());
 
-    // Remove any outgoing/old paths.
-    path.exit().remove();
+  // Remove any outgoing/old paths.
+  path.exit().remove();
 
-    // Compute new attributes for entering and updating paths.
-    path.enter().append("path")
-        .attr("class", "link")
-        .style("stroke", function (d) {
-            return d.colour;
-         })
-        .attr("marker-end", "url(#arrow)");
+  // Compute new attributes for entering and updating paths.
+  path.enter().append("path")
+      .attr("class", "link")
+      .style("stroke", function (d) 
+      {
+        return d.colour;
+      }).attr("marker-end", "url(#arrow)");
   
     // -------------------------------
 
@@ -165,17 +163,15 @@ function update(links) {
 
     // Compute new attributes for entering and updating circles.
     circle.attr("r", function(d){return d.r;})
-        .attr("is", function(d){return "node-"+d.name})
-        .style("fill",function(d){return d.colour})
-        .call(force.drag);
-
+          .attr("is", function(d){return "node-"+d.name})
+          .style("fill",function(d){return d.colour})
+          .call(force.drag);
 
     // Compute the data join. This returns the update selection.
     hypertext  = hypertext .data(force.nodes());
 
     // Add any incoming texts.
-    hypertext.enter().append("text")
-        .append("a")
+    hypertext.enter().append("text").append("a")
     //.attr("xlink:show", "new")
         .attr("target", "_blank");
 
@@ -198,22 +194,22 @@ function update(links) {
 // Use elliptical arc path segments to doubly-encode directionality.
 function tick() 
 {
-    circle.attr("transform", transform);
-    hypertext.attr("transform", transform);
-    path.attr("d", linkArc);
+  circle.attr("transform", transform);
+  hypertext.attr("transform", transform);
+  path.attr("d", linkArc);
 }
 
 function linkArc(d) 
 {
- var tx = Math.max(d.target.r, Math.min(width - d.target.r, d.target.x)) 
- var ty = 45+Math.max(d.target.r, Math.min((height-45) - d.target.r, d.target.y));
+  var tx = Math.max(d.target.r, Math.min(width - d.target.r, d.target.x)) 
+  var ty = 45+Math.max(d.target.r, Math.min((height-45) - d.target.r, d.target.y));
 
-var sx = Math.max(d.source.r, Math.min(width - d.source.r, d.source.x)); 
- var sy = 45+Math.max(d.source.r, Math.min((height-45) - d.source.r, d.source.y));
-var dx = tx - sx,
-dy = ty - sy;
-dr = Math.sqrt(dx * dx + dy * dy);
-return "M" + sx + "," + sy + "A" + dr + "," + dr + " 0 0,1 " + tx + "," + ty;
+  var sx = Math.max(d.source.r, Math.min(width - d.source.r, d.source.x)); 
+  var sy = 45+Math.max(d.source.r, Math.min((height-45) - d.source.r, d.source.y));
+  var dx = tx - sx,
+  dy = ty - sy;
+  dr = Math.sqrt(dx * dx + dy * dy);
+  return "M" + sx + "," + sy + "A" + dr + "," + dr + " 0 0,1 " + tx + "," + ty;
 }
 
 function transform(d) 
@@ -225,10 +221,9 @@ function transform(d)
 
 
 function getData() 
-{
-    return {
-"nodes":
-[
+{ // do this so I can have comments in it, it's basically json dictionary
+return {
+"nodes":[
 {"name":"Programming","URL": "None","id" : "Programming", "r" : 45, "colour" : "orange" , "offset" : 0}, // 0
 {"name":"Graphics","URL": "None","id" : "Graphics","r" : 45, "colour" : "yellow", "offset" : 0}, // 1
 {"name":"C++","URL": "None","id" : "C++", "r" : 35, "colour" : "lightblue", "offset" : 0}, //2
@@ -291,7 +286,6 @@ function getData()
 {"source" : 0,"target" : 30,"colour": "grey"}, // programming to sql
 {"source" : 4,"target" : 30,"colour": "grey"}, // programming to sql
 {"source" : 2,"target" : 30,"colour": "grey"}, // programming to sql
-
 {"source" : 0,"target" : 4,"colour": 1},
 {"source" : 0,"target" : 2,"colour": 3},
 {"source" : 0,"target" : 3,"colour": 1},
@@ -299,7 +293,7 @@ function getData()
 {"source" : 2,"target" : 8,"colour": 5}, // cpp to levels
 {"source" : 2,"target" : 9,"colour": 5}, // cpp to levels
 {"source" : 7,"target" : 26,"colour": 5}, // Basic C++
-
+{"source" : 22,"target" : 38,"colour": "cyan"}, // OpenGL to Lectures
 {"source" : 7,"target" : 10,"colour": "green"}, // Basic C++
 {"source" : 7,"target" : 11,"colour": "green"}, // Basic C++
 {"source" : 7,"target" : 12,"colour": "green"}, // Basic C++
@@ -313,43 +307,35 @@ function getData()
 {"source" : 8,"target" : 31,"colour": "purple"}, // Intermediate C++
 {"source" : 8,"target" : 48,"colour": "purple"}, // Intermediate C++
 {"source" : 47,"target" : 48,"colour": "purple"}, // Intermediate C++
-
 {"source" : 14,"target" : 49,"colour": "red"}, // SOLID
 {"source" : 15,"target" : 49,"colour": "red"}, // SOLID
 {"source" : 20,"target" : 49,"colour": "red"}, // SOLID
 {"source" : 49,"target" : 13,"colour": "green"}, // SOLID
 {"source" : 49,"target" : 44,"colour": "green"}, // SOLID
-
-
 {"source" : 9,"target" : 17,"colour": "red"}, // Advanced C++
 {"source" : 9,"target" : 18,"colour": "red"}, // Advanced C++
 {"source" : 9,"target" : 19,"colour": "red"}, // Advanced C++
 {"source" : 9,"target" : 20,"colour": "red"}, // Advanced C++
 {"source" : 9,"target" : 47,"colour": "red"}, // Advanced C++
 {"source" : 16,"target" : 47,"colour": "red"}, // Advanced C++
-
 {"source" : 3,"target" : 12,"colour": "green"}, //  C
 {"source" : 3,"target" : 18,"colour": "green"}, //  C
 {"source" : 3,"target" : 27,"colour": "green"}, //  C
 {"source" : 3,"target" : 28,"colour": "green"}, //  C
 {"source" : 3,"target" : 29,"colour": "green"}, //  C
 {"source" : 29,"target" : 12,"colour": "green"}, //  C
-
 {"source" : 4,"target" : 5,"value": 2},
 {"source" : 4,"target" : 6,"value": 2},
 {"source" : 4,"target" : 11,"value": 2},
-
 {"source" : 1,"target" : 21,"value": 10}, // graphics to OpenGL
 {"source" : 1,"target" : 22,"value": 10}, // graphics to Renderman
 {"source" : 4,"target" : 22,"value": 10}, // graphics to Renderman
-
 {"source" : 22,"target" : 23,"colour": "cyan"}, // Renderman to Lectures
 {"source" : 22,"target" : 24,"colour": "cyan"}, // Renderman to Lectures
 {"source" : 22,"target" : 25,"colour": "cyan"}, // Renderman to Lectures
 {"source" : 4,"target" : 23,"colour": "cyan"}, // Renderman to Lectures
 {"source" : 4,"target" : 24,"colour": "cyan"}, // Renderman to Lectures
 {"source" : 4,"target" : 25,"colour": "cyan"}, // Renderman to Lectures
-
 {"source" : 21,"target" : 32,"value": 20}, // OpenGL to Lectures
 {"source" : 21,"target" : 33,"value": 20}, // OpenGL to Lectures
 {"source" : 21,"target" : 34,"value": 20}, // OpenGL to Lectures
@@ -359,7 +345,6 @@ function getData()
 {"source" : 21,"target" : 38,"value": 20}, // OpenGL to Lectures
 {"source" : 21,"target" : 39,"value": 20}, // OpenGL to Lectures
 {"source" : 21,"target" : 40,"value": 20}, // OpenGL to Lectures
-
 {"source" : 2,"target" : 32,"colour": "blue"}, // OpenGL to Lectures
 {"source" : 2,"target" : 33,"colour": "blue"}, // OpenGL to Lectures
 {"source" : 2,"target" : 34,"colour": "blue"}, // OpenGL to Lectures
@@ -369,8 +354,8 @@ function getData()
 {"source" : 2,"target" : 38,"colour": "blue"}, // OpenGL to Lectures
 {"source" : 2,"target" : 39,"colour": "blue"}, // OpenGL to Lectures
 {"source" : 2,"target" : 40,"colour": "blue"}, // OpenGL to Lectures
-
-
+{"source" : 12,"target" : 34,"colour": "blue"}, // OpenGL to Lectures
+{"source" : 29,"target" : 34,"colour": "blue"}, // OpenGL to Lectures
 {"source" : 3,"target" : 32,"colour": "blue"}, // OpenGL to Lectures
 {"source" : 3,"target" : 33,"colour": "blue"}, // OpenGL to Lectures
 {"source" : 3,"target" : 34,"colour": "blue"}, // OpenGL to Lectures
