@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="/jmacey/js/joint.js/joint.min.css" />
+    <link rel="stylesheet" type="text/css" href="/jmacey/js/jquery-ui/jquery-ui.min.css" />
+    <script type="text/javascript" src="/jmacey/js/joint.js/lodash.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/joint.js/backbone-min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/jquery-ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/joint.js/joint.min.js"></script>
+    <script type="text/javascript" src="/jmacey/js/joint.js/UMLFunctions.js"></script>
+    <script type="text/javascript" src="/jmacey/js/reveal.js/plugin/highlight/highlight.js"></script>
+    <link rel="stylesheet" href="/jmacey//js/reveal.js/lib/css/zenburn.css">
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    
+
+<title></title>
+</head>
+
+<body>
+<div class="example" >
+	  <div id="paper" class="paper"></div>
+</div><!--end example-->
+
+<!--  get rid of the remove from the links -->
+<style>
+.link-tools .tool-remove { display: none }
+.popup_msg
+{
+position:absolute;
+z-index:10;
+width:172px;
+height:102px;
+text-align:center;
+color:'black';
+display:none;
+}
+html, body {
+     -webkit-backface-visibility: visible;
+}
+</style>
+
+<div id="popuup_div" class="popup_msg">
+Click for source
+</div>
+
+<div id="World" title="World.h">
+<pre><code class="c++"  >
+#include "Mesh.h"
+#include &lt;vector&gt;
+#include &lt;memory&gt;
+
+class World
+{
+    private :
+        std::vector&lt;std::unique_ptr &lt;Mesh&gt;&gt; m_meshes;
+};
+</code></pre>
+
+</div>
+
+<div id="Mesh" title="Mesh.h">
+<pre><code class="c++"  >
+#include &lt;vector&gt;
+#include &lt;ngl/Vec3.h&gt;
+class Mesh
+{
+    private :
+        std::vector &lt;ngl::Vec3&gt; m_verts;
+};
+</code></pre>
+
+</div>
+
+<script>
+
+// init the UML drawing using paper as the div
+initUML('#paper',800,200, 'false');
+var w=200;
+var h=100;
+var classes = {
+
+   
+    text6 :  addText(290,50,'0..1',20),
+    text7 :  addText(510,50,'1..*',20),
+
+    Car : createClass('World',50,40,w,h,[],[]),
+    Engine : createClass('Mesh',540,40,w,h,[],[]),
+
+
+};
+
+var relations = [
+    addAggregation(classes.Engine.id,classes.Car.id)
+
+
+];
+
+
+addToGraph(classes);
+addToGraph(relations);
+
+
+paper.on('cell:pointerclick cell:pointerdown', 
+    function(cellView, evt, x, y) 
+    { 
+    //console.log('cell view ' + cellView.model.get('name') + ' was clicked');
+    // get the name
+    var name= cellView.model.get('name');
+    if( name == 'World')
+    {
+        $( function() 
+        {
+            $( "#World" ).dialog({width : 'auto'});
+        } );
+    }
+    if( name == 'Mesh')
+    {
+        $( function() 
+        {
+            $( "#Mesh" ).dialog({width : 'auto'});
+        } );
+    }
+  
+  }
+);
+
+/*
+paper.on('cell:mouseover', function(evt, x, y) { 
+    var name= evt.model.get('name');
+    if( name == 'Car' || name =='Engine')
+    {
+        //getting height and width of the message box
+        var height = $('#popuup_div').height();
+        var width = $('#popuup_div').width();
+        //calculating offset for displaying popup message
+        leftVal=x;
+        topVal=y;
+        //show the popup message and hide with fading effect
+        $('#popuup_div').css({left:leftVal,top:topVal}).show().fadeOut(500);
+    }
+
+})
+
+*/
+// use this code to hide code divs on load.
+// Shorthand for $( document ).ready()
+$(function() {
+    $('#World').hide();
+    $('#Mesh').hide();
+
+});
+
+
+
+</script>
+
+</body>
+
+</html>
