@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>The interconnectedness of Jon's Lectures</title>
+    <script src="/jmacey/js/d3/d3.v2.min"></script>
+
+    <style type="text/css">
+
+.link { 
+    fill: none;
+    stroke: #666;
+    stroke-width: 1.5px;
+}
+circle {
+    fill: orange;
+    stroke: #333;
+    stroke-width: 1.5px;
+}
+text {
+    text-baseline:middle;
+    text-anchor:middle;
+    font: 10px sans-serif;
+    /*pointer-events: none;*/
+    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+}
+text a {
+  fill: navy;
+}
+text a:visited {
+  fill:darkpurple;
+}
+text a:hover, text a:active {
+  text-decoration: underline;
+  fill:darkred;
+}
+    </style>
+  </head>
+  <body>
+
+<H1> The interconnectedness of Jon's Lectures </H1>
+
+<P> click on nodes to see lecture notes </p>
+
+<script>
+
+var width = 1200,
+    height = 500;
+
+var force = d3.layout.force()
+    .size([width, height])
+    .linkDistance(100)
+    .charge(-300)
+    .gravity(0.2)
+    .on("tick", tick);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .style("border", "1px solid black");
+
+var view = svg.append("view")
+    .attr("id", "view")
+    .attr("viewBox", "500 500 1000 1000");
+
+var path = svg.append("g").selectAll("path"),
+    circle = svg.append("g").selectAll("circle"),
+    hypertext = svg.append("g").selectAll("text");
+
+var marker = svg.append("defs").append("marker")
+        .attr("id", "arrow")
+        .attr("viewBox", "0 -5 10 10")
+        .attr("refX", 15)
+        .attr("refY", -1.5)
+        .attr("markerWidth", 6)
+        .attr("markerHeight", 6)
+        .attr("orient", "auto")
+     .append("path") 
+        .attr("d", "M0,-5L10,0L0,5"); 
+
+var data = getData();
+var nodes = data.nodes;
+var links = data.links;
+
+
+
+
+
+update(links);
+
+
+
+function update(links) {
+    // Compute the distinct nodes from the links.
+    links.forEach(function (link) {
+        link.source = nodes[link.source];
+        link.target = nodes[link.target];
+    });
+
+
+    force.nodes(nodes)
+        .links(links)
+        .start();
+
+    // -------------------------------
+
+    // Compute the data join. This returns the update selection.
+    path = path.data(force.links());
+
+    // Remove any outgoing/old paths.
+    path.exit().remove();
+
+    // Compute new attributes for entering and updating paths.
+    path.enter().append("path")
+        .attr("class", "link")
+        .style("stroke", function (d) {
+            return d3.rgb(5*d.value, 200+d.value, 127-2*d.value);
+         })
+        .attr("marker-end", "url(#arrow)");
+  
+    // -------------------------------
+
+    // Compute the data join. This returns the update selection.
+    circle = circle.data(force.nodes());
+
+    // Add any incoming circles.
+    circle.enter().append("circle");
+
+    // Remove any outgoing/old circles.
+    circle.exit().remove();
+
+    // Compute new attributes for entering and updating circles.
+    circle.attr("r", function(d){return d.r;})
+        .attr("is", function(d){return "node-"+d.name})
+        .call(force.drag);
+
+
+    // Compute the data join. This returns the update selection.
+    hypertext  = hypertext .data(force.nodes());
+
+    // Add any incoming texts.
+    hypertext.enter().append("text")
+        .append("a")
+    //.attr("xlink:show", "new")
+        .attr("target", "_blank");
+
+    // Remove any outgoing/old texts.
+    hypertext.exit().remove();
+
+    // Compute new attributes for entering and updating texts.
+    hypertext.attr("x", 8)
+        .attr("y", ".31em")
+    .select("a")    
+    .attr("xlink:href", function (d) {
+      console.log(d.URL);
+      if (d.URL !="None")
+        return   d.URL;
+    })
+    .text(function (d) {
+        return d.name;
+    });
+}
+
+// Use elliptical arc path segments to doubly-encode directionality.
+function tick() {
+    path.attr("d", linkArc);
+    circle.attr("transform", transform);
+    hypertext.attr("transform", transform);
+}
+
+function linkArc(d) {
+    var dx = d.target.x - d.source.x,
+        dy = d.target.y - d.source.y,
+        dr = Math.sqrt(dx * dx + dy * dy);
+    return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+}
+
+function transform(d) {
+    return "translate(" + d.x + "," + d.y + ")";
+}
+
+
+function getData() {
+    return {
+      "nodes":[
+{"name":"Programming","URL": "None","id" : "Programming", "r" : 40}, // 0
+{"name":"Graphics","URL": "None","id" : "Graphics","r" : 40}, // 1
+{"name":"C++","URL": "None","id" : "C++", "r" : 25}, //2
+{"name":"C","URL": "None", "id" : "C", "r" : 25}, //3
+{"name":"Python","URL" : "None", "id" : "Python", "r" : 25}, //4 
+{"name":"Python Introduction","URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/Python/", "r" : 12}, // 5
+{"name":"Maya Python","URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/MayaAPI/python/", "r" : 12}, // 6
+{"name" : "Basic" , "URL" : "None" , "id" : "Basic C++", "r" : 18}, // 7
+{"name" : "Intermediate" , "URL" : "None" , "id" : "Intermediate C++", "r" : 18}, // 8
+{"name" : "Advanced" , "URL" : "None" , "id"  : "Advanced C++", "r" : 18}, // 9
+{"name" : "Intro to C++" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/ASE/BasicCPP/?home=/jmacey/ASE#/" , "id"  : "C++", "r" : 12}, // 10
+{"name" : "Test Driven Development" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/ASE/testing/?home=/jmacey/ASE#/" , "id"  : "C++", "r" : 12}, // 11
+{"name" : "Memory and Pointers" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/ASE/MemoryAndPointers/?home=/jmacey/ASE" , "id"  : "C++", "r" : 12}, // 12
+{"name" : "Classes" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/ASE/Classes/?home=/jmacey/ASE" , "id"  : "C++", "r" : 12}, // 13
+{"name" : "Creational Design Patterns" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/DesignPatterns/lecture1/?home=/jmacey/ASE" , "id"  : "C++", "r" : 12}, // 14
+{"name" : "Structural Design Patterns" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/DesignPatterns/lecture2/?home=/jmacey/ASE" , "id"  : "C++", "r" : 12}, // 15
+{"name" : "Operator Overloading" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/ASE/OperatorOverload/?home=/jmacey/ASE#/" , "id"  : "C++", "r" : 12}, // 16
+{"name" : "Multicore and GPU programming" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/MulticoreIntro/slides.html?home=/jmacey/AProg" , "id"  : "C++", "r" : 12}, // 17
+{"name" : "Threading" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/threads/slides.html?home=/jmacey/AProg" , "id"  : "C++", "r" : 12}, // 18
+{"name" : "SIMD" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/SIMD/slides.html?home=/jmacey/AProg" , "id"  : "C++", "r" : 12}, // 19
+
+{"name" : "Data Oriented Design" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/DOD/slides.html?home=/jmacey/AProg" , "id"  : "C++", "r" : 12}, // 20
+{"name" : "OpenGL" , "URL" : "None" , "id"  : "Graphics", "r" : 12}, // 21
+{"name" : "Renderman" , "URL" : "None" , "id"  : "Graphics", "r" : 12}, // 22
+{"name" : "Intro To Renderman" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/Renderman/Lecture1Introduction/" , "id"  : "Graphics", "r" : 12}, // 23
+{"name" : "Geometry" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/Renderman/Lecture2Geometry/" , "id"  : "Graphics", "r" : 12}, // 24
+{"name" : "Geometry" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/Renderman/Lecture3Lighting/" , "id"  : "Graphics", "r" : 12}, // 25
+{"name" : "What is Programming" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/PPP/WhatIsProgramming/" , "id"  : "Graphics", "r" : 12}, // 26
+{"name" : "Structured Programming" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/PPP/StructuredProgramming/" , "id"  : "Graphics", "r" : 12}, // 27
+{"name" : "Selection Structures" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/PPP/Selection/" , "id"  : "Graphics", "r" : 12}, // 28
+{"name" : "Memory and Pointers" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/PPP/MemoryAndPointers/" , "id"  : "Graphics", "r" : 12}, // 29
+{"name" : "SQL" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/sql/" , "id"  : "Graphics", "r" : 12}, // 30
+
+{"name" : "Introduction to Qt" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/ASE/IntroToQt/?home=/jmacey/ASE" , "id"  : "Graphics", "r" : 12}, // 31
+
+{"name" : "Modern OpenGL" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/ModernOpenGL/?home=/jmacey/ASE" , "id"  : "Graphics", "r" : 12}, // 32
+{"name" : "OpenGL Context Creation" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/ContextCreation/?home=/jmacey/ASE" , "id"  : "Graphics", "r" : 12}, // 33
+{"name" : "Buffer Objects" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/Buffers/?home=/jmacey/ASE" , "id"  : "Graphics", "r" : 12}, // 34
+{"name" : "GLSL API" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/GLSLAPI/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12}, // 35
+{"name" : "GLSL" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/GLSL/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12}, // 36
+{"name" : "Transformations" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/transforms/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12}, // 37
+{"name" : "Shading Models" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/shaders/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12}, // 38
+{"name" : "Texturing" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/textures/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12}, // 39
+{"name" : "Advanced GL" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/advanced/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12}, // 40
+
+{"name" : "Maya API Commands" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/MayaAPI/Commands/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12}, // 41
+{"name" : "Maya API Nodes" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/MayaAPI/Nodes/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12}, // 42
+{"name" : "Computation, Iterators and Exporters" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/MayaAPI/Exporters/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12}, // 43
+
+],
+
+
+
+
+    "links":[
+    {"source" : 0,"target" : 4,"value": 1}, // programming to python
+    {"source" : 0,"target" : 3,"value": 26}, // programming to python
+    {"source" : 0,"target" : 30,"value": 99}, // programming to sql
+    {"source" : 4,"target" : 30,"value": 99}, // programming to sql
+    {"source" : 2,"target" : 30,"value": 99}, // programming to sql
+
+    {"source" : 0,"target" : 4,"value": 1},
+    {"source" : 0,"target" : 2,"value": 3},
+    {"source" : 0,"target" : 3,"value": 1},
+    {"source" : 2,"target" : 7,"value": 5}, // cpp to levels
+    {"source" : 2,"target" : 8,"value": 5}, // cpp to levels
+    {"source" : 2,"target" : 9,"value": 5}, // cpp to levels
+    {"source" : 7,"target" : 26,"value": 5}, // Basic C++
+
+    {"source" : 7,"target" : 10,"value": 5}, // Basic C++
+    {"source" : 7,"target" : 11,"value": 5}, // Basic C++
+    {"source" : 7,"target" : 12,"value": 5}, // Basic C++
+    {"source" : 8,"target" : 13,"value": 5}, // Intermediate C++
+    {"source" : 8,"target" : 14,"value": 5}, // Intermediate C++
+    {"source" : 8,"target" : 15,"value": 5}, // Intermediate C++
+    {"source" : 8,"target" : 16,"value": 5}, // Intermediate C++
+    {"source" : 8,"target" : 31,"value": 5}, // Intermediate C++
+    {"source" : 9,"target" : 17,"value": 5}, // Advanced C++
+    {"source" : 9,"target" : 18,"value": 5}, // Advanced C++
+    {"source" : 9,"target" : 19,"value": 5}, // Advanced C++
+    {"source" : 9,"target" : 20,"value": 5}, // Advanced C++
+
+    {"source" : 3,"target" : 12,"value": 5}, //  C
+    {"source" : 3,"target" : 18,"value": 5}, //  C
+    {"source" : 3,"target" : 27,"value": 5}, //  C
+    {"source" : 3,"target" : 28,"value": 5}, //  C
+    {"source" : 3,"target" : 29,"value": 5}, //  C
+    {"source" : 29,"target" : 12,"value": 5}, //  C
+    
+    {"source" : 4,"target" : 5,"value": 2},
+    {"source" : 4,"target" : 6,"value": 2},
+    {"source" : 4,"target" : 11,"value": 2},
+
+    {"source" : 1,"target" : 21,"value": 10}, // graphics to OpenGL
+    {"source" : 1,"target" : 22,"value": 10}, // graphics to Renderman
+    {"source" : 4,"target" : 22,"value": 10}, // graphics to Renderman
+
+    {"source" : 22,"target" : 23,"value": 20}, // Renderman to Lectures
+    {"source" : 22,"target" : 24,"value": 20}, // Renderman to Lectures
+    {"source" : 22,"target" : 25,"value": 20}, // Renderman to Lectures
+    {"source" : 4,"target" : 23,"value": 20}, // Renderman to Lectures
+    {"source" : 4,"target" : 24,"value": 20}, // Renderman to Lectures
+    {"source" : 4,"target" : 25,"value": 20}, // Renderman to Lectures
+    
+    {"source" : 21,"target" : 32,"value": 20}, // OpenGL to Lectures
+    {"source" : 21,"target" : 33,"value": 20}, // OpenGL to Lectures
+    {"source" : 21,"target" : 34,"value": 20}, // OpenGL to Lectures
+    {"source" : 21,"target" : 35,"value": 20}, // OpenGL to Lectures
+    {"source" : 21,"target" : 36,"value": 20}, // OpenGL to Lectures
+    {"source" : 21,"target" : 37,"value": 20}, // OpenGL to Lectures
+    {"source" : 21,"target" : 38,"value": 20}, // OpenGL to Lectures
+    {"source" : 21,"target" : 39,"value": 20}, // OpenGL to Lectures
+    {"source" : 21,"target" : 40,"value": 20}, // OpenGL to Lectures
+
+    {"source" : 2,"target" : 32,"value": 20}, // OpenGL to Lectures
+    {"source" : 2,"target" : 33,"value": 20}, // OpenGL to Lectures
+    {"source" : 2,"target" : 34,"value": 20}, // OpenGL to Lectures
+    {"source" : 2,"target" : 35,"value": 20}, // OpenGL to Lectures
+    {"source" : 2,"target" : 36,"value": 20}, // OpenGL to Lectures
+    {"source" : 2,"target" : 37,"value": 20}, // OpenGL to Lectures
+    {"source" : 2,"target" : 38,"value": 20}, // OpenGL to Lectures
+    {"source" : 2,"target" : 39,"value": 20}, // OpenGL to Lectures
+    {"source" : 2,"target" : 40,"value": 20}, // OpenGL to Lectures
+
+
+    {"source" : 3,"target" : 32,"value": 20}, // OpenGL to Lectures
+    {"source" : 3,"target" : 33,"value": 20}, // OpenGL to Lectures
+    {"source" : 3,"target" : 34,"value": 20}, // OpenGL to Lectures
+    {"source" : 3,"target" : 35,"value": 20}, // OpenGL to Lectures
+    {"source" : 3,"target" : 36,"value": 20}, // OpenGL to Lectures
+    {"source" : 3,"target" : 37,"value": 20}, // OpenGL to Lectures
+    {"source" : 3,"target" : 38,"value": 20}, // OpenGL to Lectures
+    {"source" : 3,"target" : 39,"value": 20}, // OpenGL to Lectures
+    {"source" : 3,"target" : 40,"value": 20}, // OpenGL to Lectures
+    {"source" : 36,"target" : 22,"value": 20}, // OpenGL to Lectures
+
+
+    {"source" : 1,"target" : 41,"value": 20}, // OpenGL to Lectures
+    {"source" : 9,"target" : 41,"value": 20}, // OpenGL to Lectures
+    {"source" : 1,"target" : 42,"value": 20}, // OpenGL to Lectures
+    {"source" : 9,"target" : 42,"value": 20}, // OpenGL to Lectures
+    {"source" : 1,"target" : 43,"value": 20}, // OpenGL to Lectures
+    {"source" : 9,"target" : 43,"value": 20}, // OpenGL to Lectures
+
+
+    ]
+    
+    };
+}
+
+</script>
+
+  </body>
+</html>
