@@ -12,16 +12,16 @@
     stroke-width: 1.5px;
 }
 circle {
-    fill: white;
+    fill: ivory;
     stroke: #333;
     stroke-width: 1.5px;
 }
 text {
+    position:relative;
     text-baseline:middle;
     text-anchor:middle;
-    font: 10px sans-serif;
+    font: 12px sans-serif;
     /*pointer-events: none;*/
-    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
 }
 text a {
   fill: navy;
@@ -145,8 +145,8 @@ function update(links) {
     hypertext.exit().remove();
 
     // Compute new attributes for entering and updating texts.
-    hypertext.attr("x", 8)
-        .attr("y", ".31em")
+    hypertext.attr("x", 1)
+    .attr("y", function(d){return d.offset})
     .select("a")    
     .attr("xlink:href", function (d) {
       if (d.URL !="None")
@@ -179,60 +179,60 @@ function transform(d) {
 function getData() {
     return {
       "nodes":[
-{"name":"Programming","URL": "None","id" : "Programming", "r" : 45, "colour" : "orange"}, // 0
-{"name":"Graphics","URL": "None","id" : "Graphics","r" : 45, "colour" : "yellow"}, // 1
-{"name":"C++","URL": "None","id" : "C++", "r" : 35, "colour" : "lightblue"}, //2
-{"name":"C","URL": "None", "id" : "C", "r" : 35 , "colour" : "lightblue"}, //3
-{"name":"Python","URL" : "None", "id" : "Python", "r" : 35,"colour" : "lightgreen"}, //4 
-{"name":"Python Introduction","URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/Python/", "r" : 12 , }, // 5
-{"name":"Maya Python","URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/MayaAPI/python/", "r" : 12}, // 6
-{"name" : "Basic" , "URL" : "None" , "id" : "Basic C++", "r" : 25 , "colour" : "green"}, // 7
-{"name" : "Intermediate" , "URL" : "None" , "id" : "Intermediate C++", "r" : 25 , "colour" : "purple"}, // 8
-{"name" : "Advanced" , "URL" : "None" , "id"  : "Advanced C++", "r" : 25 , "colour" : "red"}, // 9
-{"name" : "Intro to C++" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/ASE/BasicCPP/?home=/jmacey/ASE#/" , "id"  : "C++", "r" : 12}, // 10
-{"name" : "Test Driven Development" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/ASE/testing/?home=/jmacey/ASE#/" , "id"  : "C++", "r" : 12}, // 11
-{"name" : "Memory and Pointers" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/ASE/MemoryAndPointers/?home=/jmacey/ASE" , "id"  : "C++", "r" : 12}, // 12
-{"name" : "Classes" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/ASE/Classes/?home=/jmacey/ASE" , "id"  : "C++", "r" : 12}, // 13
-{"name" : "Creational Design Patterns" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/DesignPatterns/lecture1/?home=/jmacey/ASE" , "id"  : "C++", "r" : 12}, // 14
-{"name" : "Structural Design Patterns" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/DesignPatterns/lecture2/?home=/jmacey/ASE" , "id"  : "C++", "r" : 12}, // 15
-{"name" : "Operator Overloading" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/ASE/OperatorOverload/?home=/jmacey/ASE#/" , "id"  : "C++", "r" : 12}, // 16
-{"name" : "Multicore and GPU programming" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/MulticoreIntro/?home=/jmacey/AProg" , "id"  : "C++", "r" : 12}, // 17
-{"name" : "Threading" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/threads/?home=/jmacey/AProg" , "id"  : "C++", "r" : 12}, // 18
-{"name" : "SIMD" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/SIMD/?home=/jmacey/AProg" , "id"  : "C++", "r" : 12}, // 19
+{"name":"Programming","URL": "None","id" : "Programming", "r" : 45, "colour" : "orange" , "offset" : 0}, // 0
+{"name":"Graphics","URL": "None","id" : "Graphics","r" : 45, "colour" : "yellow", "offset" : 0}, // 1
+{"name":"C++","URL": "None","id" : "C++", "r" : 35, "colour" : "lightblue", "offset" : 0}, //2
+{"name":"C","URL": "None", "id" : "C", "r" : 35 , "colour" : "lightblue", "offset" : 0}, //3
+{"name":"Python","URL" : "None", "id" : "Python", "r" : 35,"colour" : "lightgreen", "offset" : 0}, //4 
+{"name":"Python Introduction","URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/Python/", "r" : 12 , "offset" : -14 }, // 5
+{"name":"Maya Python","URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/MayaAPI/python/", "r" : 12, "offset" : -14}, // 6
+{"name" : "Basic" , "URL" : "None" , "id" : "Basic C++", "r" : 25 , "colour" : "green", "offset" : 0}, // 7
+{"name" : "Intermediate" , "URL" : "None" , "id" : "Intermediate C++", "r" : 25 , "colour" : "mediumvioletred", "offset" : 0}, // 8
+{"name" : "Advanced" , "URL" : "None" , "id"  : "Advanced C++", "r" : 25 , "colour" : "red", "offset" : 0}, // 9
+{"name" : "Intro to C++" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/ASE/BasicCPP/?home=/jmacey/ASE#/" , "id"  : "C++", "r" : 12, "offset" : -14}, // 10
+{"name" : "Test Driven Development" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/ASE/testing/?home=/jmacey/ASE#/" , "id"  : "C++", "r" : 12, "offset" : -14}, // 11
+{"name" : "Memory and Pointers" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/ASE/MemoryAndPointers/?home=/jmacey/ASE" , "id"  : "C++", "r" : 12, "offset" : -14}, // 12
+{"name" : "Classes" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/ASE/Classes/?home=/jmacey/ASE" , "id"  : "C++", "r" : 12, "offset" : -14}, // 13
+{"name" : "Creational Design Patterns" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/DesignPatterns/lecture1/?home=/jmacey/ASE" , "id"  : "C++", "r" : 12, "offset" : -14}, // 14
+{"name" : "Structural Design Patterns" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/DesignPatterns/lecture2/?home=/jmacey/ASE" , "id"  : "C++", "r" : 12, "offset" : -14}, // 15
+{"name" : "Operator Overloading" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/ASE/OperatorOverload/?home=/jmacey/ASE#/" , "id"  : "C++", "r" : 12, "offset" : -14}, // 16
+{"name" : "Multicore and GPU programming" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/MulticoreIntro/?home=/jmacey/AProg" , "id"  : "C++", "r" : 12, "offset" : -14}, // 17
+{"name" : "Threading" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/threads/?home=/jmacey/AProg" , "id"  : "C++", "r" : 12, "offset" : -14}, // 18
+{"name" : "SIMD" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/SIMD/?home=/jmacey/AProg" , "id"  : "C++", "r" : 12, "offset" : -14}, // 19
 
-{"name" : "Data Oriented Design" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/DOD/?home=/jmacey/AProg" , "id"  : "C++", "r" : 12}, // 20
-{"name" : "OpenGL" , "URL" : "None" , "id"  : "Graphics", "r" : 25, "colour" : "blue"}, // 21
-{"name" : "Renderman" , "URL" : "None" , "id"  : "Graphics", "r" : 25 , "colour" : "cyan"}, // 22
-{"name" : "Intro To Renderman" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/Renderman/Lecture1Introduction/" , "id"  : "Graphics", "r" : 12}, // 23
-{"name" : "Geometry" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/Renderman/Lecture2Geometry/" , "id"  : "Graphics", "r" : 12}, // 24
-{"name" : "Lighting" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/Renderman/Lecture3Lighting/" , "id"  : "Graphics", "r" : 12}, // 25
-{"name" : "What is Programming" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/PPP/WhatIsProgramming/" , "id"  : "Graphics", "r" : 12}, // 26
-{"name" : "Structured Programming" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/PPP/StructuredProgramming/" , "id"  : "Graphics", "r" : 12}, // 27
-{"name" : "Selection Structures" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/PPP/Selection/" , "id"  : "Graphics", "r" : 12}, // 28
-{"name" : "Memory and Pointers" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/PPP/MemoryAndPointers/" , "id"  : "Graphics", "r" : 12}, // 29
-{"name" : "SQL" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/sql/" , "id"  : "Graphics", "r" : 12}, // 30
+{"name" : "Data Oriented Design" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/DOD/?home=/jmacey/AProg" , "id"  : "C++", "r" : 12, "offset" : -14}, // 20
+{"name" : "OpenGL" , "URL" : "None" , "id"  : "Graphics", "r" : 25, "colour" : "dodgerblue", "offset" : 0}, // 21
+{"name" : "Renderman" , "URL" : "None" , "id"  : "Graphics", "r" : 25 , "colour" : "cyan", "offset" : 0}, // 22
+{"name" : "Intro To Renderman" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/Renderman/Lecture1Introduction/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 23
+{"name" : "Geometry" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/Renderman/Lecture2Geometry/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 24
+{"name" : "Lighting" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/Renderman/Lecture3Lighting/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 25
+{"name" : "What is Programming" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/PPP/WhatIsProgramming/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 26
+{"name" : "Structured Programming" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/PPP/StructuredProgramming/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 27
+{"name" : "Selection Structures" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/PPP/Selection/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 28
+{"name" : "Memory and Pointers" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/PPP/MemoryAndPointers/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 29
+{"name" : "SQL" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/sql/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 30
 
-{"name" : "Introduction to Qt" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/ASE/IntroToQt/?home=/jmacey/ASE" , "id"  : "Graphics", "r" : 12}, // 31
+{"name" : "Introduction to Qt" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/ASE/IntroToQt/?home=/jmacey/ASE" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 31
 
-{"name" : "Modern OpenGL" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/ModernOpenGL/?home=/jmacey/ASE" , "id"  : "Graphics", "r" : 12}, // 32
-{"name" : "OpenGL Context Creation" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/ContextCreation/?home=/jmacey/ASE" , "id"  : "Graphics", "r" : 12}, // 33
-{"name" : "Buffer Objects" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/Buffers/?home=/jmacey/ASE" , "id"  : "Graphics", "r" : 12}, // 34
-{"name" : "GLSL API" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/GLSLAPI/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12}, // 35
-{"name" : "GLSL" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/GLSL/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12}, // 36
-{"name" : "Transformations" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/transforms/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12}, // 37
-{"name" : "Shading Models" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/shaders/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12}, // 38
-{"name" : "Texturing" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/textures/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12}, // 39
-{"name" : "Advanced GL" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/advanced/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12}, // 40
+{"name" : "Modern OpenGL" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/ModernOpenGL/?home=/jmacey/ASE" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 32
+{"name" : "OpenGL Context Creation" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/ContextCreation/?home=/jmacey/ASE" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 33
+{"name" : "Buffer Objects" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/Buffers/?home=/jmacey/ASE" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 34
+{"name" : "GLSL API" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/GLSLAPI/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 35
+{"name" : "GLSL" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/GLSL/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 36
+{"name" : "Transformations" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/transforms/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 37
+{"name" : "Shading Models" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/shaders/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 38
+{"name" : "Texturing" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/textures/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 39
+{"name" : "Advanced GL" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/OpenGL/advanced/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 40
 
-{"name" : "Maya API Commands" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/MayaAPI/Commands/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12}, // 41
-{"name" : "Maya API Nodes" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/MayaAPI/Nodes/?home=/jmacey/MayaAPI#/" , "id"  : "Graphics", "r" : 12}, // 42
-{"name" : "Computation, Iterators and Exporters" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/MayaAPI/Exporters/?home=/jmacey/MayaAPI#/" , "id"  : "Graphics", "r" : 12}, // 43
-{"name" : "Classes" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/PPP/Classes/?home=/jmacey/PPP#/" , "id"  : "Graphics", "r" : 12}, // 44
-{"name" : "Object Lifetimes" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/PPP/Lifetimes/?home=/jmacey/PPP#/" , "id"  : "Graphics", "r" : 12}, // 45
+{"name" : "Maya API Commands" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/MayaAPI/Commands/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 41
+{"name" : "Maya API Nodes" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/MayaAPI/Nodes/?home=/jmacey/MayaAPI#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 42
+{"name" : "Computation, Iterators and Exporters" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/MayaAPI/Exporters/?home=/jmacey/MayaAPI#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 43
+{"name" : "Classes" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/PPP/Classes/?home=/jmacey/PPP#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 44
+{"name" : "Object Lifetimes" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/PPP/Lifetimes/?home=/jmacey/PPP#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 45
 {"name":"Maths","URL": "None","id" : "Maths", "r" : 45, "colour" : "pink"}, // 46
-{"name" : "Template Meta Programming" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/templates/?home=/jmacey/PP#/" , "id"  : "Graphics", "r" : 12}, // 47
-{"name" : "STL" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/CAAG/STL/?home=/jmacey/CAAG#/" , "id"  : "Graphics", "r" : 12}, // 48
-{"name" : "S.O.L.I.D." , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/CAAG/SOLID/?home=/jmacey/CAAG#/" , "id"  : "Graphics", "r" : 12}, // 49
+{"name" : "Template Meta Programming" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/templates/?home=/jmacey/PP#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 47
+{"name" : "STL" , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/CAAG/STL/?home=/jmacey/CAAG#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 48
+{"name" : "S.O.L.I.D." , "URL" : "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/CAAG/SOLID/?home=/jmacey/CAAG#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 49
 ],
 
 
