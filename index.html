@@ -33,10 +33,28 @@
       text-decoration: underline;
       fill:darkred;
     }
+
+    .tooltip {
+    position: absolute;
+    z-index: 10;
+    visibility: hidden;
+    background-color: yellow;
+    text-align: left;
+    padding: 4px;
+    border-radius: 4px;
+    font-weight: bold;
+    color: black;
+    font: 18px sans-serif;
+    border-style : solid;
+
+}
 </style>
 </head>
 
 <body>
+
+
+
 <script>
 
 var w = window,
@@ -46,7 +64,10 @@ var w = window,
     width = w.innerWidth || e.clientWidth || g.clientWidth,
     height = w.innerHeight|| e.clientHeight|| g.clientHeight;
     height-=40;
-
+// create tool tip for later, this will be made visible on mouse over
+var tooltip = d3.select("body")
+  .append("div")
+  .attr('class', 'tooltip');
 
 var force = d3.layout.force()
     .size([width, height])
@@ -165,7 +186,23 @@ function update(links)
     circle.attr("r", function(d){return d.r;})
           .attr("is", function(d){return "node-"+d.name})
           .style("fill",function(d){return d.colour})
-          .call(force.drag);
+          .call(force.drag)
+            .on("mouseover", function(d) {
+    return tooltip.style("visibility", "visible").text( d.description);
+  })
+  
+  // we move tooltip during of "mousemove"
+  
+  .on("mousemove", function() {
+    return tooltip.style("top", (event.pageY - 30) + "px")
+      .style("left", event.pageX + "px");
+  })
+  
+  // we hide our tooltip on "mouseout"
+  
+  .on("mouseout", function() {
+    return tooltip.style("visibility", "hidden");
+  });
 
     // Compute the data join. This returns the update selection.
     hypertext  = hypertext .data(force.nodes());
@@ -186,9 +223,12 @@ function update(links)
       if (d.URL !="None")
         return   "https://nccastaff.bournemouth.ac.uk/jmacey/Lectures/"+d.URL;
     })
+    
     .text(function (d) {
         return d.name;
+
     });
+    
 }
 
 // Use elliptical arc path segments to doubly-encode directionality.
@@ -224,60 +264,60 @@ function getData()
 { // do this so I can have comments in it, it's basically json dictionary
 return {
 "nodes":[
-{"name":"Programming","URL": "None","id" : "Programming", "r" : 45, "colour" : "orange" , "offset" : 0}, // 0
-{"name":"Graphics","URL": "None","id" : "Graphics","r" : 45, "colour" : "yellow", "offset" : 0}, // 1
-{"name":"C++","URL": "None","id" : "C++", "r" : 35, "colour" : "lightblue", "offset" : 0}, //2
-{"name":"C","URL": "None", "id" : "C", "r" : 35 , "colour" : "lightblue", "offset" : 0}, //3
-{"name":"Python","URL" : "None", "id" : "Python", "r" : 35,"colour" : "lightgreen", "offset" : 0}, //4 
-{"name":"Python Introduction","URL" : "Python/?home=/jmacey/Python", "r" : 12 , "offset" : -14 }, // 5
-{"name":"Maya Python","URL" : "MayaAPI/python/?home=/jmacey/MayaAPI", "r" : 12, "offset" : -14}, // 6
-{"name" : "Basic" , "URL" : "None" , "id" : "Basic C++", "r" : 25 , "colour" : "green", "offset" : 0}, // 7
-{"name" : "Intermediate" , "URL" : "None" , "id" : "Intermediate C++", "r" : 25 , "colour" : "mediumvioletred", "offset" : 0}, // 8
-{"name" : "Advanced" , "URL" : "None" , "id"  : "Advanced C++", "r" : 25 , "colour" : "red", "offset" : 0}, // 9
-{"name" : "Intro to C++" , "URL" : "ASE/BasicCPP/?home=/jmacey/ASE#/" , "id"  : "C++", "r" : 12, "offset" : -14}, // 10
-{"name" : "Test Driven Development" , "URL" : "ASE/testing/?home=/jmacey/ASE#/" , "id"  : "C++", "r" : 12, "offset" : -14}, // 11
-{"name" : "Memory and Pointers" , "URL" : "ASE/MemoryAndPointers/?home=/jmacey/ASE" , "id"  : "C++", "r" : 12, "offset" : -14}, // 12
-{"name" : "Classes" , "URL" : "ASE/Classes/?home=/jmacey/ASE" , "id"  : "C++", "r" : 12, "offset" : -14}, // 13
-{"name" : "Creational Design Patterns" , "URL" : "DesignPatterns/lecture1/?home=/jmacey/ASE" , "id"  : "C++", "r" : 12, "offset" : -14}, // 14
-{"name" : "Structural Design Patterns" , "URL" : "DesignPatterns/lecture2/?home=/jmacey/ASE" , "id"  : "C++", "r" : 12, "offset" : -14}, // 15
-{"name" : "Operator Overloading" , "URL" : "ASE/OperatorOverload/?home=/jmacey/ASE#/" , "id"  : "C++", "r" : 12, "offset" : -14}, // 16
-{"name" : "Multicore and GPU programming" , "URL" : "MulticoreIntro/?home=/jmacey/AProg" , "id"  : "C++", "r" : 12, "offset" : -14}, // 17
-{"name" : "Threading" , "URL" : "threads/?home=/jmacey/AProg" , "id"  : "C++", "r" : 12, "offset" : -14}, // 18
-{"name" : "SIMD" , "URL" : "SIMD/?home=/jmacey/AProg" , "id"  : "C++", "r" : 12, "offset" : -14}, // 19
+{"name":"Programming","URL": "None","id" : "Programming", "r" : 45, "colour" : "orange" , "offset" : 0, "description" : "Everything related to programming"}, // 0
+{"name":"Graphics","URL": "None","id" : "Graphics","r" : 45, "colour" : "yellow", "offset" : 0, "description" : "Everything related to Graphics"}, // 1
+{"name":"C++","URL": "None","id" : "C++", "r" : 35, "colour" : "lightblue", "offset" : 0, "description" : "C++ Programming"}, //2
+{"name":"C","URL": "None", "id" : "C", "r" : 35 , "colour" : "lightblue", "offset" : 0, "description" : "C programming"}, //3
+{"name":"Python","URL" : "None", "id" : "Python", "r" : 35,"colour" : "lightgreen", "offset" : 0, "description" : "Python programming"}, //4 
+{"name":"Python Introduction","URL" : "Python/?home=/jmacey/Python", "r" : 12 , "offset" : -14 , "description" : "This is a basic introduction to the python programming language"}, // 5
+{"name":"Maya Python","URL" : "MayaAPI/python/?home=/jmacey/MayaAPI", "r" : 12, "offset" : -14 , "description" : "Using maya python in particular the maya.cmds and pymel tools"}, // 6
+{"name" : "Basic" , "URL" : "None" , "id" : "Basic C++", "r" : 25 , "colour" : "green", "offset" : 0, "description" : "Simple concepts"}, // 7
+{"name" : "Intermediate" , "URL" : "None" , "id" : "Intermediate C++", "r" : 34 , "colour" : "mediumvioletred", "offset" : 0, "description" :"More in depth concepts"}, // 8
+{"name" : "Advanced" , "URL" : "None" , "id"  : "Advanced C++", "r" : 30 , "colour" : "red", "offset" : 0, "description" : "Advanced concepts may not be needed"}, // 9
+{"name" : "Intro to C++" , "URL" : "ASE/BasicCPP/?home=/jmacey/ASE#/" , "id"  : "C++", "r" : 12, "offset" : -14, "description" : "Introduction to concepts in C++ 11/14/17 intended for people with some programming knowledge"}, // 10
+{"name" : "Test Driven Development" , "URL" : "ASE/testing/?home=/jmacey/ASE#/" , "id"  : "C++", "r" : 12, "offset" : -14, "description" : "An introduction to testing and in particular Test Driven Development. This gives examples in Both C++ and Python using various frameworks"}, // 11
+{"name" : "Memory and Pointers" , "URL" : "ASE/MemoryAndPointers/?home=/jmacey/ASE" , "id"  : "C++", "r" : 12, "offset" : -14, "description" : "Dynamic Memory allocation and the use of pointers in C and C++ this also covers the different memory segments used in a program"}, // 12
+{"name" : "Classes" , "URL" : "ASE/Classes/?home=/jmacey/ASE" , "id"  : "C++", "r" : 12, "offset" : -14, "description" : "An introduction to class in C++"}, // 13
+{"name" : "Creational Patterns" , "URL" : "DesignPatterns/lecture1/?home=/jmacey/ASE" , "id"  : "C++", "r" : 12, "offset" : -14, "description" : "Simple Design patterns for the creation of objects including Singleton, Factory and monostate patterns"}, // 14
+{"name" : "Structural Patterns" , "URL" : "DesignPatterns/lecture2/?home=/jmacey/ASE" , "id"  : "C++", "r" : 12, "offset" : -14, "description" : "More Design Patterns and Idioms such as PIMPL, Observer "}, // 15
+{"name" : "Operator Overloading" , "URL" : "ASE/OperatorOverload/?home=/jmacey/ASE#/" , "id"  : "C++", "r" : 12, "offset" : -14, "description" : "Operator Overloading in C++ and an Introduction to the Standard Template librart and Algorithms"}, // 16
+{"name" : "Multicore and GPU programming" , "URL" : "MulticoreIntro/?home=/jmacey/AProg" , "id"  : "C++", "r" : 12, "offset" : -14, "description" : "An introduction to Multicore programming including how to analize performance and speedup"}, // 17
+{"name" : "Threading" , "URL" : "threads/?home=/jmacey/AProg" , "id"  : "C++", "r" : 12, "offset" : -14, "description" : "Introduction to threading using pthreads, C++ 11 threads and Qt Thereading models"}, // 18
+{"name" : "SIMD" , "URL" : "SIMD/?home=/jmacey/AProg" , "id"  : "C++", "r" : 12, "offset" : -14, "description" : "Using intrinsics for SIMD processing suitible to both C and C++ programming"}, // 19
 
-{"name" : "Data Oriented Design" , "URL" : "DOD/?home=/jmacey/AProg" , "id"  : "C++", "r" : 12, "offset" : -14}, // 20
-{"name" : "OpenGL" , "URL" : "None" , "id"  : "Graphics", "r" : 25, "colour" : "dodgerblue", "offset" : 0}, // 21
-{"name" : "Renderman" , "URL" : "None" , "id"  : "Graphics", "r" : 25 , "colour" : "cyan", "offset" : 0}, // 22
-{"name" : "Intro To Renderman" , "URL" : "Renderman/Lecture1Introduction/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 23
-{"name" : "Geometry" , "URL" : "Renderman/Lecture2Geometry/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 24
-{"name" : "Lighting" , "URL" : "Renderman/Lecture3Lighting/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 25
-{"name" : "What is Programming" , "URL" : "PPP/WhatIsProgramming/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 26
-{"name" : "Structured Programming" , "URL" : "PPP/StructuredProgramming/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 27
-{"name" : "Selection Structures" , "URL" : "PPP/Selection/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 28
-{"name" : "Memory and Pointers" , "URL" : "PPP/MemoryAndPointers/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 29
-{"name" : "SQL" , "URL" : "sql/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 30
+{"name" : "Data Oriented Design" , "URL" : "DOD/?home=/jmacey/AProg" , "id"  : "C++", "r" : 12, "offset" : -14, "description" : "Everything you thought about OO is wrong, it is all about how we lay out the Data. Using DOD to speed up your programs"}, // 20
+{"name" : "OpenGL" , "URL" : "None" , "id"  : "Graphics", "r" : 25, "colour" : "dodgerblue", "offset" : 0, "description" : "OpenGL API"}, // 21
+{"name" : "Renderman" , "URL" : "None" , "id"  : "Graphics", "r" : 32 , "colour" : "cyan", "offset" : 0, "description" : "Everything related to Renderman"}, // 22
+{"name" : "Intro To Renderman" , "URL" : "Renderman/Lecture1Introduction/" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "Introduction to renderman and the structure of RIB files using python"}, // 23
+{"name" : "Geometry" , "URL" : "Renderman/Lecture2Geometry/" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "Different Renderman Geometry types and how to generate them"}, // 24
+{"name" : "Lighting" , "URL" : "Renderman/Lecture3Lighting/" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "Lighting and shading in modern Renderman RIS"}, // 25
+{"name" : "What is Programming" , "URL" : "PPP/WhatIsProgramming/" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "Basic introduction to programming concepts Hello World!"}, // 26
+{"name" : "Structured Programming" , "URL" : "PPP/StructuredProgramming/" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "Structured programming concepts BNF and other language constructs in C"}, // 27
+{"name" : "Selection Structures" , "URL" : "PPP/Selection/" , "id"  : "Graphics", "r" : 12, "offset" : -14 , "description" : "Selection and iteration in C"}, // 28
+{"name" : "Memory and Pointers" , "URL" : "PPP/MemoryAndPointers/" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "How Arrays and Pointers are releated and how this works with dynamic memory allocation in C"}, // 29
+{"name" : "SQL" , "URL" : "sql/" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "Using SQL and databases, simple examples using MySQL and SqlLite in C / C++ and Python"}, // 30
 
-{"name" : "Introduction to Qt" , "URL" : "ASE/IntroToQt/?home=/jmacey/ASE" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 31
+{"name" : "Introduction to Qt" , "URL" : "ASE/IntroToQt/?home=/jmacey/ASE" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "What is Qt, How to create simple GUI programs, basic Qt Concepts"}, // 31
 
-{"name" : "Modern OpenGL" , "URL" : "OpenGL/ModernOpenGL/?home=/jmacey/ASE" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 32
-{"name" : "OpenGL Context Creation" , "URL" : "OpenGL/ContextCreation/?home=/jmacey/ASE" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 33
-{"name" : "Buffer Objects" , "URL" : "OpenGL/Buffers/?home=/jmacey/ASE" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 34
-{"name" : "GLSL API" , "URL" : "OpenGL/GLSLAPI/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 35
-{"name" : "GLSL" , "URL" : "OpenGL/GLSL/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 36
-{"name" : "Transformations" , "URL" : "OpenGL/transforms/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 37
-{"name" : "Shading Models" , "URL" : "OpenGL/shaders/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 38
-{"name" : "Texturing" , "URL" : "OpenGL/textures/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 39
-{"name" : "Advanced GL" , "URL" : "OpenGL/advanced/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 40
+{"name" : "Modern OpenGL" , "URL" : "OpenGL/ModernOpenGL/?home=/jmacey/ASE" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "Introduction to Modern OpenGL, Concepts and history of OpenGL"}, // 32
+{"name" : "OpenGL Context Creation" , "URL" : "OpenGL/ContextCreation/?home=/jmacey/ASE" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "How to create a contex for OpenGL to use, with examples in SDL and Qt"}, // 33
+{"name" : "Buffer Objects" , "URL" : "OpenGL/Buffers/?home=/jmacey/ASE" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "How OpenGL uses Buffers to generate all of the data required. This shows the bind to edit metaphor used in OpenGL"}, // 34
+{"name" : "GLSL API" , "URL" : "OpenGL/GLSLAPI/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "How to load, compile and link shaders using the C API, also introduce the ngl::ShaderLib classes"}, // 35
+{"name" : "GLSL" , "URL" : "OpenGL/GLSL/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "How the GLSL shading language works and basic syntax"}, // 36
+{"name" : "Transformations" , "URL" : "OpenGL/transforms/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "How to use Matrices to transform vertex data, we intoduce the Model, View Project concepts used in OpenGL and other Graphic pipelines"}, // 37
+{"name" : "Shading Models" , "URL" : "OpenGL/shaders/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "Basic shading models in GLSL, how to build a simple Ambient, Specular Diffuse Blinn / Phong model and a basic introduction to PBR"}, // 38
+{"name" : "Texturing" , "URL" : "OpenGL/textures/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "Image loading and processing using 3rd party libraries (Qt and ImageMagick) loading textures in OpenGL and GLSL"}, // 39
+{"name" : "Advanced GL" , "URL" : "OpenGL/advanced/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "Framebuffer Objects, Point Bake animation, Blend Shapes"}, // 40
 
-{"name" : "Maya API Commands" , "URL" : "MayaAPI/Commands/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 41
-{"name" : "Maya API Nodes" , "URL" : "MayaAPI/Nodes/?home=/jmacey/MayaAPI#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 42
-{"name" : "Computation, Iterators and Exporters" , "URL" : "MayaAPI/Exporters/?home=/jmacey/MayaAPI#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 43
-{"name" : "Classes" , "URL" : "PPP/Classes/?home=/jmacey/PPP#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 44
-{"name" : "Object Lifetimes" , "URL" : "PPP/Lifetimes/?home=/jmacey/PPP#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 45
-{"name":"Maths","URL": "None","id" : "Maths", "r" : 45, "colour" : "pink"}, // 46
-{"name" : "Template Meta Programming" , "URL" : "templates/?home=/jmacey/PP#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 47
-{"name" : "STL" , "URL" : "CAAG/STL/?home=/jmacey/CAAG#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 48
-{"name" : "S.O.L.I.D." , "URL" : "CAAG/SOLID/?home=/jmacey/CAAG#/" , "id"  : "Graphics", "r" : 12, "offset" : -14}, // 49
+{"name" : "Maya API Commands" , "URL" : "MayaAPI/Commands/?home=/jmacey/ASE#/" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "Writing Maya C++ api commands"}, // 41
+{"name" : "Maya API Nodes" , "URL" : "MayaAPI/Nodes/?home=/jmacey/MayaAPI#/" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "Using MpxNode to create custom maya nodes"}, // 42
+{"name" : "Computation, Iterators and Exporters" , "URL" : "MayaAPI/Exporters/?home=/jmacey/MayaAPI#/" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "Various Maya API functions and how to write exporters"}, // 43
+{"name" : "Classes" , "URL" : "PPP/Classes/?home=/jmacey/PPP#/" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "Introduction to OO using C++ "}, // 44
+{"name" : "Object Lifetimes" , "URL" : "PPP/Lifetimes/?home=/jmacey/PPP#/" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "How to manage the lifetime of objects, smart pointers"}, // 45
+{"name":"Maths","URL": "None","id" : "Maths", "r" : 45, "colour" : "pink","description" : "Math topics"}, // 46
+{"name" : "Template Meta Programming" , "URL" : "templates/?home=/jmacey/PP#/" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "Templates in C++"}, // 47
+{"name" : "STL" , "URL" : "CAAG/STL/?home=/jmacey/CAAG#/" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "An introduction to the C++ Standard Template Library"}, // 48
+{"name" : "S.O.L.I.D." , "URL" : "CAAG/SOLID/?home=/jmacey/CAAG#/" , "id"  : "Graphics", "r" : 12, "offset" : -14, "description" : "The S.O.L.I.D. design principles for Object oriented design"}, // 49
 ],
 "links":
 [
