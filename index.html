@@ -187,22 +187,20 @@ function update(links)
           .attr("is", function(d){return "node-"+d.name})
           .style("fill",function(d){return d.colour})
           .call(force.drag)
-            .on("mouseover", function(d) {
-    return tooltip.style("visibility", "visible").text( d.description);
-  })
+          .on("mouseover", function(d) 
+          {
+            return tooltip.style("visibility", "visible").text( d.description).style("top", (event.pageY - 30) + "px").style("left", event.pageX + "px");
+          })
   
-  // we move tooltip during of "mousemove"
-  
-  .on("mousemove", function() {
-    return tooltip.style("top", (event.pageY - 30) + "px")
-      .style("left", event.pageX + "px");
-  })
-  
-  // we hide our tooltip on "mouseout"
-  
-  .on("mouseout", function() {
-    return tooltip.style("visibility", "hidden");
-  });
+          .on("mousemove", function() 
+          {
+//            return tooltip.style("top", (event.pageY - 30) + "px").style("left", event.pageX + "px");
+          })
+        // we hide our tooltip on "mouseout"
+        .on("mouseout", function() 
+        {
+          return tooltip.style("visibility", "hidden");
+        });
 
     // Compute the data join. This returns the update selection.
     hypertext  = hypertext .data(force.nodes());
@@ -210,8 +208,7 @@ function update(links)
     // Add any incoming texts.
     hypertext.enter().append("text").append("a")
     //.attr("xlink:show", "new")
-        .attr("target", "_blank");
-
+    .attr("target", "_blank");
     // Remove any outgoing/old texts.
     hypertext.exit().remove();
 
