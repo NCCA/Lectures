@@ -5,3 +5,4 @@ This directory contains all my lecture notes in reveal.js format (html and md fi
 There is also a webpage (index.html) to help visualise all of the lectures 
 
 ![](map.png)
+
