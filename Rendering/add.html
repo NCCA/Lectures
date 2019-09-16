@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <script type="text/javascript" src="/jmacey/js/processing/processing.min.js"></script>
+</head>
+
+
+
+
+
+
+<body>
+
+<canvas id="sketch" data-processing-sources="add.pde"></canvas>
+<div class="slidecontainer">
+
+<button onclick="startSketch();">Start</button>
+<button onclick="stopSketch();">Stop</button>
+<input type="range" min="10" max="190" value="50" class="slider" id="red" oninput="updateRed(this.value)" >
+<input type="range" min="10" max="190" value="80" class="slider" id="green" oninput="updateGreen(this.value)" >
+<input type="range" min="10" max="190" value="100" class="slider" id="blue" oninput="updateBlue(this.value)" >
+
+</div>
+
+<script type="application/javascript">
+
+    var processingInstance;
+
+    function updateRed(newValue)
+    {
+        processingInstance = Processing.getInstanceById('sketch');
+        processingInstance.updateRed(newValue);
+    }
+    function updateGreen(newValue)
+    {
+        processingInstance = Processing.getInstanceById('sketch');
+        processingInstance.updateGreen(newValue);
+    }
+    function updateBlue(newValue)
+    {
+        processingInstance = Processing.getInstanceById('sketch');
+        processingInstance.updateBlue(newValue);
+    }
+
+    function startSketch() 
+    {
+        switchSketchState(true);
+    }
+
+    function stopSketch() 
+    {
+        switchSketchState(false);
+    }
+
+    function switchSketchState(on) 
+    {
+        if (!processingInstance) {
+            processingInstance = Processing.getInstanceById('sketch');
+        }
+
+        if (on) 
+        {
+            processingInstance.loop();  // call Processing loop() function
+        } 
+        else 
+        {
+            processingInstance.noLoop(); // stop animation, call noLoop()
+        }
+    }
+</script>
+
+
+
+</body>
+</html>
