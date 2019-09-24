@@ -3,9 +3,9 @@ int w;              // Width of entire wave
 
 float theta = 0.0;  // Start angle at 0
 float amplitude = 25.0;  // Height of wave
-float periodRed =50.0;  // How many pixels before the wave repeats
-float periodGreen =80.0;  // How many pixels before the wave repeats
-float periodBlue =100.0;  // How many pixels before the wave repeats
+float periodRed =199-110.0;  // How many pixels before the wave repeats
+float periodGreen =199-60.0;  // How many pixels before the wave repeats
+float periodBlue =199-10.0;  // How many pixels before the wave repeats
 float dxRed;  // Value for incrementing X, a function of period and xspacing
 float dxGreen;  // Value for incrementing X, a function of period and xspacing
 float dxBlue;  // Value for incrementing X, a function of period and xspacing
@@ -220,11 +220,11 @@ void draw()
   textAlign(LEFT);
   hint(DISABLE_DEPTH_TEST);
   fill(255, 0, 0);
-  text("Red channel", 40,100);
+  text("Red Laser", 40,100);
   fill(0, 255, 0);
-  text("Green channel", 40,200);
+  text("Green Laser", 40,200);
   fill(0, 0, 255);
-  text("Blue channel", 40,300);
+  text("Blue Laser", 40,300);
   fill(0, 0, 0);
   text("Sum", 700,300);
 
@@ -248,7 +248,7 @@ void calcWave()
     yvaluesGreen[i] = sin(x)*amplitude;
     x+=dxGreen;
   }
-    x = theta;
+  x = theta;
   for (int i = 0; i < yvaluesBlue.length; i++) {
     yvaluesBlue[i] = sin(x)*amplitude;
     x+=dxBlue;

@@ -1,0 +1,147 @@
+
+body {
+  color: #000;
+  font-family: Monospace;
+  font-size: 15px;
+  font-weight: bold;
+  background-color: #000;
+  margin: 0px;
+  height : 100%;
+  overflow: scroll !important;
+}
+
+.CodeMirror {
+  /* Set height, width, borders, and global font properties here */
+  font-family: monospace;
+  height: 80%;
+  width : 85%;
+  color: black;
+  word-wrap:  normal;
+}
+
+.ui-tabs .ui-tabs-nav
+{
+background: black;
+border : none;
+}
+
+.ui-tabs .ui-tabs-panel /* just in case you want to change the panel */
+{
+background: black;
+border : none;
+}
+#tabs {
+  border: 0px solid #000;
+  background-color: #000;
+  width : 80%;
+  height : 100%;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  line-height: 18px;
+  border: none;
+  padding-left: 0px; 
+  background: transparent; 
+  border-width: 0px 0px 1px 0px; 
+  -moz-border-radius: 0px; 
+  -webkit-border-radius: 0px; 
+  border-radius: 0px; 
+  overflow: hidden;
+  width: 100%;
+}
+
+#lefttabs {
+  overflow: hidden;
+  position: relative;
+  height : 100% ;
+  background : #000 ;
+  width: 100%;
+
+}
+
+#lefttabs ul.ui-tabs-nav {
+  display: block;
+  width: 6em;
+  float: left;
+  padding: 0;
+}
+
+#lefttabs .ui-tabs-nav li {
+  width: 6em;
+  background: #000;
+  margin: 0.5em 0;
+  border: 1px #ffff solid;
+  border-right-width: 0;
+  text-align: right;
+  list-style-type: none;
+}
+
+#lefttabs .ui-tabs-nav a {
+  border-right: 1px #000 solid;
+}
+#lefttabs .ui-tabs-nav .ui-tabs-selected a {
+  border-right-color: #e3e3e3;
+}
+
+#lefttabs .ui-tabs-panel {
+  margin-left: 5em;
+  margin-top : -0.5em;
+  margin-bottom:  -1em;
+  color : #ffffff;
+  height :120%;
+}
+
+#VertexShader{
+  border: 0px solid #000;
+  background: black;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  right: 10;
+  top: 0;
+}
+#FragmentShader{
+  border: 0px solid #000;
+  background:black;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  right: 10;
+  top: 0;
+}
+
+#glframe{
+  width: 60%;
+  height  : 50vh;
+  border: 3px solid rgb(155, 155, 155);
+}
+/* #GUI{
+  overflow: scroll !important;
+  width : 40%;
+  top : 0;
+  left : 60%;
+  position: absolute; top: 2px; left: 60%
+}
+
+#gui { position: absolute; top: 2px; left: 60% } */
+#guiFrame iframe {
+  top : 0;
+  left : 60%;
+  width: 40%;
+  height:50vh;
+  position: absolute;
+  z-index: 1;
+}
+
+.moveGUI{ 
+  position: absolute;
+  top: 0px;
+  left: 20px;
+  z-index: 10;
+}
+
+iframe {
+  border: 1px solid #000 !important;
+  overflow: scroll !important;
+  height  : 50vh;
+
+}
