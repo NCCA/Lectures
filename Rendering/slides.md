@@ -652,17 +652,22 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 
 --
 
-## Vray
+## Arnold
 
 <img src="images/PBRArnold.png" width="80%">
+
+--
+
+## Vray
+
+<img src="images/PBRVray.png" width="80%">
 
 
 --
 
-## Arnold
+## Vray
 
-<img src="images/PBRVray.png" width="80%">
-
+<img src="images/vraynetwork.png" width="180%">
 
 
 ---
