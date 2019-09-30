@@ -23,3 +23,11 @@
   <video controls>
     <source data-src="video/showreel.mp4" type="video/mp4" />
   </video>
+
+
+---
+
+## Sequences
+
+<iframe src="examples/sequence/index.html" width="800px" height="500px "> </iframe>
+
