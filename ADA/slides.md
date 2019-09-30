@@ -7,12 +7,15 @@
 
 ---
 
-# About me
+## About me
 
-- My first computer was a Vic 20 (followed by a Ti 32 then a PC)
+- My first computer was a Texas Instruments Ti 99 (followed by a Vic 20 then a PC)
 - Been programming since 1979!
 - Did a degree in Electronics, then MSc in Computer Animation
 - Teach programming and Maths to Animators.
+
+<img src="images/computers.png" width="60%">
+
 
 ---
 
