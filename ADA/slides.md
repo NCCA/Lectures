@@ -27,7 +27,45 @@
 
 ---
 
+
+## Thinking like a programmer
+
+- Most programming task require you to think in a certain way
+  - Algorithms (how to do a task)
+  - Data Structures (how we repesetent things)
+- This "computational thinking" approach can be applied to many areas.
+
+--
+
 ## Sequences
 
-<iframe src="examples/sequence/index.html" width="800px" height="500px "> </iframe>
+<iframe src="examples/sequence/index.html"  > </iframe>
+
+```
+drawRed();
+drawGreen();
+drawBlue();
+```
+
+--
+
+## [Selection](examples/selection/index.html)
+
+<iframe src="examples/selection/index.html"  width="400px" height="400px" > </iframe>
+
+
+--
+
+## Selection
+
+```
+if(keyUpPressed())
+  moveUp();
+else if(keyDownPressed())
+  moveDown();
+else if(keyLeftPressed())
+  moveLeft();
+else if(keyRightPressed())
+  moveRight();  
+```
 
