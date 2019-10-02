@@ -39,7 +39,8 @@
 
 ## Sequences
 
-<iframe src="examples/sequence/index.html"  > </iframe>
+<a href="examples/sequence/index.html" target="popup" onclick="popupWindow('examples/sequence/index.html','sequence',400,300)">Demo</a>
+
 
 ```
 drawRed();
@@ -51,12 +52,8 @@ drawBlue();
 
 ## [Selection](examples/selection/index.html)
 
-<iframe src="examples/selection/index.html"  width="400px" height="400px" > </iframe>
+<a href="examples/selection/index.html" target="popup" onclick="popupWindow('examples/selection/index.html','selection',520,580);">Demo</a>
 
-
---
-
-## Selection
 
 ```
 if(keyUpPressed())
@@ -69,3 +66,20 @@ else if(keyRightPressed())
   moveRight();  
 ```
 
+--
+
+## Iteration
+
+
+<a href="examples/iteration/index.html" target="popup" onclick="popupWindow('examples/iteration/index.html','Iteration',520,580);">Demo</a>
+
+```
+while(true)
+{
+  for_each(particle p)
+  {
+    p.update();
+    p.draw();
+  }
+}
+```

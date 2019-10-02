@@ -1,7 +1,5 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
+<html>
+	<head>
     <title>ADA</title>
     <link rel="stylesheet" href="/jmacey/js/reveal.js/css/reveal.css">
     <link rel="stylesheet" href="/jmacey/js/reveal.js/reveal.js-fullscreen-code.css">
@@ -9,34 +7,119 @@
     <link rel="stylesheet" href="/jmacey//js/reveal.js/lib/css/zenburn.css">
     <link rel="stylesheet" href="/jmacey/js/reveal.js/jonstyle.css">
 
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+<section >
+<h1/> ADA
+<h2> <code>Algorithms + Data Structures == Animation</code> </h2>
 
-    <!-- to print uncomment this and pass ?print-pdf#/ to the command line --->
-    <!--- <link rel="stylesheet" href="/jmacey//js/reveal.js/css/print/pdf.css"> -->
-</head>
+<h2> <a href="https://nccastaff.bournemouth.ac.uk/jmacey/"> Jon Macey </a></h2>
+<h3/> National Center for Computer Animation
+<h3/> Bournemouth University
 
-<body>
-    <div class="reveal">
-      <div class="slides">
-        <style> .reveal section img { background:none; border:none; box-shadow:none; } </style>   
-        <!-- Slides are separated by newline + three dashes + newline, vertical slides identical but two dashes -->
-        <section data-markdown="slides.md" data-markdown data-separator="^\n---\n$" data-separator-vertical="^\n--\n$"></section>        
-       
-      </div>
-     
-    </div>
+</section>
+
+<section>
+<h2> About me </h2>
+<ul>
+<li/> My first computer was a Texas Instruments Ti 99 (followed by a Vic 20 then a PC)
+<li/> Been programming since 1979!
+<li/> Did a degree in Electronics, then MSc in Computer Animation
+<li/> Teach programming and Maths to Animators.
+</ul>
+<img src="images/computers.png" width="60%">
+
+</section>
+
+<section>
+<h2> Can you see any programming? </h2>
+
+  <video controls>
+    <source data-src="video/showreel.mp4" type="video/mp4" />
+  </video>
+
+</section>
+
+<section>
+  <section>
+  <h2> Thinking like a programmer </h2>
+  <ul>
+  <li/> Most programming task require you to think in a certain way
+    <ul>
+    <li/> Algorithms (how to do a task)
+    <li/> Data Structures (how we repesetent things)
+    </ul>
+  <li/> This "computational thinking" approach can be applied to many areas.
+  </ul>
+  </section>
+
+  <section>
+  <h2> Sequences </h2>
     
+      <canvas id="sequence"></canvas>
+      <script type='text/javascript'>
+          var Module = {
+        canvas: ( function() { return document.getElementById('sequence'); })()
+          };
+      </script>
+      <script src="examples/sequence/index.js"></script>
+
+  <pre><code>
+  drawRed();
+  drawGreen();
+  drawBlue();
+  </code></pre>
+
+  </section>
+
+
+
+  <section>
+
+  <h2>Selection </h2>
+
+  <iframe src="examples/selection/index.html"  width="400px" height="400px" > </iframe>
+
+
+  </section>
+
+  <section>
+  <h2> Selection </h2>
+
+  <pre><code>
+  if(keyUpPressed())
+    moveUp();
+  else if(keyDownPressed())
+    moveDown();
+  else if(keyLeftPressed())
+    moveLeft();
+  else if(keyRightPressed())
+    moveRight();  
+  </code></pre>
+
+  </section>
+
+  <section >
+      <H1> Iteration </H1>
+      <canvas id="iteration"></canvas>
+      <script type='text/javascript'>
+          var Module = {
+        canvas: (function() { return document.getElementById('iteration'); })()
+          };
+      </script>
+      <script src="examples/iteration/index.js"></script>
+  </section>
+</section>
+			</div>
+		</div>
+
+
+
     <script src="/jmacey/js/reveal.js/lib/js/head.min.js"></script>
     <script src="/jmacey/js/reveal.js/js/reveal.js"></script>
     <script src="/jmacey/js/jquery/jquery.min.js"></script>
-    <script>
-    function popupWindow(url, title, w, h) 
-    {
-      var win =  window.parent; 
-      const y = win.top.outerHeight / 2 + win.top.screenY - ( h / 2);
-      const x = win.top.outerWidth / 2 + win.top.screenX - ( w / 2);
-      return win.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+y+', left='+x);
-    }
-    </script>
     <script>
       // this is a uniqe id for the slide for saving notes later I will update to use IndexedDB but 
       // this will work on all systems
@@ -94,9 +177,6 @@
 
 
     <script src="/jmacey/js/reveal.js/slidefunctions.js"></script>
-  
- 
-</div>
-</div>
-</body>
+
+	</body>
 </html>
