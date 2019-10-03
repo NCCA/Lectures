@@ -32,14 +32,14 @@
 
 - Most programming task require you to think in a certain way
   - Algorithms (how to do a task)
-  - Data Structures (how we repesetent things)
-- This "computational thinking" approach can be applied to many areas.
+  - Data Structures (how we represent things)
+- This "computational thinking" approach can be applied lots of subjects.
 
 --
 
 ## Sequences
 
-<a href="examples/sequence/index.html" target="popup" onclick="popupWindow('examples/sequence/index.html','sequence',400,300)">Demo</a>
+<a href="examples/sequence/index.html" target="popup" onclick="popupWindow('examples/sequence/index.html','sequence',400,300)"><img src="images/run.png"></a>
 
 
 ```
@@ -52,7 +52,7 @@ drawBlue();
 
 ## [Selection](examples/selection/index.html)
 
-<a href="examples/selection/index.html" target="popup" onclick="popupWindow('examples/selection/index.html','selection',520,580);">Demo</a>
+<a href="examples/selection/index.html" target="popup" onclick="popupWindow('examples/selection/index.html','selection',520,580);"><img src="images/run.png"></a>
 
 
 ```
@@ -71,7 +71,7 @@ else if(keyRightPressed())
 ## Iteration
 
 
-<a href="examples/iteration/index.html" target="popup" onclick="popupWindow('examples/iteration/index.html','Iteration',520,580);">Demo</a>
+<a href="examples/iteration/index.html" target="popup" onclick="popupWindow('examples/iteration/index.html','Iteration',520,580);"> <img src="images/run.png"> </a>
 
 ```
 while(true)
@@ -83,3 +83,6 @@ while(true)
   }
 }
 ```
+
+
+--
