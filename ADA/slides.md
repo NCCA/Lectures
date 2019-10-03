@@ -94,7 +94,7 @@ while(true)
 
 ## What do you see?
 
-<img src="images/boat.jpg" width="60%">
+<img src="images/boat.jpg" width="40%">
 
 
 --
