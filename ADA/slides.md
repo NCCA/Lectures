@@ -86,9 +86,21 @@ while(true)
 
 ---
 
-## Abstaction
+## What do you see?
 
 <img src="images/guitar.jpg" width="60%">
+
+--
+
+## What do you see?
+
+<img src="images/boat.jpg" width="60%">
+
+
+--
+
+## Abstraction
+
 
 
 ---
