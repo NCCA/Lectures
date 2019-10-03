@@ -96,18 +96,14 @@ while(true)
 
 <img src="images/boat.jpg" width="40%">
 
-
 --
-
-
+ 
 ## Programming as Art
 
- 
 <img src="images/knuth.jpg" width="40%">
 
 
 ## Abstraction
-
 
 
 ---
