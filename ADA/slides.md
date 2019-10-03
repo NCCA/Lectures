@@ -88,6 +88,9 @@ while(true)
 
 ## Abstaction
 
+<img src="images/guitar.jpg" width="60%">
+
+
 ---
 
 ## Flocking
