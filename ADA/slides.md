@@ -84,6 +84,28 @@ while(true)
 }
 ```
 
+--
+
+<img src="images/wordcloud.svg" width="80%">
+
+- There are so many languages which should I choose?
+
+
+--
+
+## Which Language should I choose?
+
+- Programming languages are tools, choose the one best suited to the job.
+- These slides are written in Javascript and HTML
+- The demos are written in C++ and converted to WebAssembly using a tool called emscipten
+- I use at least 5 programming languages on a regular basis
+
+--
+
+## It's all machine code in the end
+
+<iframe width="1000px" height="800px" src="https://godbolt.org/e?readOnly=true&hideEditorToolbars=true#g:!((g:!((g:!((h:codeEditor,i:(j:1,lang:c%2B%2B,source:'//+Type+your+code+here,+or+load+an+example.%0Aint+square(int+num)+%7B%0A++++return+num+*+num%3B%0A%7D%0A%0Aint+useSquare()%0A%7B%0A++++for(int+i%3D0%3B+i%3C20%3B+%2B%2Bi)%0A++++++++auto+res%3Dsquare(i)%3B%0A%7D%0A'),l:'5',n:'0',o:'C%2B%2B+source+%231',t:'0')),k:50,l:'4',n:'0',o:'',s:0,t:'0'),(g:!((h:compiler,i:(compiler:g92,filters:(b:'0',binary:'1',commentOnly:'0',demangle:'0',directives:'0',execute:'1',intel:'0',libraryCode:'1',trim:'1'),lang:c%2B%2B,libs:!(),options:'',source:1),l:'5',n:'0',o:'x86-64+gcc+9.2+(Editor+%231,+Compiler+%231)+C%2B%2B',t:'0')),k:50,l:'4',n:'0',o:'',s:0,t:'0')),l:'2',n:'0',o:'',t:'0')),version:4"></iframe>
+
 ---
 
 ## What do you see?
@@ -92,7 +114,7 @@ while(true)
 
 --
 
-## What do you see?
+## Anyone know the artist?
 
 <img src="images/boat.jpg" width="40%">
 
@@ -104,12 +126,20 @@ while(true)
 
 --
 
+
 ## Abstraction
+- abstraction is the thought process wherein ideas are distanced from objects.
+- Abstraction uses a strategy of simplification of detail
+  - details are left ambiguous, vague, or undefined
+- This is one of the core "principles we apply to programming"
 
 
 ---
 
-## Flocking
+## Let's design some code
+
+- This example shows a finished flocking system
+
 
  <a href="examples/iteration/index.html" target="popup" onclick="popupWindow('examples/flock/index.html','Iteration',1400,900);"> <img src="images/run.png"> </a>
 
