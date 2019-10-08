@@ -122,7 +122,8 @@ while(true)
 
 ## Programming as Art
 
-<img src="images/knuth.jpg" width="100%">
+<a href="http://www.paulgraham.com/knuth.html"><img src="images/knuth2.png" width="100%"></a>
+
 
 --
 
@@ -131,7 +132,7 @@ while(true)
 - abstraction is the thought process wherein ideas are distanced from objects.
 - Abstraction uses a strategy of simplification of detail
   - details are left ambiguous, vague, or undefined
-- This is one of the core "principles we apply to programming"
+- This is one of the core "principles we apply when programming"
 
 
 ---
