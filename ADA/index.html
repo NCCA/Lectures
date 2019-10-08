@@ -29,6 +29,8 @@
     <script src="/jmacey/js/reveal.js/lib/js/head.min.js"></script>
     <script src="/jmacey/js/reveal.js/js/reveal.js"></script>
     <script src="/jmacey/js/jquery/jquery.min.js"></script>
+    <link rel="stylesheet" href="/jmacey/js/codemirror/codemirror.css">
+    <script src="/jmacey/js/codemirror/codemirror.js"></script>
 
     <script>
     function popupWindow(url, title, w, h) 
@@ -45,6 +47,11 @@
       var gSlideID='ADA';
     </script>
  
+ <script>
+  var editor = CodeMirror.fromTextArea(design1, {
+    lineNumbers: true
+  });
+</script> 
 
 
     <!-- modal for notes -->
@@ -94,9 +101,8 @@
   </div>
 
 
-
+ 
     <script src="/jmacey/js/reveal.js/slidefunctions.js"></script>
-  
  
 </div>
 </div>

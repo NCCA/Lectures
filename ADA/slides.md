@@ -138,9 +138,45 @@ while(true)
 
 ## Let's design some code
 
+  <video controls>
+    <source data-src="video/Golaem.mp4" type="video/mp4" />
+  </video>
+
+--
+
+## Let's design some code
+
 - This example shows a finished flocking system
 
 
- <a href="examples/iteration/index.html" target="popup" onclick="popupWindow('examples/flock/index.html','Iteration',1400,900);"> <img src="images/run.png"> </a>
+ <a href="examples/flock/index.html" target="popup" onclick="popupWindow('examples/flock/index.html','Iteration',1400,900);"> <img src="images/run.png"> </a>
+
+--
+
+## Lets do some Abstraction
+
+<img src="images/singleboid.png" width="10%">
+
+
+<textarea id="design1" rows="6" cols="25" style="font-size: 44pt"></textarea>
+
+--
+
+## Agent
+
+```
+
+struct Agent
+{
+  point2 position;
+  colourRGB colour;
+  float speed;
+  vec2 direction; 
+};
+
+```
+
+
+
 
 
