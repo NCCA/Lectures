@@ -177,6 +177,27 @@ struct Agent
 
 ```
 
+--
+
+### Now some rules
+
+<div class="row">
+  <div class="column" style="float: left;width: 30%;padding: 5px;">
+    <p/><img src="images/seperation.png" alt="sepatation" style="width:100%">
+    <p/><b>Separation</b>: steer to avoid crowding local flockmates
+  </div>
+  <div class="column" style="float: left;width: 30%;padding: 5px;">
+    <p/><img src="images/allignment.png" alt="alignment" style="width:100%">
+    <p/><b>Alignment</b>: steer towards the average heading of local flockmates
+  </div>
+  <div class="column" style="float: left;width: 30%;padding: 5px;">
+    <p/><img src="images/cohesion.png" alt="cohesion" style="width:100%">
+    <p/><b>Cohesion</b>: steer to move toward the average position of local flockmates
+  </div>
+</div>
+
+
+
 
 ---
 
@@ -185,6 +206,48 @@ struct Agent
   <video controls loop>
     <source data-src="video/Spring.mp4" type="video/mp4" />
   </video>
+
+--
+
+## Springs!
+
+
+<a href="https://gilberttang.github.io/CS114/proj3/"><img src="images/massspring.jpg" width="100%"></a>
+
+
+--
+
+## Springs!
+
+<a href="https://www.semanticscholar.org/paper/A-mass-spring-model-for-hair-simulation-Selle-Lentine/46388d5e6ab9bc16724f0db0fd70c6da4afdf112"><img src="images/spring2.png" width="100%"></a>
+
+
+--
+
+## Hooke's Law
+
+
+`$$ F = -kx $$`
+
+
+`$$ y_{n+1}=y_{n}+h\sum _{i=1}^{s}b_{i}k_{i} $$`
+
+
+```
+Vec3 motionFunction(const State &_state)
+{
+  /// F = -k(|x|-d)(x/|x|) - bv where
+  /// k is the spring constant
+  /// |x| is the distance between the two spring points
+  /// d is the distance of seperation
+  /// b is the coefficient of damping larger b increases the damping force
+  /// v is the relative velocity between the spring points
+  Vec3 distance=m_b-m_a;
+  float length=distance.length();
+  return -m_k*(length-m_length)*(distance/length)-m_damping*_state.m_velocity;
+}
+```
+
 
 
 
