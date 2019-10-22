@@ -140,6 +140,16 @@ while(true)
 
 --
 
+## Or Throw things at Zombies!
+
+<video controls>
+    <source data-src="video/zombies.mp4" type="video/mp4" loop autoplay="autoplay"/>
+  </video>
+
+
+
+--
+
 ### Programming Houdini is a bit like scratch
 
 <video controls>
