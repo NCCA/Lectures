@@ -109,6 +109,10 @@ while(true)
 ---
 
 
+## Whats the best thing about being an animator?
+
+--
+
 ## You get to break things
 
   <video controls>
@@ -116,7 +120,15 @@ while(true)
   </video>
 
 
----
+--
+
+## And blow them up!
+
+<video controls>
+    <source data-src="video/explode.mp4" type="video/mp4" loop autoplay="autoplay"/>
+  </video>
+
+
 
 
 ---
