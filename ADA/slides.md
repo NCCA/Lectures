@@ -138,6 +138,14 @@ while(true)
   </video>
 
 
+--
+
+### Programming Houdini is a bit like scratch
+
+<video controls>
+    <source data-src="video/scratch.mp4" type="video/mp4" loop autoplay="autoplay"/>
+  </video>
+
 ---
 
 ### What do Cloth and Hair have in common?
