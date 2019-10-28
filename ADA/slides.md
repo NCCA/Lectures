@@ -16,6 +16,9 @@
 
 <img src="images/computers.png" width="60%">
 
+Note:
+I've been programming for a long time (40 years) but I started at about your age. Whilst my background is not in programming I have always used computers and programming in my jobs.
+No it is mainly teaching programming to animators.
 
 ---
 
@@ -23,6 +26,10 @@
   <video controls>
     <source data-src="video/showreel.mp4" type="video/mp4" />
   </video>
+
+Note:
+I'm going to show you a video, all of this work is from our students at the NCCA, either doing the degree course or the Masters. Whilst watching it have a think about how programming could have been used in it.
+
 
 
 ---
@@ -34,6 +41,10 @@
   - Algorithms (how to do a task)
   - Data Structures (how we represent things)
 - This "computational thinking" approach can be applied lots of subjects.
+
+Note: 
+This is the crux of the thesis, computational thinking is the same for everything, if you can think in this way it doesn't matter what subject you are studying you can use a computer to do it.
+
 
 --
 
@@ -47,6 +58,11 @@ drawRed();
 drawGreen();
 drawBlue();
 ```
+
+Note:
+
+I'm going to let you into a secret, most programming is actually quite simple, just don't tell anyone. We basically use the following elements to write code.
+
 
 --
 
@@ -89,6 +105,10 @@ while(true)
 <img src="images/wordcloud.svg" width="80%">
 
 - There are so many languages which should I choose?
+
+Note:
+
+I get asked this a lot, to me it doesn't really matter. It's a bit like learning a language if you knwo
 
 
 --
@@ -207,6 +227,25 @@ Vec3 motionFunction(const State &_state)
 
 ---
 
+## Anyone know what this is?
+
+
+
+--
+
+
+## We also hate noise
+
+<iframe src="../Renderman/Lecture3Lighting/denoise.html" width="720px" height="512px"> </iframe>
+
+
+- but we now use Machine Learning and AI to get rid of it.
+
+
+
+
+---
+
 
 ## What do you see?
 
@@ -256,6 +295,8 @@ Vec3 motionFunction(const State &_state)
 
 ## Lets do some Abstraction
 
+- what shall we call this?
+
 <img src="images/singleboid.png" width="10%">
 
 
@@ -263,11 +304,11 @@ Vec3 motionFunction(const State &_state)
 
 --
 
-## Agent
+## Boid
 
 ```
 
-struct Agent
+struct Boid
 {
   point2 position;
   colourRGB colour;
@@ -296,9 +337,16 @@ struct Agent
   </div>
 </div>
 
+--
 
+## Separation
 
+<img src="images/seperation.png" alt="sepatation" style="width:20%">
 
+- Given an array of all boids how can we implement this algorithm?
 
+<textarea id="design1" rows="6" cols="25" style="font-size: 24pt"></textarea>
 
+Note:
+Basically we need to traverse through the array (or list) and create a new list containing any of the boids in the radius. We then give them a force (Vector) to move them so they are the distance we need them to be apart.
 
