@@ -229,10 +229,16 @@ Vec3 motionFunction(const State &_state)
 
 ## Anyone know what this is?
 
-
+<a href="examples/noise/index.html" target="popup" onclick="popupWindow('examples/noise/index.html','selection',520,580);"><img src="images/run.png"></a>
 
 --
 
+### Noise is used everywhere in Animation
+
+<iframe width="1200px" height="600px" src="examples/tunnel/index.html"></iframe>
+
+
+--
 
 ## We also hate noise
 
