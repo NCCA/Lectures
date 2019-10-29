@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Water</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+	</head>
+	<body>
+
+		<div id="container"></div>
+		<script id="vertexShader" type="x-shader/x-vertex">
+			varying vec2 vUv;
+			void main()	
+			{
+
+				vUv = uv;
+
+				gl_Position = vec4( position, 1.0 );
+
+			}
+
+		</script>
+
+<script id="fragmentShader" type="x-shader/x-fragment">
+varying vec2 vUv;
+uniform float iTime;
+uniform vec3 iResolution;
+uniform vec2 iMouse;
+uniform mat4 Slice;
+
+float hash( vec2 p ) {
+	float h = dot(p,vec2(127.1,311.7));	
+    return fract(sin(h)*43758.5453123);
+}
+float noise( in vec2 p ) 
+{
+    vec2 i = floor( p );
+    vec2 f = fract( p );	
+	vec2 u = f*f*(3.0-2.0*f);
+    return mix( mix( hash( i + vec2(0.0,0.0) ), 
+                     hash( i + vec2(1.0,0.0) ), u.x),
+                mix( hash( i + vec2(0.0,1.0) ), 
+                     hash( i + vec2(1.0,1.0) ), u.x), u.y);
+}
+
+
+// main
+void main() 
+{
+	vec4 DarkWoodColor = vec4( 0.8, 0.5, 0.1, 1.0 );
+	vec4 LightWoodColor = vec4( 1.0, 0.75, 0.25, 1.0 );
+	
+	vec2 uv = vUv	; //gl_FragCoord.xy / iResolution.xy;
+    uv = uv * 2.0 - 1.0;
+    uv.x *= iResolution.x / iResolution.y;    
+    float time = iTime * 0.3 + iMouse.x*0.01;
+	// Transform the texture coordinates to define the
+	// "slice" of the log.
+//	vec4 cyl = Slice * vec4( uv, 0.0, 1.0 );
+	vec4 cyl =  vec4( uv, 0.0, 1.0 );
+	// The distance from the log's y axis.
+	float dist = length(cyl.xz);
+	// Perturb the distance using the noise texture
+	
+	dist += noise(uv);
+	// Determine the color as a mixture of the light and
+	// dark wood colors.
+	 float t = 1.0 - abs( fract( dist ) * 2.0 - 1.0 );
+    t = smoothstep( 0.2, 0.5, t );
+	vec4 color = mix( DarkWoodColor, LightWoodColor, t);        
+    // post
+	gl_FragColor =color;
+}
+
+
+		</script>
+
+		<script type="module">
+
+			import * as THREE from '/jmacey/js/three.js/three.module.js';
+
+			var container;
+
+			var camera, scene, renderer;
+			var mouse= new THREE.Vector2();
+			var clicked=false;
+			var uniforms;
+
+			init();
+			animate();
+
+			function init() {
+
+				container = document.getElementById( 'container' );
+
+				camera = new THREE.OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
+
+				scene = new THREE.Scene();
+
+				var geometry = new THREE.PlaneBufferGeometry( 2, 2 );
+
+				uniforms = {
+					"iTime": { value: 1.0 },
+					"iMouse" : { type: "v2", value : new THREE.Vector2(0,0) },
+					"iResolution" : { type: "v3", value : new THREE.Vector3(window.innerWidth, window.innerHeight,0) }
+				};
+
+				var material = new THREE.ShaderMaterial( {
+
+					uniforms: uniforms,
+					vertexShader: document.getElementById( 'vertexShader' ).textContent,
+					fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+
+				} );
+
+				var mesh = new THREE.Mesh( geometry, material );
+				scene.add( mesh );
+
+				renderer = new THREE.WebGLRenderer();
+				renderer.setPixelRatio( window.devicePixelRatio );
+				container.appendChild( renderer.domElement );
+
+				onWindowResize();
+
+				window.addEventListener( 'resize', onWindowResize, false );
+				window.addEventListener('mousemove', onDocumentMouseMove, false);
+				window.addEventListener('mouseup', onMouseUp, false);
+				window.addEventListener('mousedown', onMouseDown, false);
+
+			}
+
+			function onWindowResize() 
+			{
+				renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+
+			function onMouseDown(event)
+			{
+
+				clicked=true;
+			} 
+			function onMouseUp(event)
+			{
+			   clicked=false;
+
+			} 
+
+			function onDocumentMouseMove(event) 
+			{
+    		event.preventDefault();
+    		if(clicked)
+			{
+				mouse.x = (event.clientX);// / window.innerWidth) * 2 - 1;
+				mouse.y = (event.clientY);// / window.innerHeight) * 2 + 1;
+			}
+			}
+
+			function animate( timestamp ) 
+			{
+
+				requestAnimationFrame( animate );
+				uniforms[ "iTime" ].value = timestamp / 1000;
+				uniforms[ "iResolution" ].value = new THREE.Vector2(window.innerWidth,window.innerHeight);
+				uniforms[ "iMouse" ].value = mouse;
+				renderer.render( scene, camera );
+			}
+
+		</script>
+
+	</body>
+</html>
