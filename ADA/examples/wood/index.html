@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Water</title>
+		<title>Wood</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="main.css">
@@ -9,6 +9,12 @@
 	<body>
 
 		<div id="container"></div>
+		<div  class=".moveGUI"></div>
+		<script src="/jmacey/js/jquery/jquery.min.js"></script>
+		<script src="/jmacey/js/jquery-ui/jquery-ui.min.js"></script>
+
+		<script src='/jmacey/Lectures/OpenGL/js/dat.gui.min.js'></script>
+
 		<script id="vertexShader" type="x-shader/x-vertex">
 			varying vec2 vUv;
 			void main()	
@@ -28,6 +34,7 @@ uniform float iTime;
 uniform vec3 iResolution;
 uniform vec2 iMouse;
 uniform mat4 Slice;
+uniform float ringfreq ;
 
 float hash( vec2 p ) {
 	float h = dot(p,vec2(127.1,311.7));	
@@ -45,36 +52,182 @@ float noise( in vec2 p )
 }
 
 
+// adapted from larry gritz advanced renderman patterns.h
+float smoothpulse (float e0, float e1, float e2, float e3, float x)
+{
+    return smoothstep(e0,e1,x) - smoothstep(e2,e3,x);
+}
+
+/* A pulse train of smoothsteps: a signal that repeats with a given
+ * period, and is 0 when 0 <= mod(x/period,1) < edge, and 1 when
+ * mod(x/period,1) > edge.  
+ */
+float smoothpulsetrain (float e0, float e1, float e2, float e3, float period, float x)
+{
+    return smoothpulse (e0, e1, e2, e3, mod(x,period));
+}
+
+// Simplex 2D noise
+//
+vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
+
+float snoise(vec2 v)
+{
+  const vec4 C = vec4(0.211324865405187, 0.366025403784439,
+           -0.577350269189626, 0.024390243902439);
+  vec2 i  = floor(v + dot(v, C.yy) );
+  vec2 x0 = v -   i + dot(i, C.xx);
+  vec2 i1;
+  i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+  vec4 x12 = x0.xyxy + C.xxzz;
+  x12.xy -= i1;
+  i = mod(i, 289.0);
+  vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
+  + i.x + vec3(0.0, i1.x, 1.0 ));
+  vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy),
+    dot(x12.zw,x12.zw)), 0.0);
+  m = m*m ;
+  m = m*m ;
+  vec3 x = 2.0 * fract(p * C.www) - 1.0;
+  vec3 h = abs(x) - 0.5;
+  vec3 ox = floor(x + 0.5);
+  vec3 a0 = x - ox;
+  m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+  vec3 g;
+  g.x  = a0.x  * x0.x  + h.x  * x0.y;
+  g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+  return 130.0 * dot(m, g);
+}
+
+// adapted from larry gritz advanced renderman noises.h
+/* fractional Brownian motion
+ * Inputs: 
+ *    p     position
+ *    octaves        max # of octaves to calculate
+ *    lacunarity     frequency spacing between successive octaves
+ *    gain           scaling factor between successive octaves
+ */
+
+/* A vector-valued antialiased fBm. */
+vec2 vfBm (vec2 p, float octaves, float lacunarity, float gain)
+{
+    vec2 sum;
+
+    float amp = 1.0;
+    vec2 pp = p;
+    float i;
+
+	for (int i = 0;  i < 2;  i += 1) 
+	{
+		vec2 d = vec2(snoise(pp));
+  		sum += amp * d;
+  		amp *= gain;  
+  		pp *= lacunarity;  
+    } 
+    return sum;
+}
+
+// adapted from larry gritz oak.sl and oak.h
+
+float oaktexture (vec2 Pshad,
+float dPshad,
+float ringfreq,
+float ringunevenness,
+float grainfreq,
+float ringnoise,
+float ringnoisefreq,
+float trunkwobble,
+float trunkwobblefreq,
+float angularwobble,
+float angularwobblefreq,
+float ringy,
+float grainy)
+{
+vec2 offset = vfBm(Pshad*ringnoisefreq, 2.0, 4.0, 0.5);
+
+vec2 Pring = Pshad + ringnoise*offset;
+vec2 d = vec2(snoise(vec2(Pshad[1]*trunkwobblefreq)) );
+Pring += trunkwobble * d * vec2(1.0,1.0);
+
+float r = sqrt(Pring[0]*Pring[0] + Pring[1]*Pring[1]) * ringfreq;
+r += angularwobble * smoothstep(0.0,5.0,r) * snoise (angularwobblefreq*(Pring)*vec2(1.0,0.1));
+
+r += ringunevenness*snoise(vec2(r));
+
+float inring = smoothpulsetrain (.1, .55, .7, .95, 1.0, r);
+
+vec2 Pgrain = Pshad*grainfreq*vec2(1.0,0.0);
+float dPgrain = dPshad; 
+float grain = 0.0;
+float  amp=1.0; // 234
+for (int i = 0; i < 2; i++) 
+{
+	float grain1valid = 1.0-smoothstep(.2,.6,dPgrain);
+	if (grain1valid > 0.0) {
+	float g = grain1valid * snoise (Pgrain);
+	g *= (0.3 + 0.7*inring);
+	g = pow(clamp(0.8 - (g),0.0,1.0),2.0); //242
+	g = grainy * smoothstep (0.5, 1.0, g);
+	if (i == 0)
+		inring *= (1.0-0.4*grain1valid);
+	grain = max (grain, g);
+}
+Pgrain *= 2.0;
+dPgrain *= 2.0;
+amp *= 0.5;
+}
+return mix (inring*ringy, 1.0, grain);
+}
+
+
 // main
 void main() 
 {
 	vec4 DarkWoodColor = vec4( 0.8, 0.5, 0.1, 1.0 );
 	vec4 LightWoodColor = vec4( 1.0, 0.75, 0.25, 1.0 );
-	
-	vec2 uv = vUv	; //gl_FragCoord.xy / iResolution.xy;
-    uv = uv * 2.0 - 1.0;
-    uv.x *= iResolution.x / iResolution.y;    
-    float time = iTime * 0.3 + iMouse.x*0.01;
-	// Transform the texture coordinates to define the
-	// "slice" of the log.
-//	vec4 cyl = Slice * vec4( uv, 0.0, 1.0 );
-	vec4 cyl =  vec4( uv, 0.0, 1.0 );
-	// The distance from the log's y axis.
-	float dist = length(cyl.xz);
-	// Perturb the distance using the noise texture
-	
-	dist += noise(uv);
-	// Determine the color as a mixture of the light and
-	// dark wood colors.
-	 float t = 1.0 - abs( fract( dist ) * 2.0 - 1.0 );
-    t = smoothstep( 0.2, 0.5, t );
-	vec4 color = mix( DarkWoodColor, LightWoodColor, t);        
-    // post
+	float Sharpness = 0.01; // sharpness of the grain. hand tweaked because we lack derivatives.
+float ringunevenness = 0.5;
+float ringnoise = 0.02;
+float ringnoisefreq = 1.0;
+float grainfreq = 25.0;
+float trunkwobble = 0.15;
+float trunkwobblefreq = 0.025;
+float angularwobble = 1.0;
+float angularwobblefreq = 1.5;
+float ringy = 1.0;
+float grainy = 0.1;
+
+	float wood = oaktexture (vUv*5.0, Sharpness, ringfreq, ringunevenness, grainfreq,
+	ringnoise, ringnoisefreq, trunkwobble, trunkwobblefreq,
+	angularwobble, angularwobblefreq, ringy, grainy); 
+	vec4 color = mix( DarkWoodColor, LightWoodColor, wood);        
 	gl_FragColor =color;
 }
 
 
 		</script>
+
+<script>
+function setupGui() 
+{
+
+	ctrls = 
+	{
+		ringfreq : 18.0,
+
+	};
+	var h;
+	var gui = new dat.GUI({autoPlace: true} );
+	h = gui.addFolder( "albedo" );
+
+	h.add( ctrls, "ringfreq", 0.0, 100.0, 1.0 ).name( "ringfreq" ).onChange( function(){ needsUpdate=true;  } );
+	var customContainer = $('.moveGUI').append($(gui.domElement));
+
+}
+
+</script>
+
+
 
 		<script type="module">
 
@@ -88,12 +241,13 @@ void main()
 			var uniforms;
 
 			init();
+
 			animate();
 
 			function init() {
 
 				container = document.getElementById( 'container' );
-
+				setupGui();
 				camera = new THREE.OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
 
 				scene = new THREE.Scene();
@@ -103,7 +257,8 @@ void main()
 				uniforms = {
 					"iTime": { value: 1.0 },
 					"iMouse" : { type: "v2", value : new THREE.Vector2(0,0) },
-					"iResolution" : { type: "v3", value : new THREE.Vector3(window.innerWidth, window.innerHeight,0) }
+					"iResolution" : { type: "v3", value : new THREE.Vector3(window.innerWidth, window.innerHeight,0) },
+					"ringfreq" : { value : 18.0}
 				};
 
 				var material = new THREE.ShaderMaterial( {
@@ -160,9 +315,10 @@ void main()
 			{
 
 				requestAnimationFrame( animate );
-				uniforms[ "iTime" ].value = timestamp / 1000;
-				uniforms[ "iResolution" ].value = new THREE.Vector2(window.innerWidth,window.innerHeight);
-				uniforms[ "iMouse" ].value = mouse;
+				uniforms["iTime"].value = timestamp / 1000;
+				uniforms["iResolution"].value = new THREE.Vector2(window.innerWidth,window.innerHeight);
+				uniforms["iMouse"].value = mouse;
+				uniforms["ringfreq"].value=ctrls.ringfreq;
 				renderer.render( scene, camera );
 			}
 
