@@ -20,6 +20,19 @@ Note:
 I've been programming for a long time (40 years) but I started at about your age. Whilst my background is not in programming I have always used computers and programming in my jobs.
 No it is mainly teaching programming to animators.
 
+
+--
+
+## [This got me hooked on Graphics](https://10print.org/)
+``` 
+10 PRINT CHR$ (205.5 + RND (1)); : GOTO 10  
+```
+
+  <video controls>
+    <source data-src="video/c64.m4v" type="video/mp4" />
+  </video>
+
+
 ---
 
 ## Can you see any programming?
@@ -229,13 +242,21 @@ Vec3 motionFunction(const State &_state)
 
 ## Anyone know what this is?
 
-<a href="examples/noise/index.html" target="popup" onclick="popupWindow('examples/noise/index.html','selection',520,580);"><img src="images/run.png"></a>
+<a href="examples/noise/index.html" target="popup" onclick="popupWindow('examples/noise/index.html','selection',520,520);"><img src="images/run.png"></a>
 
 --
 
 ### Noise is used everywhere in Animation
 
 <iframe width="1200px" height="600px" src="examples/tunnel/index.html"></iframe>
+
+
+--
+
+### Procedural Water
+
+
+<iframe width="640" height="320px" src="examples/water/index.html"></iframe>
 
 
 --
