@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>three.js webgl - shader [Monjori]</title>
+		<title>Water</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="main.css">
@@ -9,13 +9,10 @@
 	<body>
 
 		<div id="container"></div>
-	
-
 		<script id="vertexShader" type="x-shader/x-vertex">
-
 			varying vec2 vUv;
-
-			void main()	{
+			void main()	
+			{
 
 				vUv = uv;
 
@@ -35,7 +32,7 @@
 varying vec2 vUv;
 uniform float iTime;
 uniform vec3 iResolution;
-uniform vec4 iMouse;
+uniform vec2 iMouse;
 
 
 const int NUM_STEPS = 8;
@@ -172,14 +169,17 @@ float heightMapTracing(vec3 ori, vec3 dir, out vec3 p) {
     if(hx > 0.0) return tx;   
     float hm = map(ori + dir * tm);    
     float tmid = 0.0;
-    for(int i = 0; i < NUM_STEPS; i++) {
+	for(int i = 0; i < NUM_STEPS; i++) 
+	{
         tmid = mix(tm,tx, hm/(hm-hx));                   
         p = ori + dir * tmid;                   
     	float hmid = map(p);
 		if(hmid < 0.0) {
         	tx = tmid;
             hx = hmid;
-        } else {
+		} 
+		else 
+		{
             tm = tmid;
             hm = hmid;
         }
@@ -227,7 +227,8 @@ void main( ) {
 			var container;
 
 			var camera, scene, renderer;
-
+			var mouse= new THREE.Vector2();
+			var clicked=false;
 			var uniforms;
 
 			init();
@@ -245,7 +246,7 @@ void main( ) {
 
 				uniforms = {
 					"iTime": { value: 1.0 },
-					"iMouse" : { type: "v4", value : new THREE.Vector4(0,0,0,0) },
+					"iMouse" : { type: "v2", value : new THREE.Vector2(0,0) },
 					"iResolution" : { type: "v3", value : new THREE.Vector3(window.innerWidth, window.innerHeight,0) }
 				};
 
@@ -268,51 +269,45 @@ void main( ) {
 
 				window.addEventListener( 'resize', onWindowResize, false );
 				window.addEventListener('mousemove', onDocumentMouseMove, false);
-				window.addEventListener('mouseup', onMouseDown, false);
-				window.addEventListener('mousedown', onMouseUp, false);
+				window.addEventListener('mouseup', onMouseUp, false);
+				window.addEventListener('mousedown', onMouseDown, false);
 
 			}
 
-			function onWindowResize() {
-
+			function onWindowResize() 
+			{
 				renderer.setSize( window.innerWidth, window.innerHeight );
-				uniforms.iResolution.x=window.innerWidth;
-				uniforms.iResolution.y= window.innerHeight; 
-
 			}
 
 			function onMouseDown(event)
 			{
-				uniforms.iMouse.z=1;
 
+				clicked=true;
 			} 
 			function onMouseUp(event)
 			{
-				uniforms.iMouse.z=0;
+			   clicked=false;
 
 			} 
 
 			function onDocumentMouseMove(event) 
 			{
     		event.preventDefault();
-			  var mous= new THREE.Vector2();
-    		mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    		mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-				uniforms.iMouse.x=mouse.x;
-				uniforms.iMouse.y=mouse.y;
-	}
+    		if(clicked)
+			{
+				mouse.x = (event.clientX);// / window.innerWidth) * 2 - 1;
+				mouse.y = (event.clientY);// / window.innerHeight) * 2 + 1;
+			}
+			}
 
-			//
-
-			function animate( timestamp ) {
+			function animate( timestamp ) 
+			{
 
 				requestAnimationFrame( animate );
-
 				uniforms[ "iTime" ].value = timestamp / 1000;
-				uniforms.iResolution.x=window.innerWidth;
-				uniforms.iResolution.y= window.innerHeight; 
+				uniforms[ "iResolution" ].value = new THREE.Vector2(window.innerWidth,window.innerHeight);
+				uniforms[ "iMouse" ].value = mouse;
 				renderer.render( scene, camera );
-
 			}
 
 		</script>

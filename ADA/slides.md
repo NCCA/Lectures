@@ -255,8 +255,8 @@ Vec3 motionFunction(const State &_state)
 
 ### Procedural Water
 
+<a href="examples/noise/index.html" target="popup" onclick="popupWindow('examples/water/index.html','selection',640,320);"><img src="images/run.png"></a>
 
-<iframe width="640" height="320px" src="examples/water/index.html"></iframe>
 
 
 --
