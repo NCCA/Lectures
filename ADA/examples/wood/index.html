@@ -1,32 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>Wood</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<link type="text/css" rel="stylesheet" href="main.css">
-	</head>
+<head>
+	<title>Wood</title>
+</head>
 	<body>
+	<div id="container"></div>
+	<div  class=".moveGUI"></div>
+	<script src="/jmacey/js/jquery/jquery.min.js"></script>
+	<script src="/jmacey/js/jquery-ui/jquery-ui.min.js"></script>
+	<script src='/jmacey/Lectures/OpenGL/js/dat.gui.min.js'></script>
+	<script id="vertexShader2" type="x-shader/x-vertex" src="vertex.glsl"></script>
 
-		<div id="container"></div>
-		<div  class=".moveGUI"></div>
-		<script src="/jmacey/js/jquery/jquery.min.js"></script>
-		<script src="/jmacey/js/jquery-ui/jquery-ui.min.js"></script>
+	<script id="vertexShader" type="x-shader/x-vertex">
+  varying vec2 vUv;
+  uniform mat4 textureRotation;
 
-		<script src='/jmacey/Lectures/OpenGL/js/dat.gui.min.js'></script>
+  void main()	
+  {
+    vUv = mat2(textureRotation)*uv;
+    gl_Position = vec4( position, 1.0 );
+  }
 
-		<script id="vertexShader" type="x-shader/x-vertex">
-			varying vec2 vUv;
-			void main()	
-			{
-
-				vUv = uv;
-
-				gl_Position = vec4( position, 1.0 );
-
-			}
-
-		</script>
+	</script>
 
 <script id="fragmentShader" type="x-shader/x-fragment">
 varying vec2 vUv;
@@ -45,6 +40,7 @@ uniform float angularwobble;
 uniform float angularwobblefreq;
 uniform float ringy;
 uniform float grainy;
+uniform float spread;
 
 // adapted from larry gritz advanced renderman patterns.h
 float smoothpulse (float e0, float e1, float e2, float e3, float x)
@@ -181,15 +177,14 @@ void main()
 	vec4 LightWoodColor = vec4( 1.0, 0.75, 0.25, 1.0 );
 	float Sharpness = 0.01; // sharpness of the grain. hand tweaked because we lack derivatives.
 
-	float wood = oaktexture (vUv*5.0, Sharpness, ringfreq, ringunevenness, grainfreq,
+	float wood = oaktexture (vUv*spread, Sharpness, ringfreq, ringunevenness, grainfreq,
 	ringnoise, ringnoisefreq, trunkwobble, trunkwobblefreq,
 	angularwobble, angularwobblefreq, ringy, grainy); 
 	vec4 color = mix( DarkWoodColor, LightWoodColor, wood);        
 	gl_FragColor =color;
 }
 
-
-		</script>
+</script>
 
 <script>
 function setupGui() 
@@ -197,6 +192,8 @@ function setupGui()
 
 	ctrls = 
 	{
+		textureRotation : 0.0,
+		spread : 5.0,
 		ringfreq : 18.0,
 		ringunevenness : 0.5,
 		ringnoise : 0.02,
@@ -212,20 +209,18 @@ function setupGui()
 	};
 	var h;
 	var gui = new dat.GUI({autoPlace: true} );
-	h = gui.addFolder( "Wood" );
-
-	h.add( ctrls, "ringfreq", 0.0, 100.0, 1.0 ).name( "ringfreq" ).onChange( function(){ needsUpdate=true;  } );
-	h.add( ctrls, "ringunevenness", 0.0, 5.0, 0.1 ).name( "ringunevenness" ).onChange( function(){ needsUpdate=true;  } );
-	h.add( ctrls, "ringnoise", 0.0, 1.0, 0.001 ).name( "ringnoise" ).onChange( function(){ needsUpdate=true;  } );
-	h.add( ctrls, "ringnoisefreq", 0.0, 5.0, 0.01 ).name( "ringnoisefreq" ).onChange( function(){ needsUpdate=true;  } );
-	h.add( ctrls, "grainfreq", 0.0, 100.0, 1.0 ).name( "grainfreq" ).onChange( function(){ needsUpdate=true;  } );
-	h.add( ctrls, "trunkwobble", 0.0, 5.0, 0.01 ).name( "trunkwobble" ).onChange( function(){ needsUpdate=true;  } );
-	h.add( ctrls, "trunkwobblefreq", 0.0, 2.0, 0.001 ).name( "trunkwobblefreq" ).onChange( function(){ needsUpdate=true;  } );
-	h.add( ctrls, "angularwobble", 0.0, 5.0, 0.01 ).name( "angularwobble" ).onChange( function(){ needsUpdate=true;  } );
-	h.add( ctrls, "ringy", 0.0, 5.0, 0.01 ).name( "ringy" ).onChange( function(){ needsUpdate=true;  } );
-	h.add( ctrls, "grainy", 0.0, 5.0, 0.01 ).name( "grainy" ).onChange( function(){ needsUpdate=true;  } );
-
-
+	gui.add( ctrls, "spread", 1.0, 10.0, 1.0 ).name( "spread");
+	gui.add(ctrls,"textureRotation",0.0,360.0,1).name("texture rotation");
+	gui.add( ctrls, "ringfreq", 0.0, 100.0, 1.0 ).name( "ringfreq");
+	gui.add( ctrls, "ringunevenness", 0.0, 5.0, 0.1 ).name( "ringunevenness" );
+	gui.add( ctrls, "ringnoise", 0.0, 1.0, 0.001 ).name( "ringnoise" );
+	gui.add( ctrls, "ringnoisefreq", 0.0, 5.0, 0.01 ).name( "ringnoisefreq");
+	gui.add( ctrls, "grainfreq", 0.0, 100.0, 1.0 ).name( "grainfreq");
+	gui.add( ctrls, "trunkwobble", 0.0, 5.0, 0.01 ).name( "trunkwobble");
+	gui.add( ctrls, "trunkwobblefreq", 0.0, 2.0, 0.001 ).name( "trunkwobblefreq");
+	gui.add( ctrls, "angularwobble", 0.0, 5.0, 0.01 ).name( "angularwobble");
+	gui.add( ctrls, "ringy", 0.0, 5.0, 0.01 ).name( "ringy");
+	gui.add( ctrls, "grainy", 0.0, 5.0, 0.01 ).name( "grainy");
 	var customContainer = $('.moveGUI').append($(gui.domElement));
 
 }
@@ -235,22 +230,31 @@ function setupGui()
 
 
 		<script type="module">
-
 			import * as THREE from '/jmacey/js/three.js/three.module.js';
-
 			var container;
-
 			var camera, scene, renderer;
 			var mouse= new THREE.Vector2();
 			var clicked=false;
 			var uniforms;
+			function ShaderLoader(vertex_url, fragment_url, onLoad, onProgress, onError) 
+			{
+			var vertex_loader = new THREE.XHRLoader(THREE.DefaultLoadingManager);
+			vertex_loader.setResponseType('text');
+			vertex_loader.load(vertex_url, function (vertex_text) {
+				var fragment_loader = new THREE.XHRLoader(THREE.DefaultLoadingManager);
+				fragment_loader.setResponseType('text');
+				fragment_loader.load(fragment_url, function (fragment_text) {
+				onLoad(vertex_text, fragment_text);
+				});
+			}, onProgress, onError);
+			}
 
 			init();
 
 			animate();
 
-			function init() {
-
+			function init() 
+			{
 				container = document.getElementById( 'container' );
 				setupGui();
 				camera = new THREE.OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
@@ -263,6 +267,7 @@ function setupGui()
 					"iTime": { value: 1.0 },
 					"iMouse" : { type: "v2", value : new THREE.Vector2(0,0) },
 					"iResolution" : { type: "v3", value : new THREE.Vector3(window.innerWidth, window.innerHeight,0) },
+					"spread" : { value : 5.0},
 					"ringfreq" : { value : 18.0},
 					"ringunevenness" : { value :0.5},
 					"ringnoise" : { value :0.02},
@@ -273,9 +278,13 @@ function setupGui()
 					"angularwobble" : { value :1.0},
 					"angularwobblefreq" : { value :1.5},
 					"ringy" : { value :1.0},
-					"grainy" :{ value : 0.1}
+					"grainy" :{ value : 0.1},
+					"textureRotation" : {type : "m4", value : new THREE.Matrix4()}
+
 				};
 
+
+				
 				var material = new THREE.ShaderMaterial( {
 
 					uniforms: uniforms,
@@ -325,7 +334,10 @@ function setupGui()
 				mouse.y = (event.clientY);// / window.innerHeight) * 2 + 1;
 			}
 			}
-
+			function radians(degrees) 
+			{
+  			return degrees * Math.PI / 180;
+			}
 			function animate( timestamp ) 
 			{
 
@@ -333,6 +345,7 @@ function setupGui()
 				uniforms["iTime"].value = timestamp / 1000;
 				uniforms["iResolution"].value = new THREE.Vector2(window.innerWidth,window.innerHeight);
 				uniforms["iMouse"].value = mouse;
+				uniforms["spread"].value=ctrls.spread;
 				uniforms["ringfreq"].value=ctrls.ringfreq;
 				uniforms["ringunevenness"].value=ctrls.ringunevenness;
 				uniforms["ringnoise"].value=ctrls.ringnoise;
@@ -344,8 +357,10 @@ function setupGui()
 				uniforms["angularwobblefreq"].value=ctrls.angularwobblefreq;
 				uniforms["ringy"].value=ctrls.ringy;
 				uniforms["grainy"].value=ctrls.grainy;
-
-
+				var cosTheta=Math.cos(radians(ctrls.textureRotation));
+				var sinTheta=Math.sin(radians(ctrls.textureRotation));
+				uniforms.textureRotation.value = new THREE.Matrix4();	
+				uniforms.textureRotation.value.set(cosTheta,sinTheta,0,0,-sinTheta,cosTheta,0,0,0,0,0,0,0,0,0);
 				renderer.render( scene, camera );
 			}
 
