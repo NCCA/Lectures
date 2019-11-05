@@ -9,9 +9,9 @@
 
 ## About me
 
-- My first computer was a Texas Instruments Ti 99 (followed by a Vic 20 then a PC)
+- My first computer was a Texas Instruments Ti 99 (followed by a Vic 20 then a PC).
 - Been programming since 1979!
-- Did a degree in Electronics, then MSc in Computer Animation
+- Did a degree in Electronics, then MSc in Computer Animation.
 - Teach programming and Maths to Animators.
 
 <img src="images/computers.png" width="60%">
@@ -50,9 +50,9 @@ I'm going to show you a video, all of this work is from our students at the NCCA
 
 ## Thinking like a programmer
 
-- Most programming task require you to think in a certain way
-  - Algorithms (how to do a task)
-  - Data Structures (how we represent things)
+- Most programming task require you to think in a certain way.
+  - Algorithms (how to do a task).
+  - Data Structures (how we represent things).
 - This "computational thinking" approach can be applied lots of subjects.
 
 Note: 
@@ -129,9 +129,9 @@ I get asked this a lot, to me it doesn't really matter. It's a bit like learning
 ## Which Language should I choose?
 
 - Programming languages are tools, choose the one best suited to the job.
-- These slides are written in Javascript and HTML
-- The demos are written in C++ and converted to WebAssembly using a tool called emscipten
-- I use at least 5 programming languages on a regular basis
+- These slides are written in Javascript and HTML.
+- The demos are written in C++ and converted to WebAssembly using a tool called emscipten.
+- I use at least 5 programming languages on a regular basis.
 
 --
 
@@ -141,12 +141,11 @@ I get asked this a lot, to me it doesn't really matter. It's a bit like learning
 
 ---
 
-
-#### Whats the best thing about being an animator or VFX artist?
+> Whats the best thing about being an animator or VFX artist?
 
 --
 
-## You get to break things
+## You get to break things.
 
   <video controls loop autoplay="autoplay">
     <source data-src="video/smash.mp4" type="video/mp4" loop autoplay="autoplay"/>
@@ -164,7 +163,7 @@ I get asked this a lot, to me it doesn't really matter. It's a bit like learning
 
 --
 
-## Smash Things
+## Smash Things.
 
 <video controls loop autoplay="autoplay">
     <source data-src="video/wallsmash.mp4" type="video/mp4" loop autoplay="autoplay"/>
@@ -183,7 +182,7 @@ I get asked this a lot, to me it doesn't really matter. It's a bit like learning
 
 --
 
-### Programming Houdini is a bit like scratch
+#### Programming Houdini is a bit like using scratch.
 
 <video controls loop autoplay="autoplay">
     <source data-src="video/scratch.mp4" type="video/mp4" />
@@ -246,14 +245,14 @@ Vec3 motionFunction(const State &_state)
 
 --
 
-### Noise is used everywhere in Animation
+### Noise is used everywhere in Animation.
 
 <iframe width="1200px" height="600px" src="examples/tunnel/index.html"></iframe>
 
 
 --
 
-### Procedural Water
+### Procedural Water.
 
 <a href="examples/noise/index.html" target="popup" onclick="popupWindow('examples/water/index.html','selection',640,320);"><img src="images/run.png"></a>
 
@@ -474,7 +473,7 @@ void main()
 
 --
 
-## Wood
+## Wood.
 
 <a href="examples/wood/index.html" target="popup" onclick="popupWindow('examples/wood/index.html','selection',640,320);"><img src="images/run.png"></a>
 
@@ -482,7 +481,7 @@ void main()
 
 --
 
-## We also hate noise
+## Noise can also be a problem!
 
 <iframe src="../Renderman/Lecture3Lighting/denoise.html" width="720px" height="512px"> </iframe>
 
@@ -516,14 +515,14 @@ void main()
 
 ## Abstraction
 - abstraction is the thought process wherein ideas are distanced from objects.
-- Abstraction uses a strategy of simplification of detail
-  - details are left ambiguous, vague, or undefined
-- This is one of the core "principles we apply when programming"
+- Abstraction uses a strategy of simplification of detail,
+  - details are left ambiguous, vague, or undefined.
+- This is one of the core principles we apply when programming.
 
 
 ---
 
-## Let's design some code
+## Let's design some code.
 
   <video controls>
     <source data-src="video/Golaem.mp4" type="video/mp4" />
@@ -531,16 +530,16 @@ void main()
 
 --
 
-## Let's design some code
+## Let's design some code.
 
-- This example shows a finished flocking system
+- This example shows a finished flocking system.
 
 
  <a href="examples/flock/index.html" target="popup" onclick="popupWindow('examples/flock/index.html','Iteration',1400,900);"> <img src="images/run.png"> </a>
 
 --
 
-## Lets do some Abstraction
+## Lets do some Abstraction.
 
 - what shall we call this?
 
@@ -567,7 +566,7 @@ struct Boid
 
 --
 
-### Now some rules
+### Now some rules.
 
 <div class="row">
   <div class="column" style="float: left;width: 30%;padding: 5px;">
