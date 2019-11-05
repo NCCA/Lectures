@@ -679,7 +679,27 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 
 ---
 
-## Tools and Support
+## Adding Textures
+
+<img src="images/pbrtexture.png" width="180%">
+
+
+--
+
+## Adding Textures
+
+- Most of the parameters we have been discussing can be better controlled via textures
+- Textures can either be image based as in the previous example or via procedural shaders (OSL)
+- The Substance suite of tools allows for these to be developed.
+
+--
+
+## Adding Textures
+
+<img src="images/texturemaya.png" width="180%">
+
+
+
 
 ---
 
