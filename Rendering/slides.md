@@ -101,7 +101,7 @@ jmacey@bournemouth.ac.uk
 - Beginnings of photorealism in CGI
 - Normal Mapping
 - Better GPU's
-- Introduction of Physically Based Models ()
+- Introduction of Physically Based Models 
 
 --
 
@@ -476,7 +476,7 @@ for each light:
 
 <a href="https://blog.selfshadow.com/publications/s2015-shading-course/hoffman/s2015_pbs_physics_math_slides.pdf#page=53"><img src="images/microfacet.png" width="100%"></a>
 
-- Each point is locally a perfect mirror reflecting each incoming ray of light into one outgoing direction, which depends on the light direction l and the microfacet normal m.
+- Each point is locally a perfect mirror reflecting each incoming ray of light into one outgoing direction, which depends on the light direction $\mathbf{l}$ and the microfacet normal $\mathbf{m}$.
 
 
 --
