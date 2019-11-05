@@ -142,13 +142,13 @@ I get asked this a lot, to me it doesn't really matter. It's a bit like learning
 ---
 
 
-## Whats the best thing about being an animator?
+#### Whats the best thing about being an animator or VFX artist?
 
 --
 
 ## You get to break things
 
-  <video controls>
+  <video controls loop autoplay="autoplay">
     <source data-src="video/smash.mp4" type="video/mp4" loop autoplay="autoplay"/>
   </video>
 
@@ -157,7 +157,7 @@ I get asked this a lot, to me it doesn't really matter. It's a bit like learning
 
 ## And blow them up!
 
-<video controls>
+<video controls loop autoplay="autoplay">
     <source data-src="video/explode.mp4" type="video/mp4" loop autoplay="autoplay"/>
   </video>
 
@@ -166,7 +166,7 @@ I get asked this a lot, to me it doesn't really matter. It's a bit like learning
 
 ## Smash Things
 
-<video controls>
+<video controls loop autoplay="autoplay">
     <source data-src="video/wallsmash.mp4" type="video/mp4" loop autoplay="autoplay"/>
   </video>
 
@@ -175,7 +175,7 @@ I get asked this a lot, to me it doesn't really matter. It's a bit like learning
 
 ## Or Throw things at Zombies!
 
-<video controls>
+<video controls loop autoplay="autoplay">
     <source data-src="video/zombies.mp4" type="video/mp4" loop autoplay="autoplay"/>
   </video>
 
@@ -185,8 +185,8 @@ I get asked this a lot, to me it doesn't really matter. It's a bit like learning
 
 ### Programming Houdini is a bit like scratch
 
-<video controls>
-    <source data-src="video/scratch.mp4" type="video/mp4" loop autoplay="autoplay"/>
+<video controls loop autoplay="autoplay">
+    <source data-src="video/scratch.mp4" type="video/mp4" />
   </video>
 
 ---
@@ -491,7 +491,6 @@ void main()
 
 
 
-
 ---
 
 
@@ -591,7 +590,7 @@ struct Boid
 
 <img src="images/seperation.png" alt="sepatation" style="width:20%">
 
-- Given an array of all boids how can we implement this algorithm?
+- Given an array of all Boids how can we implement this algorithm?
 
 <textarea id="design1" rows="6" cols="25" style="font-size: 24pt"></textarea>
 
@@ -599,16 +598,44 @@ Note:
 Basically we need to traverse through the array (or list) and create a new list containing any of the boids in the radius. We then give them a force (Vector) to move them so they are the distance we need them to be apart.
 
 
+--
+
+## Alignment
+
+<img src="images/allignment.png" alt="allignment" style="width:20%">
+
+- Given an array of all Boids how can we implement this algorithm?
+
+<textarea id="design1" rows="6" cols="25" style="font-size: 24pt"></textarea>
+
+Note:
+Basically we need to traverse through the array (or list) and create a new list containing any of the boids in the radius. Add up all the directions and calculate the average!
+
+--
+
+## Cohesion
+
+<img src="images/cohesion.png" alt="cohesion" style="width:20%">
+
+- Given an array of all Boids how can we implement this algorithm?
+
+<textarea id="design1" rows="6" cols="25" style="font-size: 24pt"></textarea>
+
+Note:
+Basically we need to traverse through the array (or list) and create a new list containing any of the boids in the radius. We then give them a force (Vector) to move them so they are the distance we need them to be apart.
+
+
+
+
 ---
 
 ## Resources
 
-- [shader toy](https://www.shadertoy.com)
-
-
---
-
-## References
-
-
+- [shader toy for shader programming](https://www.shadertoy.com)
+- [Blender free OpenSource Animation tool](https://www.blender.org/)
+- [Jon's lecture notes](https://nccastaff.bournemouth.ac.uk/jmacey/)
+- [scratch](https://scratch.mit.edu/)
+- [Screen Skills info about 3d careers](https://www.screenskills.com/)
+- [Houdini ](https://www.sidefx.com/)
+- [Maya](https://www.autodesk.co.uk/products/maya/overview)
 
