@@ -544,6 +544,13 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
 
 --
 
+## Example 
+
+<a href="../ADA/examples/water/index.html" target="popup" onclick="popupWindow('../ADA/examples/water/index.html','selection',640,320);"><img src="../ADA/images/run.png"></a>
+
+
+--
+
 ## Normal Distribution Function
 
 `$$f(\mathbf{l}, \mathbf{v})=\frac{F(\mathbf{l}, \mathbf{h}) G(\mathbf{l}, \mathbf{v}, \mathbf{h}) \color{red}{D(\mathbf{h})}}{4(\mathbf{n} \cdot \mathbf{l})(\mathbf{n} \cdot \mathbf{v})}$$`

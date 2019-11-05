@@ -28,7 +28,21 @@
     <script src="/jmacey/js/reveal.js/lib/js/head.min.js"></script>
     <script src="/jmacey/js/reveal.js/js/reveal.js"></script>
     <script src="/jmacey/js/jquery/jquery.min.js"></script>
+    <link rel="stylesheet" href="/jmacey/js/codemirror/codemirror.css">
+    <script src="/jmacey/js/codemirror/codemirror.js"></script>
+   
     <script>
+      function popupWindow(url, title, w, h) 
+      {
+        var win =  window.parent; 
+        const y = win.top.outerHeight / 2 + win.top.screenY - ( h / 2);
+        const x = win.top.outerWidth / 2 + win.top.screenX - ( w / 2);
+        return win.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+y+', left='+x);
+      }
+      </script>
+  
+   
+   <script>
       // this is a uniqe id for the slide for saving notes later I will update to use IndexedDB but 
       // this will work on all systems
       var gSlideID='Rendering';
