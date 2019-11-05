@@ -548,6 +548,8 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
 
 <a href="../ADA/examples/water/index.html" target="popup" onclick="popupWindow('../ADA/examples/water/index.html','selection',640,320);"><img src="../ADA/images/run.png"></a>
 
+[based on this shader toy demo](https://www.shadertoy.com/view/Ms2SD1)
+
 
 --
 
