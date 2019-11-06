@@ -481,14 +481,13 @@ void main()
 
 --
 
-## Noise can also be a problem!
+### Noise can also be a problem!
+
+`$$\tiny L_{\text{o}}(\mathbf x,\, \omega_{\text{o}},\, \lambda,\, t) \,= \int_\Omega f_r(\mathbf x,\, \omega_{\text{i}},\, \omega_{\text{o}},\, \lambda,\, t)\, L_{\text{i}}(\mathbf x,\, \omega_{\text{i}},\, \lambda,\, t)\, (\omega_{\text{i}}\,\cdot\,\mathbf n)\, \operatorname d \omega_{\text{i}} $$`
 
 <iframe src="../Renderman/Lecture3Lighting/denoise.html" width="720px" height="512px"> </iframe>
 
-
 - but we now use Machine Learning and AI to get rid of it.
-
-
 
 ---
 
