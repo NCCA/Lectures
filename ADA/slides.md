@@ -147,8 +147,8 @@ I get asked this a lot, to me it doesn't really matter. It's a bit like learning
 
 ## You get to break things.
 
-  <video controls loop autoplay="autoplay">
-    <source data-src="video/smash.mp4" type="video/mp4" loop autoplay="autoplay"/>
+  <video controls loop >
+    <source data-src="video/smash.mp4" type="video/mp4" loop >
   </video>
 
 
@@ -156,8 +156,8 @@ I get asked this a lot, to me it doesn't really matter. It's a bit like learning
 
 ## And blow them up!
 
-<video controls loop autoplay="autoplay">
-    <source data-src="video/explode.mp4" type="video/mp4" loop autoplay="autoplay"/>
+<video controls loop >
+    <source data-src="video/explode.mp4" type="video/mp4" loop >
   </video>
 
 
@@ -165,8 +165,8 @@ I get asked this a lot, to me it doesn't really matter. It's a bit like learning
 
 ## Smash Things.
 
-<video controls loop autoplay="autoplay">
-    <source data-src="video/wallsmash.mp4" type="video/mp4" loop autoplay="autoplay"/>
+<video controls loop >
+    <source data-src="video/wallsmash.mp4" type="video/mp4" loop >
   </video>
 
 
@@ -174,8 +174,8 @@ I get asked this a lot, to me it doesn't really matter. It's a bit like learning
 
 ## Or Throw things at Zombies!
 
-<video controls loop autoplay="autoplay">
-    <source data-src="video/zombies.mp4" type="video/mp4" loop autoplay="autoplay"/>
+<video controls loop >
+    <source data-src="video/zombies.mp4" type="video/mp4" loop >
   </video>
 
 
@@ -184,7 +184,7 @@ I get asked this a lot, to me it doesn't really matter. It's a bit like learning
 
 #### Programming Houdini is a bit like using scratch.
 
-<video controls loop autoplay="autoplay">
+<video controls loop >
     <source data-src="video/scratch.mp4" type="video/mp4" />
   </video>
 
@@ -621,6 +621,12 @@ Basically we need to traverse through the array (or list) and create a new list 
 
 Note:
 Basically we need to traverse through the array (or list) and create a new list containing any of the boids in the radius. We then give them a force (Vector) to move them so they are the distance we need them to be apart.
+
+
+---
+
+
+# Any Questions?
 
 
 
