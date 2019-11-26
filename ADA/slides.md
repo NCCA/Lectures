@@ -404,8 +404,10 @@ void main()
 
 <img src="images/clocks.png" width="100%">
 
-- Animation companies ship Terrabytes of data around the world every day!
-- Security of data and IT tools is very important
+- Animation companies ship Terabytes of data around the world every day!
+
+> DreamWorks'  latest How To Train Your Dragon film, featured 60,000 different dragons, involved 500 billion files and 730TB of data, and required 54,000 CPU cores to render it 
+
 
 --
 
