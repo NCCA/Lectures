@@ -48,98 +48,6 @@ I'm going to show you a video, all of this work is from our students at the NCCA
 ---
 
 
-## Thinking like a programmer
-
-- Most programming task require you to think in a certain way.
-  - Algorithms (how to do a task).
-  - Data Structures (how we represent things).
-- This "computational thinking" approach can be applied lots of subjects.
-
-Note: 
-This is the crux of the thesis, computational thinking is the same for everything, if you can think in this way it doesn't matter what subject you are studying you can use a computer to do it.
-
-
---
-
-## Sequences
-
-<a href="examples/sequence/index.html" target="popup" onclick="popupWindow('examples/sequence/index.html','sequence',400,300)"><img src="images/run.png"></a>
-
-
-```
-drawRed();
-drawGreen();
-drawBlue();
-```
-
-Note:
-
-I'm going to let you into a secret, most programming is actually quite simple, just don't tell anyone. We basically use the following elements to write code.
-
-
---
-
-## [Selection](examples/selection/index.html)
-
-<a href="examples/selection/index.html" target="popup" onclick="popupWindow('examples/selection/index.html','selection',520,580);"><img src="images/run.png"></a>
-
-
-```
-if(keyUpPressed())
-  moveUp();
-else if(keyDownPressed())
-  moveDown();
-else if(keyLeftPressed())
-  moveLeft();
-else if(keyRightPressed())
-  moveRight();  
-```
-
---
-
-## Iteration
-
-
-<a href="examples/iteration/index.html" target="popup" onclick="popupWindow('examples/iteration/index.html','Iteration',520,580);"> <img src="images/run.png"> </a>
-
-```
-while(true)
-{
-  for_each(particle p)
-  {
-    p.update();
-    p.draw();
-  }
-}
-```
-
---
-
-<img src="images/wordcloud.svg" width="80%">
-
-- There are so many languages which should I choose?
-
-Note:
-
-I get asked this a lot, to me it doesn't really matter. It's a bit like learning a language if you knwo
-
-
---
-
-## Which Language should I choose?
-
-- Programming languages are tools, choose the one best suited to the job.
-- These slides are written in Javascript and HTML.
-- The demos are written in C++ and converted to WebAssembly using a tool called emscipten.
-- I use at least 5 programming languages on a regular basis.
-
---
-
-## It's all machine code in the end
-
-<iframe width="1000px" height="800px" src="https://godbolt.org/e?readOnly=true&hideEditorToolbars=true#g:!((g:!((g:!((h:codeEditor,i:(j:1,lang:c%2B%2B,source:'//+Type+your+code+here,+or+load+an+example.%0Aint+square(int+num)+%7B%0A++++return+num+*+num%3B%0A%7D%0A%0Aint+useSquare()%0A%7B%0A++++for(int+i%3D0%3B+i%3C20%3B+%2B%2Bi)%0A++++++++auto+res%3Dsquare(i)%3B%0A%7D%0A'),l:'5',n:'0',o:'C%2B%2B+source+%231',t:'0')),k:50,l:'4',n:'0',o:'',s:0,t:'0'),(g:!((h:compiler,i:(compiler:g92,filters:(b:'0',binary:'1',commentOnly:'0',demangle:'0',directives:'0',execute:'1',intel:'0',libraryCode:'1',trim:'1'),lang:c%2B%2B,libs:!(),options:'',source:1),l:'5',n:'0',o:'x86-64+gcc+9.2+(Editor+%231,+Compiler+%231)+C%2B%2B',t:'0')),k:50,l:'4',n:'0',o:'',s:0,t:'0')),l:'2',n:'0',o:'',t:'0')),version:4"></iframe>
-
----
 
 > Whats the best thing about being an animator or VFX artist?
 
@@ -215,12 +123,7 @@ I get asked this a lot, to me it doesn't really matter. It's a bit like learning
 
 ## Hooke's Law
 
-
-`$$ F = -kx $$`
-
-
-`$$ y_{n+1}=y_{n}+h\sum _{i=1}^{s}b_{i}k_{i} $$`
-
+<img src="images/hookes.png" width="50%">
 
 ```
 Vec3 motionFunction(const State &_state)
@@ -483,40 +386,63 @@ void main()
 
 ### Noise can also be a problem!
 
-`$$\tiny L_{\text{o}}(\mathbf x,\, \omega_{\text{o}},\, \lambda,\, t) \,= \int_\Omega f_r(\mathbf x,\, \omega_{\text{i}},\, \omega_{\text{o}},\, \lambda,\, t)\, L_{\text{i}}(\mathbf x,\, \omega_{\text{i}},\, \lambda,\, t)\, (\omega_{\text{i}}\,\cdot\,\mathbf n)\, \operatorname d \omega_{\text{i}} $$`
-
+<img src="images/rendereq.png" width="60%">
 <iframe src="../Renderman/Lecture3Lighting/denoise.html" width="720px" height="512px"> </iframe>
 
-- but we now use Machine Learning and AI to get rid of it.
 
 ---
 
+### How do I get into Games or Animation?
 
-## What do you see?
-
-<img src="images/guitar.jpg" width="60%">
-
---
-
-## Anyone know the artist?
-
-<img src="images/boat.jpg" width="40%">
+- There are many routes and Jobs 
+  - It's not just about Animation and effects
+- [Screen Skills is a good place to start](https://www.screenskills.com/)
 
 --
 
-## Programming as Art
+## Its a 24 hour industry
 
-<a href="http://www.paulgraham.com/knuth.html"><img src="images/knuth2.png" width="100%"></a>
+<img src="images/clocks.png" width="100%">
 
+- Animation companies ship Terrabytes of data around the world every day!
+- Security of data and IT tools is very important
 
 --
 
+## World Leading R & D
 
-## Abstraction
-- abstraction is the thought process wherein ideas are distanced from objects.
-- Abstraction uses a strategy of simplification of detail,
-  - details are left ambiguous, vague, or undefined.
-- This is one of the core principles we apply when programming.
+- Animation and games companies employ 
+  - Mathematicians
+  - Physicists
+  - Engineers
+  - Computer Scientists
+
+--
+
+## Course at the NCCA
+
+- The National Center for Computer Animation at Bournemouth University has a number of courses.
+  - [BA (Hons) Computer Animation Art and Design](https://www.bournemouth.ac.uk/study/courses/ba-hons-computer-animation-art-design)
+  - [BA (Hons) Computer Animation Technical Arts](https://www.bournemouth.ac.uk/study/courses/ba-hons-computer-animation-technical-arts)
+  - [BA (Hons) Visual Effects](https://www.bournemouth.ac.uk/study/courses/ba-hons-visual-effects)
+
+- Required Subjects :- An Art, Design, Mathematics or Technology subject.
+- 112 - 128 tariff points including a minimum of 2 A levels or equivalent including 32 points in one required subject. 
+
+--
+
+## Which Language should I choose?
+
+- Programming languages are tools, choose the one best suited to the job.
+- These slides are written in Javascript and HTML.
+- The demos are written in C++ and converted to WebAssembly using a tool called emscipten.
+- I use at least 5 programming languages on a regular basis.
+
+--
+
+## It's all machine code in the end
+
+<iframe width="1000px" height="800px" src="https://godbolt.org/e?readOnly=true&hideEditorToolbars=true#g:!((g:!((g:!((h:codeEditor,i:(j:1,lang:c%2B%2B,source:'//+Type+your+code+here,+or+load+an+example.%0Aint+square(int+num)+%7B%0A++++return+num+*+num%3B%0A%7D%0A%0Aint+useSquare()%0A%7B%0A++++for(int+i%3D0%3B+i%3C20%3B+%2B%2Bi)%0A++++++++auto+res%3Dsquare(i)%3B%0A%7D%0A'),l:'5',n:'0',o:'C%2B%2B+source+%231',t:'0')),k:50,l:'4',n:'0',o:'',s:0,t:'0'),(g:!((h:compiler,i:(compiler:g92,filters:(b:'0',binary:'1',commentOnly:'0',demangle:'0',directives:'0',execute:'1',intel:'0',libraryCode:'1',trim:'1'),lang:c%2B%2B,libs:!(),options:'',source:1),l:'5',n:'0',o:'x86-64+gcc+9.2+(Editor+%231,+Compiler+%231)+C%2B%2B',t:'0')),k:50,l:'4',n:'0',o:'',s:0,t:'0')),l:'2',n:'0',o:'',t:'0')),version:4"></iframe>
 
 
 ---
