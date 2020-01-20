@@ -2099,6 +2099,8 @@ lpe:C[<L.>O]
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/kw0gg8oINeM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
+- [good tutorial](https://www.clarissewiki.com/4.0/introduction-to-light-path-exp.html)
+
 
 --
 

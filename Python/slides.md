@@ -51,10 +51,20 @@
 
 ## Getting started
 - At it’s simplest level python can be used as a simple command interpreter
-- We type python into the console and we get a prompt which lets us enter commands
+- We type python into the terminal and we get a prompt which lets us enter commands
+- This is know as the REPL [Read, Eval, Print, Loop](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop)
 - If nothing else we can use this as a basic calculator
 - It is also useful for trying simple bits of code which we wish to put into a larger system
 
+--
+
+## Python 2.7
+
+- Python 2.7 will not be maintained past 1/1/2020. 
+- Most of our Animation tools and pipelines still use Python 2.7
+- The [vfx reference platform](https://vfxplatform.com/#footnote-python3) is planning to move to Python 3.x
+- Transition is slow, but we can plan for the [__future__](__future__)
+	- Sometimes this can break things but for simple scripts we can try to future proof
 
 --
 
@@ -154,6 +164,7 @@ def       for       lambda    try
 --
 
 ## Tuples
+
 - A tuple can be thought of as a read only list.
 - it uses parenthesis to contain the list data
 
@@ -431,6 +442,23 @@ for(float y=-10.0f; y<10.0f; ++y)
 <div class="stretch">
 <iframe src="altloop.html" style="border:0px #FFFFFF solid;" name="code" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" height="100%" width="100%"></iframe>
 </div>
+
+--
+
+## [Better Still use numpy](https://github.com/NCCA/DemoPythonCode/blob/master/Basic/arange.py)
+
+```
+#!/usr/bin/python
+from __future__ import print_function
+import numpy as np
+
+
+xy= [(ix, iy) for ix in np.arange(-1.0,1.0,0.5)
+              for iy in np.arange(-1.0,1.0,0.5)]
+for i,num in enumerate(xy) :
+  print(i,num)
+```
+
 
 ---
 
