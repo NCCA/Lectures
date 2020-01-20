@@ -34,5 +34,3 @@ jmacey@bournemouth.ac.uk
 
 - The source code for the demo projects in the video can be found on [GitHub](https://github.com/NCCA/ScriptingForDCC)
 
-
-<iframe src="https://github.com/NCCA/ScriptingForDCC" width=800 ></iframe>
