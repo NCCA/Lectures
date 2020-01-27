@@ -129,6 +129,12 @@ def       for       lambda    try
 
 --
 
+## [Floats are complex](https://evanw.github.io/float-toy/)
+
+<iframe src="https://evanw.github.io/float-toy/" width=1000 height=600></iframe>
+
+--
+
 ## Strings
  - Python strings are immutable
  - Python allows for either pairs of single or double quotes

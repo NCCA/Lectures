@@ -5,6 +5,15 @@ jmacey@bournemouth.ac.uk
 
 ---
 
+## Sorry I can't be here
+
+ <video controls loop >
+    <source data-src="ScriptingForDCC.m4v" type="video/mp4" loop >
+  </video>
+
+
+--
+
 ## Introduction
 
 - Who's it for?
