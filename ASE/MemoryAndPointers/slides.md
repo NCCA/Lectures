@@ -36,7 +36,6 @@ sizeof(unsigned long int)= 8
 ```
 #include <iostream>
 #include <cstdlib>
-
 int main()
 {
 	std::cout<<"sizeof(char)="<<sizeof(char)<<'\n';
@@ -45,10 +44,8 @@ int main()
 	std::cout<<"sizeof(long int)="<<sizeof(long int)<<'\n';
 	std::cout<<"sizeof(float)="<<sizeof(float)<<'\n';
 	std::cout<<"sizeof(double)="<<sizeof(double)<<'\n';
-
 	std::cout<<"sizeof(void*)="<<sizeof(void*)<<'\n';
 	std::cout<<"sizeof(int *)="<<sizeof(int *)<<'\n';
-
 	return EXIT_SUCCESS;
 }
 ```
@@ -82,15 +79,14 @@ sizeof(double)=8
 
 int main()
 {
- 	int i=0;
- 	char c='c';
- 	double d=1.0;
- 	float f=1.0;
+	int i=0;
+	char c='c';
+	double d=1.0;
+	float f=1.0;
 	std::cout&lt;&lt;"i address is "&lt;&lt;&i&lt;&lt;'\n';
 	std::cout&lt;&lt;"c address is "&lt;&lt;static_cast&lt;void *>(&c)&lt;&lt;'\n';
 	std::cout&lt;&lt;"d address is "&lt;&lt;&d&lt;&lt;'\n';
 	std::cout&lt;&lt;"f address is "&lt;&lt;&f&lt;&lt;'\n';
-
 	return EXIT_SUCCESS;
 }
 
@@ -106,6 +102,9 @@ address of f is 0x7fff52ebc71c
 		</code></pre>
 	</div>
 </div>
+
+
+[Demo](http://pythontutor.com/cpp.html#code=%23include%20%3Ccstdlib%3E%0A%23include%20%3Ciostream%3E%0Aint%20main%28%29%0A%7B%0A%20%20%20%20int%20i%3D0%3B%0A%20%20%20%20char%20c%3D'c'%3B%0A%20%20%20%20double%20d%3D1.0%3B%0A%20%20%20%20float%20f%3D1.0%3B%0A%20%20%20%20std%3A%3Acout%3C%3C%22i%20address%20is%20%22%3C%3C%26i%3C%3C'%5Cn'%3B%0A%20%20%20%20std%3A%3Acout%3C%3C%22c%20address%20is%20%22%3C%3Cstatic_cast%3Cvoid%20*%3E%28%26c%29%3C%3C'%5Cn'%3B%0A%20%20%20%20std%3A%3Acout%3C%3C%22d%20address%20is%20%22%3C%3C%26d%3C%3C'%5Cn'%3B%0A%20%20%20%20std%3A%3Acout%3C%3C%22f%20address%20is%20%22%3C%3C%26f%3C%3C'%5Cn'%3B%0A%20%20%20%20return%20EXIT_SUCCESS%3B%0A%7D&curInstr=0&mode=display&origin=opt-frontend.js&py=cpp&rawInputLstJSON=%5B%5D)
 
 ---
 
@@ -141,7 +140,9 @@ address of f is 0x7fff52ebc71c
 - Any data that either global or static but has a pre-defined value is allocated in the data segment
 
 <div class="stretch">
-<iframe width="1200px" height="600px" src="https://godbolt.org/e#g:!((g:!((g:!((h:codeEditor,i:(j:1,source:'%23include+%3Ciostream%3E%0A%23include+%3Ccstdlib%3E%0A%0Aint+global1%3D1%3B%0Aint+global2%3B%0Astatic+float+PI%3D3.141f%3B%0A%0Aint+foo()%0A%7B%0A++++static+int+i%3D10%3B%0A++++return+%2B%2Bi%3B%0A%7D+++%0A%0Aint+main()%0A%7B%0A%09static+int+i%3D0%3B%0A++%09static+int+x%3B%0A++%0A++%09std::cout%3C%3Cglobal1%3C%3C!'%5Cn!'%3B%0A++%09std::cout%3C%3Cglobal2%3C%3C!'%5Cn!'%3B%0A++%09std::cout%3C%3CPI%3C%3C!'%5Cn!'%3B%0A++%09std::cout%3C%3Ci%3C%3C!'%5Cn!'%3B%0A++%09std::cout%3C%3Cx%3C%3C!'%5Cn!'%3B%0A++++std::cout%3C%3Cfoo()%3C%3C!'%5Cn!'%3B%0A++++return+x%3B+%0A%7D'),l:'5',n:'0',o:'C%2B%2B+source+%231',t:'0')),k:50,l:'4',n:'0',o:'',s:0,t:'0'),(g:!((h:compiler,i:(compiler:clang500,filters:(b:'0',binary:'1',commentOnly:'0',demangle:'0',directives:'0',execute:'1',intel:'0',trim:'0'),libs:!(),options:'-std%3Dc%2B%2B14+-O3',source:1),l:'5',n:'0',o:'x86-64+clang+5.0.0+(Editor+%231,+Compiler+%231)',t:'0')),k:50,l:'4',n:'0',o:'',s:0,t:'0')),l:'2',n:'0',o:'',t:'0')),version:4"></iframe>
+<iframe width="1299" height="600px" src="https://godbolt.org/e#z:OYLghAFBqd5QCxAYwPYBMCmBRdBLAF1QCcAaPECAM1QDsCBlZAQwBtMQBGAFlICsupVs1qhkAUgBMAISnTSAZ0ztkBPHUqZa6AMKpWAVwC2tEJNJb0AGTy1MAOWMAjTMTMA2UgAdUCwuto9QxMzb19/Ohs7RyMXN0lPJRU1OgYCZmICIONTcyTMVQC0jIIoh2dXD0V0zOyQvJrS23LYyoSASkVUA2JkDgByKQBmW2RDLABqcSGddQUCYkxmI2nscQAGAEFh0fHMKZnkefRWPCdVje2t2wIJ4FZUJzZOaYARF6HZa/o7h6fWSTTL6bebMNTICZUB5giYABQAkm8hgA6HicKhAy6XG6Q1CoCDtLEAdmBEzJE1B4ImOLwb0460xW3JE0WBB6tCmMjktM%2BxNe5Kx31uRmYtgJxOBGwAnJS8BCaW8GbymVN1jL0lScQAPRmbMmXfVq44gFDdAjTHQW%2B6PZ4Wi1gQYAVh0tAdusN6vQJrQBnNMytfzYgP9Mzdztdg2VetVnu9ZrtMwRCZ0YZdbqjHuNpt9yZ5ltDTrTkdJMazPr9%2BZ0OpDKcLEfd5LL8ZrNHxhJrqfrGfJrPZE2r0lV2yJr36nVYIH6jv6pFM/XWM9Qk8tXJkFO6vX2w04M4Ik4X7U6AGsQI71kJJ9wZ3OF6Ql/0ZwoQOe9/Ox6Q4LAkGgjF48OwyAoCAfz/ACQGAKVzCof8CFcJ8ICcfcZycWwMgAT0nHdSB/IwtAIAB5WhWAwt9SCwEVRHYJCyLwRZCgAN0wJ9SMwLUCl9AYsJuZRqNOJxiHQvQsEw3diDwIwRM6Gh6CYNgOB4fhBGEUQUDkOQhDOJ9IE6VAvBSWhmMfZQCn0zRtDqUxOAsbQyhiOJBB8Px9Ishzwn02yKjcKz8kKVJGhc7zjN82hikyDzWi86oSgCqKwuaOzKk4ToFA3PouHHSdp1naj7y1AAOdwAFp3G4O5kAhKVkUkCYIFwQgSE5IYrImPRf3/VxGqSlq1JkXckMPUgTzPC9%2BivbLSPvR9n1IV8Dwy/pJGvHLJz6t8BsY4g/A0bggA%3D%3D%3D"></iframe>
+
+
 </div>
 
 --
