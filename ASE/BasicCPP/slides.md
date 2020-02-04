@@ -68,38 +68,38 @@ g++ -std=c++11
 #include <iostream>
 #include <cstdlib>
 
-namespace foo1
+namespace graphics
 {
-	void foo()
+	void print()
 	{
-		std::cout<<"foo1::foo\n";
+		std::cout<<"graphics::print\n";
 	}
 
 }
 
-namespace foo2
+namespace console
 {
-	void foo()
+	void print()
 	{
-		std::cout<<"foo2::foo\n";
+		std::cout<<"console::print\n";
 	}
 
 }
 
-namespace foo1
+namespace graphics
 {
-  void bar()
+  void debug()
   {
-    std::cout<<"bar\n";
+    std::cout<<"graphics::debug\n";
   }
 }
 
 
 int  main()
 {
-  foo1::foo();
-  foo2::foo();
-  foo1::bar();
+	graphics::print();
+	console::print();
+	graphics::debug();
 }
 ```
 
@@ -111,54 +111,53 @@ int  main()
 #include <iostream>
 #include <cstdlib>
 
-namespace foo1
+namespace graphics
 {
-	void foo()
+	void print()
 	{
-		std::cout<<"foo1::foo\n";
+		std::cout<<"graphics::print\n";
 	}
 
 };
 
-namespace foo2
+namespace console
 {
-	void foo()
+	void print()
 	{
-		std::cout<<"foo2::foo\n";
+		std::cout<<"console::print\n";
 	}
 
 };
 
-using namespace foo1;
-using namespace foo2;
+using namespace graphics;
+using namespace console;
 
 
 int  main()
 {
-  foo();
-  foo();
+  print();
+	print();
 }
 ```
 
 ```
-clang11 namespace2.cpp
-namespace2.cpp:29:3: error: call to 'foo' is ambiguous
-  foo();
-  ^~~
+namespace2.cpp:28:3: error: call to 'print' is ambiguous
+  print();
+  ^~~~~
 namespace2.cpp:6:7: note: candidate function
-        void foo()
+        void print()
              ^
 namespace2.cpp:15:7: note: candidate function
-        void foo()
+        void print()
              ^
-namespace2.cpp:30:2: error: call to 'foo' is ambiguous
-        foo();
-        ^~~
+namespace2.cpp:29:2: error: call to 'print' is ambiguous
+        print();
+        ^~~~~
 namespace2.cpp:6:7: note: candidate function
-        void foo()
+        void print()
              ^
 namespace2.cpp:15:7: note: candidate function
-        void foo()
+        void print()
              ^
 2 errors generated.
 ```
@@ -174,31 +173,36 @@ namespace2.cpp:15:7: note: candidate function
 
 
 
-void foo()
+void func1()
 {
 	using std::cout;
 	using std::endl;	
-	cout<<"foo "<<endl;
+	cout<<"func1 "<<endl;
 }
 
-void bar()
+void func2()
 {
 	using namespace std;
-	cout<<"bar"<<endl;
+	cout<<"func2"<<endl;
 }
 
 int main()
 {
-  cout<<"in main\n";
-  foo();
-  bar();
+	{
+		using namespace  std;
+		
+		cout<<"in main\n";
+	}
+	func1();
+	func2();
+	cout<<"end\n";
 }
 ```
 
 ```
-namespace3.cpp:21:2: error: use of undeclared identifier 'cout'; did you mean
+namespace3.cpp:28:2: error: use of undeclared identifier 'cout'; did you mean
       'std::cout'?
-        cout<<"in main\n";
+        cout<<"end\n";
         ^~~~
         std::cout
 ```
@@ -214,19 +218,20 @@ namespace3.cpp:21:2: error: use of undeclared identifier 'cout'; did you mean
 namespace AReallyLongNamespaceThatIdontWantToType
 {
 
-	void foo()
+	void func1()
 	{
 		using std::cout;
 		using std::endl;
 
-		cout<<"foo "<<endl;
+		cout<<"func1 "<<endl;
 	}
 }
 
 int main()
 {
-  namespace foo=AReallyLongNamespaceThatIdontWantToType;
-  foo::foo();
+	namespace shrt=AReallyLongNamespaceThatIdontWantToType;
+	shrt::func1();
+
 }
 ```
 
