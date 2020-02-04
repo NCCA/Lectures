@@ -14,8 +14,14 @@
     <script src="/jmacey/js/imageSlider/jquery.event.move.js"></script>
     <script src="/jmacey/js/imageSlider/jquery.twentytwenty.js"></script>
 
-    <!-- to print uncomment this and pass ?print-pdf#/ to the command line --->
-    <link rel="stylesheet" href="/jmacey//js/reveal.js/css/print/pdf.css">
+     <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? '/jmacey//js/reveal.js/css/print/pdf.css' : '/jmacey//js/reveal.js/css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+
 </head>
 
 <body>
