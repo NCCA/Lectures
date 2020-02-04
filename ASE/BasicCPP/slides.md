@@ -371,17 +371,17 @@ int main()
 	char vowels[5]={'a','e','i','o','u'};
 	// the compiler will fill in how many values (25)
 	int primesLT100[]={2,3,5,7,11,13,17,19,23,29,31,
-                    37,41,43,47,53,59,61,67,71,73,
-                    79,83,89,97};
+										 37,41,43,47,53,59,61,67,71,73,
+										 79,83,89,97};
 	// index to our array
 	int i;
 	// loop and print out the values
 	for(i=0; i<5; ++i)
 	{
-		std::cout<<vowels[i]<<" ";
+		std::cout<<vowels[i]<< ' ' ;
 	}
 	// newline
-	std::cout<<"\n";
+	std::cout<<'\n';
 
 	// as we don't know how big the primes array is we need
 	// to figure it out, sizeof will return how big the allocated
@@ -393,9 +393,9 @@ int main()
 	// loop and print
 	for(i=0; i<sizeOfArray; ++i)
 	{
-		std::cout<<primesLT100[i]<<" ";
+		std::cout<<primesLT100[i]<<' ';
 	}
-	std::cout<<"\n";
+	std::cout<<'\n';
 	return EXIT_SUCCESS;
 }
 ```
@@ -692,7 +692,7 @@ int main()
 - given 
 ```
 sizeof(char) == 1 
-sizeof(short)==2
+sizeof(short)==2 
 ``` 
 - how big is the following structure?
 
@@ -951,7 +951,6 @@ int main()
 - You will notice in the last example I used the new for syntax
 - This is a for each loop similar to an iterator
 - By default we get a const iterator
-- Works the same as BOOST_FOREACH 
 - more on this when we start looking at STL
 
 --
