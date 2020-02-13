@@ -189,7 +189,6 @@ float r=a/b;
 --
 
 ##[CPP Core Guidelines](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines)
-
 - The C++ Core Guidelines are a set of tried-and-true guidelines, rules, and best practices about coding in C++
 - I will relate to these when talking about code.
 - A very useful set of rules to follow
