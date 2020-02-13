@@ -208,11 +208,11 @@ int main()
 }
 
 ```
+
 --
 
-
-
 ## Advantages
+
 - Now we have a class we can have many instances of the same same class (each know as an object)
 
 ```
