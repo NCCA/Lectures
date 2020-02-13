@@ -265,25 +265,66 @@ Ask what your data structures can do for you.
 --
 
 ## The Anatomy of a class
-- A Class has two parts
+- A Class usually has two parts
 	- a private (hidden) part
 	- a public interface 
 - The public part defines the behaviour of the object (methods)
-- The private part contains the data (attributes)
-- It is normal practice to put attributes in the private part of the class where they can only be accessed by methods
+- The private part usually contains the data (attributes)
 
 ---
 
 
 # Class Diagrams
+<div>
+<pre>
+<code class="language-plantuml">
+  @startuml
+  Title A class hierachy using inheritance
 
-<div class="stretch">
-<iframe src="Inheritance1.html" style="border:0px #FFFFFF solid;" name="code" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" height="100%" width="100%"></iframe>
+  SuperClass <|-- Subclass
+
+  Parent <|-- Child
+  Parent <|-- Derived
+  Parent <|-- SubClass
+
+
+  @enduml
+</code>
+</pre>
+</div>
+
+<div>
+<pre>
+<code class="language-plantuml">
+  @startuml
+  Title  One to many relationship
+  class "Class" as a  
+  class "Class" as b
+  a "1" -o  "*" b : "                 "
+  @enduml
+</code>
+</pre>
+</div>
+
+<div>
+<pre>
+<code class="language-plantuml">
+@startuml
+
+Title Zero or One to many relationship
+class "Class" as a  
+class "Class" as b
+a "0..1" -o "*" b : "               "
+
+
+@enduml
+</code>
+</pre>
 </div>
 
 --
 
-#Associations
+# Associations
 - Represents the relation from one class to another
 - Most association will be 
   - Has
@@ -312,20 +353,88 @@ Ask what your data structures can do for you.
 
 # Composition
 
-<div class="stretch" >
-<iframe src="composition.html" style="border:0px #FFFFFF solid;" name="code" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" height="100%" width="100%"></iframe>
+<div>
+<pre>
+<code class="language-plantuml">
+@startuml
+
+Title Car has (a)n Engine
+"Car      " "0..1" -* "1..1" Engine : "               "
+
+@enduml
+</code>
+</pre>
 </div>
+
+```
+class Engine
+{
+  private :
+    in m_cc=1200;
+};
+
+#include "Engine"
+class Car
+{
+  private :
+    Engine m_engine;
+};
+```
+
+--
+
+# Composition
+
 
 - Use a filled diamond it always gives a multiplicity of 1 or 0..1
 - This implies ownership and when the car is destroyed so is the Engine
+- We usually prefer composition when designing systems.
 
 --
 
 # Aggregation
 
-<div class="stretch" >
-<iframe src="aggregation.html" style="border:0px #FFFFFF solid;" name="code" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" height="100%" width="100%"></iframe>
+<div>
+<pre>
+<code class="language-plantuml">
+@startuml
+
+"World  " "0..1" -o "1..*" Mesh : "                        "
+
+@enduml
+</code>
+</pre>
 </div>
+
+```
+// Mesh.h
+#include <vector>
+#include <ngl/Vec3.h>
+
+class Mesh
+{
+  private :
+    std::vector<ngl::Vec3> m_verts;
+};
+
+// World.h
+#include <vector>
+#include <memory>
+#include "Mesh.h"
+class World
+{
+  private 
+    std::vector<std::unique_ptr<Mesh>> m_meshes;
+};
+
+
+
+```
+
+
+--
+
+# Aggregation
 
 - Aggregation differs from composition as it doesn’t necessarily imply ownership.
 - This is usually implemented by containing a reference to another object where the lifetime is determined elsewhere
@@ -338,34 +447,7 @@ Ask what your data structures can do for you.
 - Sometimes we have classes so general they can’t be created (Abstract classes)
 - The hierarchy goes from Generalisation to specialisation
 - Use a lot in things like Qt [QOBJECT](http://doc.qt.io/qt-5/qobject.html)
-
----
-
-## methods
-- Methods are functions which operate upon the data in the class
-- There are two special methods which allow us to create and destroy any data in the object
-	- Constructor (used to set the default attribute values of the object)
- 	- Destructor (used to clear any memory allocated in the constructor)
-
---
-
-## Class Access Scope
-- Classes allow different levels of access to various elements of the class
-- Unlike structure where every element is visible.
-- There are 3 areas of access
-	- public : visible to all
-	- private : hidden and only accessible to the class itself
-	- protected : only visible to descendants of the main class (used in Inheritance we shall see this later in the lecture series)
-
---
-
-## mutable vs immutable
-- A mutable object is one where the data may be modified after creation.
-- An immutable object once created may not be modified
-- We can further add to this distinction by mixing elements of both in a class
-- Methods may also be tagged to say if they modify the internal state of the class or not. 
-- This is a form of C++ etiquette know as “[const correctness](https://isocpp.org/wiki/faq/const-correctness)” whilst not mandated by the language it should be considered as part of the design of our classes and methods.
-- Adding const correctness at a later date is usually very painful 
+- More in a later Lecture
 
 ---
 
@@ -399,93 +481,6 @@ Ask what your data structures can do for you.
 - can have param,param ... 
 <img src="images/uml3.png" width="80%">
 
---
-
-## Accessors and Mutators
-- In the previous example we had the methods below
-- These methods are know as 
-	- Accessors (or get methods) the one returning the value
-	- Mutators (or set methods ) which is used to set the class attribute value
-- You will notice the get method has a const at the end of the definition as it doesn’t mutate the class
-
-```
-float red() const {return m_r;}
-void  red(float _r){m_r=_r;}
-```
-
---
-
-## Accessors [(Priess 1998)](http://www.brpreiss.com/books/opus5/html/book.html)
-- An accessor is a method that accesses (returns) an attribute of an object but doesn’t modify the object
-- In the simplest case, an accessor just returns the value of one of the attributes. 
-- In general, an accessor performs some computation using the attributes as long as that computation does not modify any of the attributes.
-
---
-
-## Mutators [(Priess 1998)](http://www.brpreiss.com/books/opus5/html/book.html)
-- A mutator is a method that can modify an object. 
-- In the simplest case, a mutator just assigns a new value to one of the attributes. 
-- In general, a mutator performs some computation and modifies any number of attributes.
-
----
-
-## Classes	
-- It is standard practice to split the class into two separate files.
-- A .h (.H) Header file is used to define the class and prototype the methods and data for this class.
-- A .cpp (.C) file is used to contain the actual class code and algorithmic elements.
-- To link these two elements together we need to tell the compiler which class the methods in the .cpp file belong to.
-
---
-
-## A Simple class
-
-```
-class Point
-{
-  int x,y;
-};
-```
-- Is this a valid class? If so explain what we get with it?
-
---
-
-## [Loads of free stuff](https://www.youtube.com/watch?v=4AfRAVcThyA&t=2428s)
-
-```
-class Point
-{
-  private :
-    int x,y;
-  public :
-    Point()=default;
-    ~Point() noexcept = default;
-    Point(const Point &)=default;
-    Point & operator=(const Point &)=default;
-    Point(Point &&)=default;
-    Point & operator=(Point &&)=default;
-    
-};
-```
-- But always try to be explicit in your code! 
-- [The rule of 5 default ](https://arne-mertz.de/2015/02/the-rule-of-zero-revisited-the-rule-of-all-or-nothing/)
-- [Concerns about the rule of zero](http://scottmeyers.blogspot.com/2014/03/a-concern-about-rule-of-zero.html)
-
---
-
-## [Point](https://godbolt.org/z/qjCjsl)
-
-<div class="stretch">
-<iframe width="1000px" height="500px" src="https://godbolt.org/e#g:!((g:!((g:!((h:codeEditor,i:(j:1,lang:c%2B%2B,source:'%23include+%3Cmemory%3E%0Aclass+Point%0A%7B%0A++private+:%0A++++int+x,y%3B+%0A++public+:%0A++++Point()%3Ddefault%3B%0A++++~Point()+noexcept+%3D+default%3B%0A++++Point(const+Point+%26)%3Ddefault%3B%0A++++Point+%26+operator%3D(const+Point+%26)%3Ddefault%3B%0A++++Point(Point+%26%26)%3Ddefault%3B%0A++++Point+%26+operator%3D(Point+%26%26)%3Ddefault%3B%0A++++%0A%7D%3B%0A%0Aint+main()%0A%7B%0A++++Point+p%3B%0A++++Point+p2%3Dp%3B%0A++++Point+p3(p2)%3B%0A++++std::unique_ptr%3CPoint%3E+pp%3Dstd::make_unique%3CPoint%3E()%3B%0A%0A++++%0A%7D'),l:'5',n:'0',o:'C%2B%2B+source+%231',t:'0')),k:60.035419126328215,l:'4',n:'0',o:'',s:0,t:'0'),(g:!((h:compiler,i:(compiler:g63,filters:(b:'0',binary:'1',commentOnly:'0',demangle:'0',directives:'0',execute:'1',intel:'0',libraryCode:'1',trim:'0'),lang:c%2B%2B,libs:!((name:fmt,ver:trunk)),options:'-std%3Dc%2B%2B14',source:1),l:'5',n:'0',o:'x86-64+gcc+6.3+(Editor+%231,+Compiler+%231)+C%2B%2B',t:'0')),k:39.964580873671785,l:'4',n:'0',o:'',s:0,t:'0')),l:'2',n:'0',o:'',t:'0')),version:4"></iframe></div>
-
---
-
-## C++ Scope Resolution Operator [::](https://msdn.microsoft.com/en-us/library/b451xz31.aspx)
-- The :: (scope resolution) operator is used to qualify hidden names so that you can still use them. 
-- This is how C++ allows us to have different classes with the same member function names (polymorphism)
-- We use the :: to imply membership to a particular class and differentiate the different methods / class relationships
-
-
---
 
 ---
 
