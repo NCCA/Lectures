@@ -9,13 +9,6 @@
     <link rel="stylesheet" href="/jmacey//js/reveal.js/lib/css/zenburn.css">
     <link rel="stylesheet" href="/jmacey/js/reveal.js/jonstyle.css">
 
-    <link rel="stylesheet" type="text/css" href="/jmacey/js/joint.js/joint.min.css" />
-    <link rel="stylesheet" type="text/css" href="/jmacey/js/jquery-ui/jquery-ui.min.css" />
-    <script type="text/javascript" src="/jmacey/js/joint.js/lodash.min.js"></script>
-    <script type="text/javascript" src="/jmacey/js/joint.js/backbone-min.js"></script>
-    <script type="text/javascript" src="/jmacey/js/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="/jmacey/js/jquery-ui/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="/jmacey/js/joint.js/joint.min.js"></script>
 
 
 
@@ -40,45 +33,13 @@
       </div>
      
     </div>
-
     <script src="/jmacey/js/reveal.js/lib/js/head.min.js"></script>
     <script src="/jmacey/js/reveal.js/js/reveal.js"></script>
     <script src="/jmacey/js/jquery/jquery.min.js"></script>
-    <script>
-      // this is a uniqe id for the slide for saving notes later I will update to use IndexedDB but 
-      // this will work on all systems
-      var gSlideID='PPPLecture1';
-    </script>
- 
+    
 
 
-    <!-- modal for notes -->
-
-    <div id="notes" class="modal">
-      <!-- Modal content -->
-      <div class="modal-content">
-        <span id="close" class="closeStyle">x</span>
-          <h3>Add Notes For Page</h3>
-          <div id="noteText" contentEditable="true" class="editdiv paper"></div> <br>
-          <button id="submit" onclick="submitNote();">submit</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="showNotes" class="modal ">
-    <!-- Modal content -->
-    <div class="modal-content">
-      <span id="closeNotes" class="closeStyle">x</span>
-      <h3>Page Notes</h3>
-      <div id="savedNotes" contentEditable="false" class="editdiv paper"></div> <br>
-      <button class="noteButton" id="copyToClipboard" onclick="copyAll();">copy all to clipboard</button>
-      <button class="noteButtonWarn" id="clearNotes" onclick="clearNotes(); " >clear page</button>
-      <button class="noteButtonWarn" id="clearAllNotes" onclick="clearAllNotes();">clear all notes</button>
-
-      </div>
-    </div>
-  </div>
-
+    
 
   <!-- 2. Create hidden header/footer <div> -->
   <div id="hidden" style="display:none;">
@@ -97,7 +58,6 @@
     -->
     </div>  
   </div>
-
 
 
     <script src="/jmacey/js/reveal.js/slidefunctions.js"></script>
