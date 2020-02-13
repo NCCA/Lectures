@@ -6,6 +6,7 @@ jmacey@bournemouth.ac.uk
 ---
 
 ## Procedural Programming 
+
 - In procedural programming we use
 	- data structures to store information
 	- function (passing in the structures) to process the information
@@ -14,6 +15,7 @@ jmacey@bournemouth.ac.uk
 --
 
 ## Object Oriented Programming
+
 - In OO Programming we tend to combine both the data and the functions that act on them into a single unit.
 - We then place an “interface” to this data know as methods which are allowed to act upon the data in a prescribed way.
 - The traditional model of OO is to model “real world” objects, however as we shall discuss this is not really the case.
@@ -55,6 +57,7 @@ jmacey@bournemouth.ac.uk
 ---
 
 ## Agents and Communities
+
 - The common "model" of teaching OO is :-
 	- An Object Oriented program is structured as a community of interacting agents called objects.
 	- Each object has a role to play.
@@ -63,6 +66,7 @@ jmacey@bournemouth.ac.uk
 --
 
 ## Patterns
+
 - As we will see when building and designing these communities patterns will appear.
 - These “design patterns” can be seen as “a general reusable solution to a commonly occurring problem”
 - In OO design patterns typically show relationships and interactions between classes or objects, without specifying the final application classes or objects that are involved.
@@ -79,7 +83,7 @@ jmacey@bournemouth.ac.uk
   - Favour  ‘object composition’ over ‘class inheritance’
 
 
---
+---
 
 #[S.O.L.I.D. ](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)
 - A mnemonic to remember the first five principles of Object Oriented design
@@ -159,11 +163,54 @@ int main()
 
 ## Messages vs Procedure calls
 
-<div class="stretch">
-<iframe src="proc.html" style="border:0px #FFFFFF solid;" name="code" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" height="100%" width="100%"></iframe>
-</div>
+<pre>
+<code class="language-plantuml">
+  @startuml
+@startuml
+skinparam classAttributeIconSize 0
+class IntValue {
+ - m_value : int
+ + IntValue(_value : int)
+ + square()
+ + print()
+}
+@enduml
 
+  @enduml
+</code>
+</pre>
+
+```
+#ifndef INTVALUE_H_
+#define INTVALUE_H_
+
+#include <iostream>
+
+class IntValue
+{
+  public : 
+    IntValue(int _a) : m_a(_a) {}
+    void square() { m_a*=m_a;}
+    void print() const {std::cout<<m_a<<'\n';}
+  private : 
+    int m_a;
+};
+
+#endif
+// main.cpp
+#include "IntValue.h"
+
+int main()
+{
+  IntValue a(10); 
+  a.square();
+  a.print();
+}
+
+```
 --
+
+
 
 ## Advantages
 - Now we have a class we can have many instances of the same same class (each know as an object)
@@ -186,6 +233,7 @@ int main()
 --
 
 # Responsibilities
+
 - In message passing there is a designated receiver. 
 - This may not be known until runtime (know as runtime polymorphism)
 - This is a form of late binding, this happens at runtime and not compile time like a procedural program.
@@ -198,6 +246,7 @@ Ask what your data structures can do for you.
 ---
 
 ## Object Oriented Concepts [(Kay 1993)](http://gagne.homedns.org/~tgagne/contrib/EarlyHistoryST.html)
+
 - Everything is an Object.
 - Computation is performed by objects communicating with each other (via messaging)
 - Each Object has it’s own Memory 
