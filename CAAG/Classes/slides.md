@@ -234,7 +234,7 @@ Colour(const Colour &_c)=default;
 
 ---
 
-## [The Orthodox Canonical class form ( rule of 3)](http://en.cppreference.com/w/cpp/language/rule_of_three)
+### [The Orthodox Canonical class form ( rule of 3)](http://en.cppreference.com/w/cpp/language/rule_of_three)
 - As a general rule (and rules are made to be broken) all classes should define four important functions
 	- A default constructor :- This is used internally to initialise objects and data members when no other value is avaliable
 	- A copy constructor :- This is used , among other places, in the implementation of call-by-value parameters
@@ -528,46 +528,34 @@ TEST(Colour,mixStatic)
 
 # Using the Class	
 
--  No we have defined the class we can use it to create different objects for us to use.
+- Now we have defined the class we can use it to create different objects for us to use.
 - Each of the objects must have some way of being referred to to we can differentiate it from the others
-- The simplest way of doing this is by using a simple name as show in the next example
+- The simplest way of doing this is by using a simple name as show in the next example 
 
 --
 
 ```
-#include <iostream>
-#include <cstdlib>
-
 #include "Colour.h"
 
 int main()
 {
-
-Colour red(1.0,0.0,0.0);
-red.setName("red");
-Colour green(0.0f,1.0,0.0f);
-green.setName("green");
-
-for(int i=0; i<10; ++i)
-{
-  Colour white(1.0f,1.0f,1.0f);
-  Colour e(1,2,2,2);
-  e.setName("e");
-  e.print();
-  white.setName("white");
-  white.print();
-}
-red.print();
-
-
-green.print();
-red.mix(green,0.5);
-red.print();
-red.blue(1.0);
-red.clamp(0.6,0.8);
-red.print();
+  Colour c; // create automatic object on stack
+  {
+    Colour x(0.1f,0.2f,0.3f,0.4f);
+    for(int i=0; i<10; ++i)
+    {
+        Colour y={1.0f,0.0f,0.0f,1.0f};
+    }
+  }
 }
 ```
+
+--
+
+## Automatic Objects
+
+<img src="images/AutomaticObject.gif" width="80%">
+
 
 --
 
