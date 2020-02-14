@@ -554,7 +554,7 @@ int main()
 
 ## Automatic Objects
 
-<img src="images/AutomaticObject.gif" width="100%">
+<img src="images/AutomaticObject.apng" width="100%">
 
 - note how the object y is created and destroyed each time in the loop.
 
