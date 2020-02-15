@@ -378,7 +378,7 @@ LIBS+= -L/public/devel/lib -lgtest
 
 --
 
-## Colour Class
+## [Colour Class](https://github.com/NCCA/CFGAA/blob/master/Lecture5Classes/Colour/tests/tests.cpp)
 
 - The Colour Class was developed using TDD (I tend to do this with all my code, be it C++ or Python)
 
@@ -476,7 +476,7 @@ void Colour::mix(const Colour &_in, float _t)
 
 --
 
-## Static Class Methods
+## [Static Class Methods](https://github.com/NCCA/CFGAA/blob/master/Lecture5Classes/Colour/src/Colour.cpp)
 
 - A static member is shared by all objects of the class
 
@@ -500,7 +500,7 @@ Colour Colour::mix(const Colour &_a, const Colour &_b, float _t)
 --
 
 
-## Static Class Methods
+## [Static Class Methods](https://github.com/NCCA/CFGAA/blob/master/Lecture5Classes/Colour/tests/tests.cpp)
 
 
 ```
@@ -526,7 +526,7 @@ TEST(Colour,mixStatic)
 
 
 
-# Using the Class	
+# [Using the Class](https://github.com/NCCA/CFGAA/blob/master/Lecture5Classes/Colour/Automatic/main.cpp)	
 
 - Now we have defined the class we can use it to create different objects for us to use.
 - Each of the objects must have some way of being referred to to we can differentiate it from the others
@@ -556,7 +556,7 @@ int main()
 
 <img src="images/AutomaticObject.apng" width="100%">
 
-- note how the object y is created and destroyed each time in the loop.
+- note how the object y is created and destroyed each time.
 
 --
 
@@ -573,87 +573,58 @@ int main()
 # [The destructor](http://en.cppreference.com/w/cpp/language/destructor)
 - The destructor is called when an object is destroyed
 - The responsibility of the destructor is to cleanup after the object and de-allocate any memory that the object has created
-- In this case the object doesn’t create any memory so the following example is illustrative rather than functional
 - [As a general rule is you allocate anything dynamically in the class you need a dtor](http://www.modernescpp.com/index.php/c-core-guidelines-destructor-rules). 
 - Even better use a smart pointer!
 
---
-
-## Automatic Objects
-```
-#include <iostream>
-#include <cstdlib>
-#include "Colour.h"
-int main()
-{
-Colour red(1.0f,0.0f,0.0f);
-{
-  Colour green(0.0f,1.0f,0.0f);
-  green.Print();
-  {
-     Colour white(1.0f,1.0f,1.0f);
-     white.Print();
-  }
- red.Print();
-}
-}
-```
-- In this case the automatic objects will fall out of scope when they meet the end brace where they are defined
-
---
-
-## Automatic Objects
-
-- This will then automatically call the destructor (dtor)
- - In this case green is first  
- - followed by white
- - finally red
-```
-[0,1 0 1]
-[1,1 1 1]
-dtor called 
-[1,0 0 1]
-dtor called 
-dtor called 
-```
 
 --
 
 ## Dynamic Objects
-- In a lot of cases dynamic objects will be fine, however we may need to dynamically create our objects and control their lifetimes within the program
+
+- Most of the time we will create Automatic objects, however sometimes we need to control the lifetime ourselves. 
 - To do this we need to have a way to create and destroy our objects on the fly and re-allocate them at will
 - This involves the use of pointers as show in the next example
 
 --
 
-## Dynamic Objects
+## [Dynamic Objects](https://github.com/NCCA/CFGAA/blob/master/Lecture5Classes/Colour/Dynamic/main.cpp)
 
 ```
 #include <iostream>
-#include <cstdlib>
-
 #include "Colour.h"
+// Note :-
+// You would never really write code like this!!!!!
 
 int main()
 {
+  Colour *c; // create automatic object on stack
+  auto x= new Colour(0.1f,0.2f,0.3f,0.4f);
+  x->clamp(0.2f,0.3f);
+  std::cout<<"x "<<x->red()<<' '<<x->green()<<' '<<x->blue()<<'\n';
 
-Colour *current;
-current = new Colour(1,0,0);
-current->setName("red");
-current->print();
+  c = new Colour;
+  std::cout<<"c "<<c->red()<<' '<<c->green()<<' '<<c->blue()<<'\n';
+  delete c;
+  c = new Colour(0.1f,0.2f,0.3f);
+  std::cout<<"c "<<c->red()<<' '<<c->green()<<' '<<c->blue()<<'\n';
+  delete c;
 
-delete current;
-
-
-current = new Colour(1,1,1);
-current->setName("white");
-current->print();
-
-delete current;
+  delete x;
 
 }
 
 ```
+
+--
+
+## Dynamic Objects
+
+<img src="images/Dynamic.apng" width="100%">
+
+
+--
+
+
 
 ---
 
