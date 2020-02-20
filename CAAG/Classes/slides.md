@@ -6,8 +6,8 @@ jmacey@bournemouth.ac.uk
 ---
 
 
-
 ## Classes	in Practice
+
 - It is standard practice to split the class into two separate files.
 - A .h (.H) Header file is used to define the class and prototype the methods and data for this class.
 - A .cpp (.C) file is used to contain the actual class code and algorithmic elements.
@@ -622,13 +622,10 @@ int main()
 <img src="images/Dynamic.apng" width="100%">
 
 
---
-
-
-
 ---
 
 ## Why use a destructor?
+
 - In the previous example the dtor just printed out that it had been called
 - The following example will show the real reason for the dtor
 - The class allocates a block of dynamic memory when it is created
@@ -735,8 +732,14 @@ void Mem::set( int _offset,  int _value )
 
 --
 
+## [Shallow Copy](http://pythontutor.com/cpp.html#code=%23include%20%3Ccstdlib%3E%0A%0Aclass%20Memory%0A%7B%0A%20%20public%20%3A%0A%20%20%20%20Memory%28%29%3Ddefault%3B%0A%20%20%20%20Memory%28size_t%20_size%29%3B%0A%20%20%20%20~Memory%28%29%3B%0A%20%20%20%20Memory%28const%20Memory%20%26%29%3Ddefault%3B%0A%20%20private%20%3A%0A%20%20%20%20size_t%20m_size%3D0%3B%0A%20%20%20%20int%20*m_data%3Dnullptr%3B%0A%7D%3B%0A%0AMemory%3A%3AMemory%28size_t%20_size%29%0A%7B%0A%20%20m_size%3D_size%3B%0A%20%20m_data%3Dnew%20int%5B_size%5D%3B%0A%7D%0A%0AMemory%3A%3A~Memory%28%29%0A%7B%0A%20%20delete%20%5B%5D%20m_data%3B%0A%7D%0A%0Aint%20main%28%29%0A%7B%0A%20%20Memory%20first%28100%29%3B%0A%20%20auto%20second%3Dfirst%3B%0A%20%20%0A%7D&curInstr=0&mode=display&origin=opt-frontend.js&py=cpp&rawInputLstJSON=%5B%5D)
+
+<img src="images/ShallowCopy.gif" width="100%">
+
+--
 
 ## Shallow Copy
+
 - In a shallow copy we just copy the memory address of the first class to that of the second class
 - This means that the second class shares the data with the first
 - If the first is destroyed then this memory is no longer valid
