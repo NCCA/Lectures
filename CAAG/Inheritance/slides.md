@@ -921,8 +921,116 @@ int main()
 
 ---
 
+## [Why use override](https://github.com/NCCA/CFGAA/blob/master/Lecture6Inheritance/Mismatch/example1.cpp)
+
+```
+#include <iostream>
+#include <string>
+class Base
+{
+  public : 
+    Base()=default;
+    virtual void whoAmI(const std::string &_name)
+    {
+      std::cout<<"std::string version Base "<<_name<<'\n';
+    }
+};
+
+class Derived : public Base
+{
+  public : 
+    Derived()=default;
+    virtual void whoAmI(const char *_name) override
+    {
+      std::cout<<"const char * Derived "<<_name<<'\n';
+    }
+};
+
+int main()
+{
+  Base b;
+  b.whoAmI("instance b");
+  Derived d;
+  d.whoAmI("instance d");
+
+}
+```
+
+```
+example1.cpp:17:18: error: 'whoAmI' marked 'override' but does not override any member functions
+    virtual void whoAmI(const char *_name) override
+```
+
+--
+
+## [override](https://en.cppreference.com/w/cpp/language/override)
+
+- In a member function declaration or definition, override ensures that the function is virtual and is overriding a virtual function from a base class. 
+- The program is ill-formed (a compile-time error is generated) if this is not true.
+- override is an identifier with a special meaning when used after member function declarators : it's not a reserved keyword otherwise.
+
+
+---
+
+## [final](https://en.cppreference.com/w/cpp/language/final)
+
+- When used in a virtual function declaration or definition, final ensures that the function is virtual and specifies that it may not be overridden by derived classes. The program is ill-formed (a compile-time error is generated) otherwise.
+
+- When used in a class definition, final specifies that this class may not appear in the base-specifier-list of another class definition (in other words, cannot be derived from). 
+
+- final is an identifier with a special meaning when used in a member function declaration or class head. In other contexts it is not reserved and may be used to name objects and functions.
+
+--
+
+```
+#include <iostream>
+
+class Countdown final 
+{
+
+};
+
+class ItsThe : public  Countdown
+{
+
+};
+
+int main()
+{
+  ItsThe t;
+}
+
+```
+
+```
+example1.cpp:8:24: error: base 'Countdown' is marked 'final'
+class ItsThe : public  Countdown
+                       ^
+example1.cpp:3:7: note : 'Countdown' declared here
+class Countdown final 
+      ^         ~~~~~
+1 error generated.
+
+```
+
+---
+
+## Is that all for Inheritance?
+
+- Basically yes, the syntax and usage is fairly simple
+- I have omitted some things ( for example [multiple inheritance](https://www.geeksforgeeks.org/multiple-inheritance-in-c/))
+- As we will see next time, a lot of this will be used in Design Patterns
+- Especially as we start using *"Abstractions instead of Concretions"*
+
+---
+
 ## Further Reading
 
 - http://www.gotw.ca/publications/mill06.htm
+- https://en.cppreference.com/w/cpp/language/derived_class
+- https://isocpp.org/wiki/faq/strange-inheritance 
+- https://pabloariasal.github.io/2017/06/10/understanding-virtual-tables/
+
+
 
 
