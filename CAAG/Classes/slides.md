@@ -771,7 +771,72 @@ void Mem::set( int _offset,  int _value )
 
 ## A Note on smart pointers
 
+- Given the following code
 
+```
+#include <memory>
+
+class Memory
+{
+  public :
+    Memory(size_t _size);
+    Memory(const Memory &_in)=default;
+  private :
+    size_t m_size=0;
+    std::unique_ptr<int []> m_memory;
+};
+
+Memory::Memory(size_t _size)
+{
+  m_size=_size;
+  m_memory=std::make_unique<int []>(_size);
+}
+int main()
+{
+  Memory m(100);
+  auto m2=m;
+}
+```
+
+--
+
+## A Note on smart pointers
+
+```
+clang++ -std=c++14 main.cpp 
+main.cpp:21:8: error: call to implicitly-deleted copy constructor of 'Memory'
+  auto m2=m;
+       ^  ~
+main.cpp:7:5: note: explicitly defaulted function was implicitly deleted here
+    Memory(const Memory &_in)=default;
+    ^
+main.cpp:10:29: note: copy constructor of 'Memory' is implicitly deleted because field 'm_memory'
+      has a deleted copy constructor
+    std::unique_ptr<int []> m_memory;
+                            ^
+/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7/../../../../include/c++/7/bits/unique_ptr.h:657:7: note: 
+      'unique_ptr' has been explicitly marked deleted here
+      unique_ptr(const unique_ptr&) = delete;
+      ^
+1 error generated.
+
+```
+
+--
+
+## A note on smart pointers
+
+- Using a smart pointer like ```std::unique_ptr``` forces you to implement a copy ctor.
+
+```
+Memory::Memory(const Memory &_in)
+{
+  m_size=_in.m_size;
+  m_memory=std::make_unique<int []>(m_size);
+  memcpy(m_memory.get(),_in.m_memory.get(),m_size*sizeof(int));
+}
+
+```
 
 ---
 
