@@ -392,7 +392,7 @@ Circle::stretchY(float _y) { m_y = m_y = _y; }
 
 ## Practical C++ inheritance
 
-- The following examples will demonstrate some practical C++ inheritance models
+- The following examples will demonstrate the practical use of C++ inheritance 
 - It must be noted that some people are very critical of the C++ inheritance model
 
 >[Inheritance in C++ is like a jig-saw where the pieces fit together, but the compiler has no way of checking that the resultant picture makes sense. In other words C++ has provided the syntax for classes and inheritance but not the semantics.](http://www.literateprogramming.com/c++critique.pdf)
@@ -573,7 +573,7 @@ int main()
 
 --
 
-## What happened here
+## What happened here?
 
 ```
 constructing Base b
@@ -608,7 +608,7 @@ I am Base
 ## What happened here?
 
 - The compiler will bind the correct method for the type at compile time.
-- There is a one to one mapping in the fist two examples
+- There is a one to one mapping in the fist two examples as the type is know
   ```Base::whoAmI()``` and ```Derived::whoAmI()```
 - however the line of code
 
@@ -617,14 +617,14 @@ Base *ptr = new Derived;
 
 ```
 
-- Will call the Derived constructor but still bind the method for the Base type.
+- Will call the Derived constructor but still bind the method for the Base type as the compiler doesn't know the concrete type.
 
 ---
 
 ## Meet the V-Table
 
 - In the previous example the automatic variables are bound to the correct method, however the dynamic (heap) objects are not.
-- This is because [*dynamic dispatch*](https://en.wikipedia.org/wiki/Dynamic_dispatch) or *runtime polymorphism* need a little more work
+- This is because [*dynamic dispatch*](https://en.wikipedia.org/wiki/Dynamic_dispatch) or *runtime polymorphism* needs a little more work
 - This also means there will be more code overhead and perhaps slowdowns added to our code 
 
 --
