@@ -234,7 +234,7 @@ Colour(const Colour &_c)=default;
 
 ---
 
-### [The Orthodox Canonical class form ( rule of 3)](http://en.cppreference.com/w/cpp/language/rule_of_three)
+#### [The Orthodox Canonical class form ( rule of 3)](http://en.cppreference.com/w/cpp/language/rule_of_three)
 - As a general rule (and rules are made to be broken) all classes should define four important functions
 	- A default constructor :- This is used internally to initialise objects and data members when no other value is avaliable
 	- A copy constructor :- This is used , among other places, in the implementation of call-by-value parameters
@@ -734,7 +734,7 @@ void Mem::set( int _offset,  int _value )
 
 ## [Shallow Copy](http://pythontutor.com/cpp.html#code=%23include%20%3Ccstdlib%3E%0A%0Aclass%20Memory%0A%7B%0A%20%20public%20%3A%0A%20%20%20%20Memory%28%29%3Ddefault%3B%0A%20%20%20%20Memory%28size_t%20_size%29%3B%0A%20%20%20%20~Memory%28%29%3B%0A%20%20%20%20Memory%28const%20Memory%20%26%29%3Ddefault%3B%0A%20%20private%20%3A%0A%20%20%20%20size_t%20m_size%3D0%3B%0A%20%20%20%20int%20*m_data%3Dnullptr%3B%0A%7D%3B%0A%0AMemory%3A%3AMemory%28size_t%20_size%29%0A%7B%0A%20%20m_size%3D_size%3B%0A%20%20m_data%3Dnew%20int%5B_size%5D%3B%0A%7D%0A%0AMemory%3A%3A~Memory%28%29%0A%7B%0A%20%20delete%20%5B%5D%20m_data%3B%0A%7D%0A%0Aint%20main%28%29%0A%7B%0A%20%20Memory%20first%28100%29%3B%0A%20%20auto%20second%3Dfirst%3B%0A%20%20%0A%7D&curInstr=0&mode=display&origin=opt-frontend.js&py=cpp&rawInputLstJSON=%5B%5D)
 
-<img src="images/ShallowCopy.gif" width="100%">
+<img src="images/ShallowCopy.apng" width="100%">
 
 --
 
@@ -743,24 +743,34 @@ void Mem::set( int _offset,  int _value )
 - In a shallow copy we just copy the memory address of the first class to that of the second class
 - This means that the second class shares the data with the first
 - If the first is destroyed then this memory is no longer valid
+- This is what the ```=default``` copy constructor will do
 - In most cases this is not desirable
 
 --
 
 
-## Shallow Copy
-<img src="images/shallow.png" width="40%">
-
---
-
 ## Deep Copy
 - With a deep copy the object allocates the same amount of space for the memory
 - Then each element is copied from the original to the new one
+- We need to implement the copy constructor ourselves
+
+--
+
+## [Deep Copy](http://pythontutor.com/cpp.html#code=%23include%20%3Ccstdlib%3E%0A%23include%20%3Ccstring%3E%0Aclass%20Memory%0A%7B%0A%20%20public%20%3A%0A%20%20%20%20Memory%28%29%3Ddefault%3B%0A%20%20%20%20Memory%28size_t%20_size%29%3B%0A%20%20%20%20~Memory%28%29%3B%0A%20%20%20%20Memory%28const%20Memory%20%26%29%3B%0A%20%20private%20%3A%0A%20%20%20%20size_t%20m_size%3D0%3B%0A%20%20%20%20int%20*m_data%3Dnullptr%3B%0A%7D%3B%0A%0AMemory%3A%3AMemory%28size_t%20_size%29%0A%7B%0A%20%20m_size%3D_size%3B%0A%20%20m_data%3Dnew%20int%5B_size%5D%3B%0A%20%20memset%28m_data,0,_size*sizeof%28int%29%29%3B%0A%7D%0A%0AMemory%3A%3AMemory%28const%20Memory%20%26_in%29%0A%7B%0A%20%20m_size%3D_in.m_size%3B%0A%20%20m_data%3Dnew%20int%5Bm_size%5D%3B%0A%20%20%0A%20%20for%28size_t%20i%3D0%3B%20i%3Cm_size%3B%20%2B%2Bi%29%0A%20%20%7B%0A%20%20%20%20m_data%5Bi%5D%3D_in.m_data%5Bi%5D%3B%0A%20%20%7D%0A%20%20%0A%7D%0A%0AMemory%3A%3A~Memory%28%29%0A%7B%0A%20%20delete%20%5B%5D%20m_data%3B%0A%7D%0A%0Aint%20main%28%29%0A%7B%0A%20%20Memory%20first%2810%29%3B%0A%20%20auto%20second%3Dfirst%3B%0A%20%20%0A%7D&curInstr=0&mode=display&origin=opt-frontend.js&py=cpp&rawInputLstJSON=%5B%5D)
+
+<img src="images/DeepCopy.apng" width="100%">
 
 --
 
 ## Deep Copy
-<img src="images/deep.png" width="40%">
+
+- In the previous example I used a loop to copy the data as an illustration
+- It is usually best to use [memcpy](https://en.cppreference.com/w/cpp/string/byte/memcpy) (or if using stl either built in assignment operators or [std::copy](https://en.cppreference.com/w/cpp/algorithm/copy))
+
+--
+
+## A Note on smart pointers
+
 
 
 ---
