@@ -1,4 +1,5 @@
 # Design Patterns
+
 Jon Macey
 
 jmacey@bournemouth.ac.uk
@@ -16,6 +17,7 @@ jmacey@bournemouth.ac.uk
 --
 
 # Critique
+
 > The “Design Patterns” book is one of the worst programming books ever. Yes, really. I’m 100% dead serious when I say that I think it has set (and will continue to set) the progress of software development back by decades 
 
 [http://realtimecollisiondetection.net/blog/?p=44](http://realtimecollisiondetection.net/blog/?p=44)
@@ -23,6 +25,7 @@ jmacey@bournemouth.ac.uk
 --
 
 # Critique
+
 > “Design patterns are spoon-fed material for brainless programmers incapable of independent thought, who will be resolved to producing code as mediocre as the design patterns they use to create it.
 Design patterns really are from hell!” 
 
@@ -40,10 +43,8 @@ Design patterns really are from hell!”
 ---
 
 
-
-<!-- .slide: id="singleton" -->
-
 ## [The singleton "pattern"](http://gameprogrammingpatterns.com/singleton.html)
+
 - The singleton pattern defines an object that can only exist once
 - This is done by implementing the code in a particular way with the object knowing if it has been created.
 - If it has not it will create an instance of itself
@@ -53,6 +54,7 @@ Design patterns really are from hell!”
 --
 
 ## [The singleton "pattern"](http://www.oodesign.com/singleton-pattern.html)
+
 - Deletion can be difficult
 - Modern C++ gives answers to all of this through a [complex template framework](http://loki-lib.cvs.sourceforge.net/loki-lib/loki/include/loki/Singleton.h?view=markup)
 - In doubt, [use a static member](http://gameprogrammingpatterns.com/singleton.html#what's-left-for-singleton)
@@ -61,6 +63,7 @@ Design patterns really are from hell!”
 --
 
 ### [extern "C++" int atexit( void (*func)());](http://en.cppreference.com/w/cpp/utility/program/atexit)
+
 - Another way to handle singleton deletion is to use the std::atexit() signal handler
 - Registers the function pointed to by func to be called on normal program termination (via [std::exit()](http://en.cppreference.com/w/cpp/utility/program/exit) or returning from the cpp/language/main function)
 - Can use this to clear singleton resources (see [ngl/Singleton.h](https://github.com/NCCA/NGL/blob/master/include/ngl/Singleton.h) template for example)
@@ -68,8 +71,8 @@ Design patterns really are from hell!”
 
 ---
 
-<!-- .slide: id="monostate" -->
 # [monostate pattern](http://c2.com/cgi/wiki?MonostatePattern)
+
 - A monostate is a "conceptual singleton" is uses [static data members](http://en.cppreference.com/w/cpp/language/static) and functions
 - This means that all instances of the class are accessing the same [static data](http://en.cppreference.com/w/cpp/language/storage_duration)
 - The following example reads a config file and stores the values in static class attributes
@@ -105,7 +108,7 @@ class Config
 
 # [Config.cpp](https://github.com/NCCA/DesignPatterns/blob/master/DesignCode1/monostate/Config.cpp)
 
-```
+``` c++
 #include "Config.h"
 #include <fstream>
 
@@ -138,7 +141,7 @@ Config::Config()
 
 # [main.cpp](https://github.com/NCCA/DesignPatterns/blob/master/DesignCode1/monostate/main.cpp)
 
-```
+```c++
 #include "Config.h"
 #include <iostream>
 
@@ -161,6 +164,7 @@ int main()
 --
 
 # monostate reading
+
 - http://www.apibook.com/Chapter_3.pdf
 - https://www.informit.com/guides/content.aspx?g=cplusplus&seqNum=147
 - http://stackoverflow.com/questions/887317/monostate-vs-singleton
@@ -168,9 +172,9 @@ int main()
 
 ---
 
-<!-- .slide: id="factoryMethod" -->
 
 # [Factory Methods](https://sourcemaking.com/design_patterns/factory_method)
+
 - A factory method is a creational design pattern that allows you to create an object without having to specify the specific C++ type of the object
 - It can be thought of as a generalisation of a constructor
   - This helps to overcome some of the issues with C++ constructors
@@ -196,14 +200,38 @@ int main()
 
 # Factory methods
 
-<div class="stretch" >
-<iframe src="factoryMethod1.html" style="border:0px #FFFFFF solid;" name="code" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" height="100%" width="100%"></iframe>
-</div>
+<pre>
+<code class="language-plantuml">
+  @startuml
+
+  Title Factory Methods
+  skinparam classAttributeIconSize 0
+
+  abstract class Creator {
+    + factoryMethod() : Product
+  }
+
+  class ConcreteCreator{
+    + factoryMethod() : Product
+
+  }
+
+  class Product
+  {
+
+  }
+
+  Creator <|--- ConcreteCreator
+  Product <|. ConcreteCreator : < Creates
+  @enduml
+</code>
+</pre>
 
 --
 
 
 #  [Abstract Base Class](https://isocpp.org/wiki/faq/abcs)
+
 - An ABC is a class that contains one or more [“pure virtual”](https://en.wikibooks.org/wiki/C%2B%2B_Programming/Classes/Abstract_Classes) member functions.
 - This is not a “concrete” class and means that it can’t be instantiated using the new operator
 - Instead it is a base class where derived classes provide the implementation of the pure virtual methods
@@ -213,16 +241,45 @@ int main()
 
 # [Simple Factory](https://github.com/NCCA/DesignPatterns/tree/master/DesignCode1/SimpleFactory)
 
-<div class="stretch" >
-<iframe src="renderFactory1.html" style="border:0px #FFFFFF solid;" name="code" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" height="100%" width="100%"></iframe>
-</div>
+<pre><code class="language-plantuml">
+  @startuml 
+  skinparam classAttributeIconSize 0
 
+  abstract class Renderer {
+    + ~Renderer()
+    + loadScene(_filename : std::string)
+    + setViewport(_w : int , _h : int)
+    + setCameraPos(_x : float, _y : float, _z : float)
+    + setLookAt(_x : float, _y : float, _z : float)
+    + render()
+  }
+
+  class OpenGLRenderer{
+    + OpenGLRenderer() : Renderer
+    + ~OpenGLRenderer()
+  }
+
+  class DirectXRenderer{
+    + DirectXRenderer() : Renderer
+    + ~DirectXRenderer()
+  }
+
+  class RenderFactory{
+    + createRenderer(_type : std::string) : Renderer *
+  }
+
+  Renderer <|--- OpenGLRenderer
+  Renderer <|--- DirectXRenderer
+  RenderFactory <|. Renderer : "             "
+
+  @enduml
+</code></pre>
 
 ---
 
-<!-- .slide: id="extensibleFactory" -->
 
 # Extensible Factories
+
 - This further decouples the concrete classes from the methods
 - We need to maintain a map of registered creation methods within the creator
 - This now means that the extensible factory holds state data
@@ -233,29 +290,76 @@ int main()
 
 # [Extensible Factory](https://github.com/NCCA/DesignPatterns/tree/master/DesignCode1/ExtensibleFactory)
 
-<div class="stretch" >
-<iframe src="extensibleFactory.html" style="border:0px #FFFFFF solid;" name="code" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" height="100%" width="100%"></iframe>
-</div>
+<pre><code class="language-plantuml">
+  @startuml  
+  skinparam classAttributeIconSize 0
 
+  abstract class Renderer {
+    + ~Renderer()
+    + loadScene(_filename : std::string)
+    + setViewport(_w : int , _h : int)
+    + setCameraPos(_x : float, _y : float, _z : float)
+    + setLookAt(_x : float, _y : float, _z : float)
+    + render()
+  }
+
+  class OpenGLRenderer{
+    + OpenGLRenderer() : Renderer
+    + ~OpenGLRenderer()
+  }
+
+  class DirectXRenderer{
+    + DirectXRenderer() : Renderer
+    + ~DirectXRenderer()
+  }
+
+class GLESRenderer{
+    + GLESRenderer() : Renderer
+    + ~GLESRenderer()
+  }
+  class RenderFactory{
+      + registerRenderer( &type : const std::string,  cb : std::function  &lt; Renderer  \* () &gt;)
+      + unregisterRenderer(&type : const std::string )'
+      + createRenderer(_type : const std::string ) : Renderer *
+
+  }
+
+  Renderer <|--- OpenGLRenderer
+  Renderer <|--- DirectXRenderer
+  Renderer <|--- GLESRenderer
+  RenderFactory <|. Renderer : "             "
+
+  @enduml
+</code></pre>
 
 ---
 
-<!-- .slide: id="Lazyinitialisation" -->
 
 # [Lazy initialisation](https://en.wikipedia.org/wiki/Lazy_initialization)
+
+<pre><code class="language-plantuml">
+  @startuml
+  skinparam classAttributeIconSize 0
+
+  class Multiton {
+    - m_instances : std::map&lt;Key,Multiton \* &gt;
+    - Multiton()
+    + getInstance() : Multiton \*
+  }
+  @enduml
+</code></pre>
+
 - Saves memory
-- Delay object creation until needed 
+- Delay object creation until needed
   - Textures
   - Geometries
 - Can be combined with a Factory to create “Lazy Factories”
-- Can be implemented as the “Multiton pattern” 
-<div class="stretch" >
-<iframe src="multiton.html" style="border:0px #FFFFFF solid;" name="code" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" height="100%" width="100%"></iframe>
-</div>
+- Can be implemented as the “Multiton pattern”
 
 --
 
 # [Texture](https://github.com/NCCA/DesignPatterns/tree/master/DesignCode1/Texture) 
+
 - In this case we will use static attributes to contain a map of std::string to Texture * objects
 - If the name key exists the instance will be returned.
 - If not a new object will be created and stored in the map (unordered_map)
@@ -264,13 +368,43 @@ int main()
 
 # [Texture](https://github.com/NCCA/DesignPatterns/tree/master/DesignCode1/Texture) 
 
-<div class="stretch" >
-<iframe src="texture.html" style="border:0px #FFFFFF solid;" name="code" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" height="100%" width="100%"></iframe>
-</div>
+<pre><code class="language-plantuml">
+  @startuml
+  skinparam classAttributeIconSize 0
+
+  class Texture {
+                - m_textures : static std::unordered_map &lt;std::string,Texture \* &gt;
+                - m_name : std::string
+                + getTexture(_type : const std::string &) :  static Texture \*
+                + printCurrentTexture()
+                - Texture(_type const std::string &)
+  }
+  @enduml
+</code></pre>
+
+```c++
+#include <unordered_map>
+#include <memory>
+class Texture
+{
+public :
+  static Texture* getTexture(const std::string &_type);
+  // just to demo the process
+  static void printCurrentTexture();
+private :
+    static std::unordered_map<std::string,std::shared_ptr<Texture>> m_textures;
+    // the type of this texture (i.e. the name)
+    std::string m_name;
+
+  // note : constructor private forcing one to use static getTexture()
+    Texture(const std::string &_t) : m_name( _t ) {}
+};
+```
 
 ---
 
 # [The PIMPL Idiom](http://wiki.c2.com/?PimplIdiom)
+
 - Introduced by Jeff Sumner as shorthand for “Pointer to Implementation”
 - It is used to avoid exposing private details in an API header
 - Whilst it is not a design pattern may be considered a special case of the “Bridge pattern”
@@ -655,7 +789,46 @@ AutoTimer::~AutoTimer()
 --
 
 ## [The Observer Pattern](https://en.wikipedia.org/wiki/Observer_pattern)
-<img src="images/observer.png" width="100%">
+
+<pre>
+<code class="language-plantuml">
+  @startuml
+  skinparam classAttributeIconSize 0
+
+  abstract class Observer{
+  + notify()
+  }
+
+  class ConcreteObserverA{
+    + notify()
+  }
+  class ConcreteObserverB{
+    + notify()
+  }
+
+  class Subject{
+    - m_observers : std::vector &lt;Observer&gt;
+    + registerObserver( _obs : Observer)
+    + unregisterObserver( _obs : Observer)
+    + notifyObservers()
+  }
+
+  Observer <|-- ConcreteObserverA
+  Observer <|-- ConcreteObserverB
+  Observer -o Subject
+
+note bottom of Subject
+<pre>
+notifyObservers()
+  for observer in m_observer :
+    call observer.notify()
+</pre>
+end note
+
+
+  @enduml
+</code></pre>
+
 
 --
 
