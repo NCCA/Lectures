@@ -184,7 +184,8 @@ int main()
 # The problem with ctors
 
 - ctors have no return type, it makes it difficult to signal an error by returning a nullptr type
-- we have [constrained naming](https://msdn.microsoft.com/en-GB/library/s16xw1a8.aspx). It always has the same name as the class, and we can only have one set of parameter lists (i.e. can’t have two ctors with single int param lists that do different things
+- we have [constrained naming](https://msdn.microsoft.com/en-GB/library/s16xw1a8.aspx). 
+  - It always has the same name as the class, and we can only have one set of parameter lists (i.e. can’t have two ctors with single int param lists that do different things
 - No dynamic runtime binding of ctors, i.e. we must know the concrete class at compile time.
 - [No virtual constructors](http://www.stroustrup.com/bs_faq2.html#virtual-ctor). 
 
@@ -318,7 +319,7 @@ class GLESRenderer{
     + ~GLESRenderer()
   }
   class RenderFactory{
-      + registerRenderer( &type : const std::string,  cb : std::function  &lt; Renderer  \* () &gt;)
+      + registerRenderer( &type : const std::string,  cb : std::function  &lt; Renderer * () &gt;)
       + unregisterRenderer(&type : const std::string )'
       + createRenderer(_type : const std::string ) : Renderer *
 
@@ -342,9 +343,9 @@ class GLESRenderer{
   skinparam classAttributeIconSize 0
 
   class Multiton {
-    - m_instances : std::map&lt;Key,Multiton \* &gt;
+    - m_instances : std::map&lt;Key,Multiton * &gt;
     - Multiton()
-    + getInstance() : Multiton \*
+    + getInstance() : Multiton *
   }
   @enduml
 </code></pre>
@@ -373,9 +374,9 @@ class GLESRenderer{
   skinparam classAttributeIconSize 0
 
   class Texture {
-                - m_textures : static std::unordered_map &lt;std::string,Texture \* &gt;
+                - m_textures : static std::unordered_map &lt;std::string,Texture * &gt;
                 - m_name : std::string
-                + getTexture(_type : const std::string &) :  static Texture \*
+                + getTexture(_type : const std::string &) :  static Texture *
                 + printCurrentTexture()
                 - Texture(_type const std::string &)
   }
@@ -1004,7 +1005,47 @@ int main()
 
 ## [The Visitor Pattern](http://butunclebob.com/ArticleS.UncleBob.IuseVisitor)
 
-<img src="images/visitor.png" width="100%">
+<pre>
+<code class="language-plantuml">
+
+ @startuml 
+  skinparam classAttributeIconSize 0
+
+class Client{}
+interface Element{}
+class ElementOne{
+  + accept(v : Visitor)
+}
+
+class ElementTwo{
+  + accept(v : Visitor)
+}
+
+interface Visitor{
+  +visit(e : ElementOne)
+  +visit(e : ElementTwo)
+}
+
+
+interface VisitorOne{
+  +visit(e : ElementOne)
+  +visit(e : ElementTwo)
+}
+interface VisitorTwo{
+  +visit(e : ElementOne)
+  +visit(e : ElementTwo)
+}
+
+ Client <|-- Element      
+ Element <|-- ElementOne
+ Element <|-- ElementTwo
+
+ Visitor <|-- VisitorOne
+ Visitor <|-- VisitorTwo
+
+
+@enduml
+</pre></code>
 
 --
 
@@ -1359,7 +1400,24 @@ int main()
 --
 
 ## [The Flyweight Pattern](https://github.com/NCCA/DesignPatterns/tree/master/Flyweight)
-<img src="images/tree.png" width="20%">
+
+<pre>
+<code class="language-plantuml">
+ @startuml 
+  skinparam classAttributeIconSize 0
+class Tree{
+  - m_mesh : Mesh
+  - m_bark : Texture
+  - m_leaves : Texture
+  - m_pos : Vec3
+  - m_height : float
+  - m_thickness : float
+  - m_barkTint : Colour
+  - m_leafTint : Colour
+}
+@enduml
+</code></pre>
+
 - In this case each instance of the tree would have a copy of both Mesh and two textures
 - This (especially in Games) will be the same mesh and texture for each instance of the tree
 - I we are creating a Forest of 1000’s of trees there is a large duplication of data
@@ -1368,7 +1426,36 @@ int main()
 --
 
 ## [The Flyweight Pattern](https://github.com/NCCA/DesignPatterns/tree/master/Flyweight)
-<img src="images/tree2.png" width="50%">
+
+<pre>
+<code class="language-plantuml">
+@startuml 
+  skinparam classAttributeIconSize 0
+class Tree{
+  - m_model : TreeModel *
+  - m_pos : Vec3
+  - m_height : float
+  - m_thickness : float
+  - m_barkTint : Colour
+  - m_leafTint : Colour
+  +Tree()
+}
+
+
+class TreeModel
+{
+  - m_mesh : Mesh
+  - m_bark : Texture
+  - m_leaves : Texture
+  + TreeModel()
+}
+
+Tree *-  TreeModel : Uses
+
+@enduml
+</code></pre>
+
+
 - Now we have moved the “intrinsic state” or “context free” data to the Model class
 - This will be created once (or perhaps via inheritance to individual Tree types via a factory method)
 - The actual Tree now has only it’s specific state (extrinsic) 
