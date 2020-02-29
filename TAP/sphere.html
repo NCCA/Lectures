@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>CGAL Sphere</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<script src="/jmacey/js/jquery/jquery.min.js"></script>
+		<script src="/jmacey/js/three.js/three.min.js"></script>
+		<style>
+			#info {
+			position: absolute;
+			top: 10px;
+			width: 100%;
+			text-align: left;
+			z-index: 100;
+			display:block;
+			color : #ffffff;
+		}
+		</style>
+</head>
+
+<body>
+
+<div id="info">Frame </div>
+
+<div id="glframe"></div>
+
+<script>
+//fields
+var width;
+var height;
+var scene;
+var camera;
+var renderer;
+var sphere;
+var zRot, triangles, radius, phis, phil, thes, thel; // sliders 
+var frame;
+let framesPerSecond = 30;
+
+function init() {
+  zRot = 1.5*Math.PI / 180;
+  radius = phis = phil = thes = thel = 10;
+  radius = 400;
+  phis = 180;
+  phil = 6.28;
+  thes = 0; 
+  thel = 3.14;
+  frame=0;
+  triangles = 15;
+  //Set width 
+  width = window.innerWidth;
+  //set Height
+  height = window.innerHeight;
+  //Create Scene
+  scene = new THREE.Scene();
+  //Create Camera
+  camera = new THREE.PerspectiveCamera(45, width / height, 1, 3000);
+  camera.position.z = 1200;
+  //Create Renderer
+  renderer = new THREE.WebGLRenderer();
+  renderer.setSize(width, height);
+  //Add Renderer to webpage
+  document.body.appendChild(renderer.domElement);
+};
+
+function createSphere() {
+  //Create Sphere by passing to it the geometry w,h,d, number of polygons making up the face 
+  sphere = new THREE.Mesh(new THREE.SphereGeometry(radius, triangles,triangles,phis,phil,thes,thel), new THREE.MeshBasicMaterial({
+    color: 0x00FF00, //The color chosen for the mesh 
+    wireframe: true //Shade in or wireframe?
+  }));
+  scene.add(sphere); //Add to scene
+};
+
+function update() 
+{
+	 setTimeout(function() 
+	 {
+		requestAnimationFrame(update);
+		document.getElementById("info").innerHTML = "Frame "+frame;
+		if(frame++ >=150)
+		{
+			frame=0;
+			sphere.rotation.z =0;
+		}
+		let rotRange=[1,2,3,4,5,6,7,8,9,10,26,27,28,29,30,31,32,33,34,35,51,52,53,54,55,56,57,58,59,60, 76,77,78,79,80,81,82,83,84,85];
+
+		if(rotRange.includes(frame))
+		{
+			sphere.rotation.z += zRot;
+		}
+		renderer.render(scene, camera);
+	}, 1000 / framesPerSecond);
+
+}
+
+
+$(function() {
+  init();
+  createSphere();
+  update();
+});
+		</script>
+	</body>
+</html>

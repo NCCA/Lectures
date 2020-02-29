@@ -65,3 +65,23 @@ body {
   background-position: bottom left;
   background-size: auto 20% 20%;
   }
+
+
+  #mySlideLeftCode {
+    text-align: left;
+    float: left;
+    width:40%;
+    z-index:-10;
+    border : 0px;
+  }
+  
+  #mySlideRightCode {
+    top: 75px;
+    float: right;
+    text-align: left;
+    z-index:-10;
+    width:60%;
+    border : 0px;
+  
+  }
+  

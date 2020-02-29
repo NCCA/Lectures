@@ -51,7 +51,10 @@ Since its inception, the philosophy of our centre has been to marry Art and Scie
 
 
 ## Coding Animation
-
+<div id="mySlideLeftCode">
+<iframe src="sphere.html" width=1000 height=165></iframe>
+</div>
+<div id="mySlideRightCode">
 ```
 SCRIPT 1 TO 150 DO
   BEGIN
@@ -59,14 +62,11 @@ SCRIPT 1 TO 150 DO
       RZ [ball] 1.5;
       .....
   END;
-
 ```
-
+</div>
 - This generates 150 frames of animation 
   - makes the object ```[ball]``` rotate around the z axis by 1.5 degrees in loops of 10 frames every 25 
   - i.e. 1-10  26-35 51-60 76-85
-
-- 
 
 --
 
