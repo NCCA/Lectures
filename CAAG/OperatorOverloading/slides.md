@@ -98,25 +98,25 @@ Object operator -(const Object &object);
 
 ```
 // in .h
-bool operator==( const Vector &_v )const;
-bool operator!=( const Vector &_v  )const;
+bool operator==( const Vec3 &_v )const;
+bool operator!=( const Vec3 &_v )const;
 // in .cpp
-bool Vector::operator==( const Vector& _v )const
+bool Vec3::operator==(const Vec3& _v)const
 {
-return (
-        FCompare(_v.m_x,m_x)  &&
-        FCompare(_v.m_y,m_y)  &&
-        FCompare(_v.m_z,m_z)
-        );
+  return (
+          FCompare(_v.m_x,m_x)  &&
+          FCompare(_v.m_y,m_y)  &&
+          FCompare(_v.m_z,m_z)
+         );
 }
 
-bool Vector::operator!=( const Vector& _v )const
+bool Vec3::operator!=(const Vec3& _v  )const
 {
-return (
-        !FCompare(_v.m_x,m_x) ||
-        !FCompare(_v.m_y,m_y) ||
-        !FCompare(_v.m_z,m_z)
-        );
+  return (
+          !FCompare(_v.m_x,m_x) ||
+          !FCompare(_v.m_y,m_y) ||
+          !FCompare(_v.m_z,m_z)
+         );
 }
 
 ```
@@ -129,11 +129,9 @@ return (
 - I use a simple macro
 
 ```
-#ifndef EPSILON
-  constexpr float EPSILON = 0.001f;
-#endif
+constexpr float  EPSILON = 0.001f;
 #define FCompare(a,b) \
-      ( ((a)-EPSILON)<(b) && ((a)+EPSILON)>(b) )
+    ( ((a)-EPSILON)<(b) && ((a)+EPSILON)>(b) )
 ```
 
 --
@@ -142,17 +140,20 @@ return (
 
 ```
 // in .h
-Vector operator+(const Vector &_v   )const;
+Vec3 operator +(const Vec3 &_v )const ;
+Vec3 operator -(const Vec3 &_v )const ;
+
 // in .cpp
-Vector Vector::operator+(const Vector& _v )const
+Vec3 Vec3::operator+( const Vec3& _v)const
 {
-  return Vector(
-                  m_x+_v.m_x,
-                  m_y+_v.m_y,
-                  m_z+_v.m_z,
-                  m_w
-                  );
+  return Vec3(m_x+_v.m_x,m_y+_v.m_y,m_z+_v.m_z);
 }
+
+Vec3 Vec3::operator-( const Vec3& _v)const
+{
+  return Vec3(m_x-_v.m_x,m_y-_v.m_y,m_z-_v.m_z);
+}
+
 
 ```
 
@@ -170,28 +171,16 @@ Vector Vector::operator+(const Vector& _v )const
 
 ```
 // in .h
-friend std::ostream& operator<<(std::ostream& _output, const Vector& _s);
-friend std::istream& operator>>(std::istream& _input, Vector &_s);
-friend std::ostream& operator<<(std::ostream& _output, const Vector* _s);
-friend std::istream& operator>>(std::istream& _input, Vector* _s);
+friend std::ostream& operator<<(std::ostream& _output, const Vec3& _s);
+friend std::istream& operator>>(std::istream& _input, Vec3 &_s);
 // in .cpp
-std::ostream& operator<<( std::ostream& _output,  const Vector& _v   )
+std::ostream& operator<<( std::ostream& _output,  const Vec3& _v   )
 {
-	return _output<<"["<<_v.m_x<<","<<_v.m_y<<","<<_v.m_z<<","<<_v.m_w<<"]";
+  return _output<<"["<<_v.m_x<<","<<_v.m_y<<","<<_v.m_z<<"]";
 }
-std::istream& operator>>( std::istream& _input, Vector& _s  )
+std::istream& operator>>( std::istream& _input, Vec3& _s  )
 {
-  return _input >> _s.m_x >> _s.m_y >> _s.m_z>>s.m_w;
-}
-
-std::ostream& operator<<(  std::ostream& _output,  const Vector* _s    )
-{
-  return _output<<"["<<_s->m_x<<","<<_s->m_y<<","<<_s->m_z<<","<<_s->m_w<<"]";
-}
-
-std::istream& operator>>( std::istream& _input,   Vector *_s   )
-{
-  return _input >> _s->m_x >> _s->m_y >> _s->m_z >>s->m_w;
+  return _input >> _s.m_x >> _s.m_y >> _s.m_z;
 }
 
 ```
@@ -202,15 +191,26 @@ std::istream& operator>>( std::istream& _input,   Vector *_s   )
 
 ```
 // in .h
-void operator+=( const Vector& _v );
+Vec3& operator+=(const Vec3& _v );
+Vec3& operator-=( const Vec3& _v );
+
 // in .cpp
-void Vector::operator+=( const Vector& _v )
+Vec3& Vec3::operator+=(const Vec3& _v)
 {
-	m_x+=_v.m_x;
-	m_y+=_v.m_y;
-	m_z+=_v.m_z;
-//	m_w=0.0; // note design desision on w!
+  m_x+=_v.m_x;
+  m_y+=_v.m_y;
+  m_z+=_v.m_z;
+  return *this;
 }
+
+Vec3& Vec3::operator-=(const Vec3& _v)
+{
+  m_x-=_v.m_x;
+  m_y-=_v.m_y;
+  m_z-=_v.m_z;
+  return *this;
+}
+
 ```
 
 --
@@ -219,12 +219,12 @@ void Vector::operator+=( const Vector& _v )
 
 ```
 // in .h
-float& operator[](  int _i) ;
+float& operator[]( size_t _i);
 // in .cpp
-float& Vector::operator[](  int _i )
+float& Vec3::operator[](  size_t _i )
 {
-	assert(_i >=0 || _i<=4);
-	return (&m_x)[_i];
+  assert( _i<=3);
+  return m_openGL[_i];
 }
 ``` 
 
@@ -234,11 +234,14 @@ float& Vector::operator[](  int _i )
 
 ```
 // in .h
-Vector operator-(const Vector& _v )const;
+Vec3 operator-();
 // in .cpp
-Vector Vector::operator-() const
+Vec3 Vec3::operator-()
 {
-	return Vector(-m_x,-m_y,-m_z,m_w);
+    m_x=-m_x;
+    m_y=-m_y;
+    m_z=-m_z;
+    return *this;
 }
 
 ```
@@ -250,9 +253,9 @@ Vector Vector::operator-() const
 - see free functions 
 
 ```
-Vector operator *(float _k, const Vector &_v)
+inline Vec3 operator *(float _k, const Vec3 &_v)
 {
-return Vector(_k*_v.m_x, _k*_v.m_y, _k*_v.m_z,_v.m_w);
+  return Vec3(_k*_v.m_x, _k*_v.m_y, _k*_v.m_z);
 }
 ```
 
