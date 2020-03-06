@@ -9,8 +9,44 @@
 
 ## Introduction
 
+- 
+
 
 --
+
+## What we do
+
+  <video controls>
+    <source data-src="videos/showreel2019.mp4" type="video/mp4" />
+  </video>
+ 
+
+--
+
+## About Me
+
+- Currently Senior Lecturer in Computer Animation at Bournemouth University
+- Programme Leader for the MSc Computer Animation and Visual Effects
+  - Mainly teach Software Engineering and Programming (C++ and Python)
+    - Realtime graphics (OpenGL)
+    - Production rendering (Renderman)
+
+--
+
+## About the NCCA
+
+- Originally one course BA Computer Animation and Visualisation
+- Later a series of Masters Programmes.
+- Currently Undergraduate
+  -  [BA (Hons) Computer Animation Art and Design](https://www.bournemouth.ac.uk/study/courses/ba-hons-computer-animation-art-design)
+  -  [BA (Hons) Computer Animation Technical Arts](https://www.bournemouth.ac.uk/study/courses/ba-hons-computer-animation-technical-arts)
+  -  [BA (Hons) Visual Effects](https://www.bournemouth.ac.uk/study/courses/ba-hons-visual-effects)
+- Masters
+  - [MA 3D Computer Animation](https://www.bournemouth.ac.uk/study/courses/ma-3d-computer-animation)
+  - [MSc Computer Animation and Visual Effects](https://www.bournemouth.ac.uk/study/courses/msc-computer-animation-visual-effects)
+  - [MA Digital Effects](https://www.bournemouth.ac.uk/study/courses/ma-digital-effects)
+
+---
 
 ## Our Philosophy
 
@@ -52,7 +88,7 @@ Since its inception, the philosophy of our centre has been to marry Art and Scie
 
 ## Coding Animation
 <div id="mySlideLeftCode">
-<iframe src="sphere.html" width=1000 height=165></iframe>
+<iframe src="sphere.html" ></iframe>
 </div>
 <div id="mySlideRightCode">
 ```
@@ -70,18 +106,45 @@ SCRIPT 1 TO 150 DO
 
 --
 
+## Equipment 
 
-# 1999
+- HP (Apollo) computers
+  - HP UX 
+- Needed to know shell and how to use Unix (csh)
+- Also taught some perl (to help automate tasks)
+- Late 90's moved to SGI O2 (looked great!)
 
+<img src="images/SGI.jpg" width="50%">
 
+--
 
+## OpenGL and C
+
+- Once we got the SGI's we had access to the new API OpenGL
+  - Version 1.1 on the SGI 
+  - Started teaching C and OpenGL
+- I still teach OpenGL today (more later)
 
 ---
 
-# 2003
+
+# 2000's
+
+
+
+# 2003 / 4
+
+- I stsrted to teach at the NCCA 
+- This was one of the first Masters Project I supervised
 
 <div >
   <video controls>
     <source data-src="videos/Watercolour.mp4" type="video/mp4" />
   </video>
 </div>
+
+--
+
+## 
+
+
