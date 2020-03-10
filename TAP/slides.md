@@ -244,3 +244,9 @@ for i in range(0,10) :
 
 --
 
+## Library Developers vs Library Users
+
+- I've been following the "Stop teaching C" principles proposed by Kate Gregory for a long time
+- I really like the concept of splitting library developers and users into different catagories
+  - Who needs big O notation anyway ;-) 
+    - Ok that is controversial but let me explain!
