@@ -77,7 +77,9 @@
 ## [PxrPathTracer](https://rmanwiki.pixar.com/display/REN/PxrPathTracer)
 
 - PxrPathTracer implements the [forward path tracing algorithm](http://www.graphics.stanford.edu/courses/cs348b-01/course29.hanrahan.pdf), which excels in outdoor, highly specular scenes. 
-- The simplicity of the algorithm generally makes it easy to use and to implement. - Shortcomings may include slow convergence speeds, especially for scenes with significant caustic illumination.
+- The simplicity of the algorithm generally makes it easy to use and to implement. 
+
+- Shortcomings may include slow convergence speeds, especially for scenes with significant caustic illumination.
 
 --
 
