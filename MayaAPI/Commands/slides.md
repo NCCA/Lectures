@@ -1,4 +1,4 @@
-# Introduction to the MayaC++ API
+# Introduction to the Maya C++ API
 
 Jon Macey
 
@@ -221,6 +221,17 @@ macx:LIBS += -L$$MAYALOCATION/Maya.app/Contents/MacOS \
 CONFIG+=c++11
 
 ```
+
+--
+
+## Visual Studio Project
+
+- Under windows we can create a simple .DLL project 
+- We need to change the target extension to .mll (maya link library) as this is the default search.
+- Full details on how to do a setup is [here](https://nccastaff.bournemouth.ac.uk/jmacey/MayaAPI/Windows/index.md.html)
+- vcxproj files wil also be included with the code.
+
+
 
 ---
 
