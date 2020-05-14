@@ -1,4 +1,4 @@
-# Maya C++ API MPxNodes
+# Maya C++ API MPxNodes
 
 Jon Macey
 
@@ -8,7 +8,6 @@ Jon Macey
 - Unlike command plugins, nodes directly effect the maya Dependency Graph (DG)
 - The DG has a data flow structure that supports animation, construction history, and constraints
 - The Maya APIs provide the necessary methods to both add new nodes and examine nodes that already exist.
-
 
 --
 
