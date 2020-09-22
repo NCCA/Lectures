@@ -2,17 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>MSc Welcome</title>
+    <title>Introduction to DOD</title>
     <link rel="stylesheet" href="/jmacey/js/reveal.js/css/reveal.css">
     <link rel="stylesheet" href="/jmacey/js/reveal.js/reveal.js-fullscreen-code.css">
     <link rel="stylesheet" href="/jmacey//js/reveal.js/css/theme/white.css" id="theme">
     <link rel="stylesheet" href="/jmacey//js/reveal.js/lib/css/zenburn.css">
     <link rel="stylesheet" href="/jmacey/js/reveal.js/jonstyle.css">
-    
 
+     <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? '/jmacey//js/reveal.js/css/print/pdf.css' : '/jmacey//js/reveal.js/css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
 
-    <!-- to print uncomment this and pass ?print-pdf#/ to the command line --->
-    <!--- <link rel="stylesheet" href="/jmacey//js/reveal.js/css/print/pdf.css"> -->
 </head>
 
 <body>
@@ -20,38 +24,21 @@
       <div class="slides">
         <style> .reveal section img { background:none; border:none; box-shadow:none; } </style>   
         <!-- Slides are separated by newline + three dashes + newline, vertical slides identical but two dashes -->
-        <section data-markdown="slides.md" data-markdown data-separator="^\n---\n$" data-separator-vertical="^\n--\n$" data-separator-notes="^Note:"></section>        
+        <section data-markdown="slides.md" data-markdown data-separator="^\n---\n$" data-separator-vertical="^\n--\n$"></section>        
        
       </div>
      
     </div>
-    
+
     <script src="/jmacey/js/reveal.js/lib/js/head.min.js"></script>
     <script src="/jmacey/js/reveal.js/js/reveal.js"></script>
     <script src="/jmacey/js/jquery/jquery.min.js"></script>
-    <link rel="stylesheet" href="/jmacey/js/codemirror/codemirror.css">
-    <script src="/jmacey/js/codemirror/codemirror.js"></script>
-
-    <script>
-    function popupWindow(url, title, w, h) 
-    {
-      var win =  window.parent; 
-      const y = win.top.outerHeight / 2 + win.top.screenY - ( h / 2);
-      const x = win.top.outerWidth / 2 + win.top.screenX - ( w / 2);
-      return win.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+y+', left='+x);
-    }
-    </script>
     <script>
       // this is a uniqe id for the slide for saving notes later I will update to use IndexedDB but 
       // this will work on all systems
-      var gSlideID='MSCIntro';
+      var gSlideID='SIMD';
     </script>
  
- <script>
-  var editor = CodeMirror.fromTextArea(design1, {
-    lineNumbers: true
-  });
-</script> 
 
 
     <!-- modal for notes -->
@@ -101,8 +88,9 @@
   </div>
 
 
- 
+
     <script src="/jmacey/js/reveal.js/slidefunctions.js"></script>
+  
  
 </div>
 </div>
