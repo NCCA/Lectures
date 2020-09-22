@@ -63,6 +63,41 @@ The online timetable can be found here https://timetable.bournemouth.ac.uk/
 
 ![](timetable.png)
 
+--
+
+## Timetable
+
+- All times are UK Times
+- If scheduled on Teams it will adjust to local time
+- Unit Leaders will arrange invites to Lectures (Check teams)
+
+--
+
+## Lectures and Labs
+
+- We are all new to online teaching
+- Basic Rules :-
+  - No longer that 1 hr without a break
+  - 15 minute break between 1hr sessions
+  - Will try and limit to max 4hrs a day online (induction week a bit busy!)
+
+--
+
+## Virtual Workstations
+
+- We have two virtual workstation solutions
+  - For Windows we will use VMWare Horizon
+  - For Linux we will use NoMachine
+- There will also be VPN access to some elements (License servers / ssh to lab machines)
+- More details on this next week.
+
+---
+
+## Any Questions?
+
+
+
+
 
 
 
