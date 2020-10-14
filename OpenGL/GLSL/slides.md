@@ -25,7 +25,7 @@ jmacey@bournemouth.ac.uk
 
 --
 
-## Vertex processor(Rost 2009)
+## Vertex processor (Rost 2009)
 
 <img src="images/vertex.png" width="60%">
 
@@ -52,7 +52,7 @@ jmacey@bournemouth.ac.uk
 
 --
 
-## The Fragment Processor (Rost 2009)
+## The Fragment Processor (Rost 2009)
 
 <img src="images/frag.png" width="70%">
 

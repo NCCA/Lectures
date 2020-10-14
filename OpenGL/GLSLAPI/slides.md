@@ -23,7 +23,7 @@ jmacey@bournemouth.ac.uk
 
 --
 
-## GLSL API Process
+## GLSL API Process
 
 <img src="images/glslapi.png" width="80%">
 
