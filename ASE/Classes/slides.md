@@ -1,11 +1,5 @@
-# Classes in C++
-Jon Macey
+# Classes and Object Orientation in C++
 
-jmacey@bournemouth.ac.uk
-
----
-
-# Classes in C++
 Jon Macey
 
 jmacey@bournemouth.ac.uk
@@ -377,7 +371,7 @@ void Colour::setAlpha(float _a)
 
 ---
 
-## Example a [Colour Class](https://github.com/NCCA/CFGAA/blob/master/Lecture5Classes/Colour/tests/tests.cpp)
+## Example a [Colour Class](https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/Colour/tests/tests.cpp)
 
 - The Colour Class was developed using TDD 
 
@@ -474,7 +468,7 @@ void Colour::mix(const Colour &_in, float _t)
 
 --
 
-## [Static Class Methods](https://github.com/NCCA/CFGAA/blob/master/Lecture5Classes/Colour/src/Colour.cpp)
+## [Static Class Methods](https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/Colour/src/Colour.cpp)
 
 - A static member is shared by all objects of the class
 
@@ -498,7 +492,7 @@ Colour Colour::mix(const Colour &_a, const Colour &_b, float _t)
 --
 
 
-## [Static Class Methods](https://github.com/NCCA/CFGAA/blob/master/Lecture5Classes/Colour/tests/tests.cpp)
+## [Static Class Methods](https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/Colour/tests/tests.cpp)
 
 
 ```
@@ -524,7 +518,7 @@ TEST(Colour,mixStatic)
 
 
 
-# [Using the Class](https://github.com/NCCA/CFGAA/blob/master/Lecture5Classes/Colour/Automatic/main.cpp)	
+# [Using the Class](https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/Colour/Automatic/main.cpp)	
 
 - Now we have defined the class we can use it to create different objects for us to use.
 - Each of the objects must have some way of being referred to to we can differentiate it from the others
@@ -585,7 +579,7 @@ int main()
 
 --
 
-## [Dynamic Objects](https://github.com/NCCA/CFGAA/blob/master/Lecture5Classes/Colour/Dynamic/main.cpp)
+## [Dynamic Objects](https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/Colour/Dynamic/main.cpp)
 
 ```
 #include <iostream>
@@ -632,7 +626,7 @@ int main()
 
 --
 
-## Mem.h
+## [Mem.h](https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/Memory/include/Mem.h)
 
 ```
 #ifndef MEM_H_
@@ -671,8 +665,7 @@ class Mem
 
 --
 
-## Mem.cpp
-
+## [Mem.cpp](https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/Memory/src/Mem.cpp)
 ```
 #include "Mem.h"
 #include <iostream>
@@ -924,7 +917,7 @@ class Shape {
 --
 
 
-## [Shape.h](https://github.com/NCCA/CFGAA/blob/master/Lecture6Inheritance/Shape/include/Shape.h)
+## [Shape.h](https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/Shape/include/Shape.h)
 
 
 ```
@@ -951,7 +944,7 @@ class Shape
 
 --
 
-## [Shape.cpp](https://github.com/NCCA/CFGAA/blob/master/Lecture6Inheritance/Shape/src/Shape.cpp)
+## [Shape.cpp](https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/Shape/src/Shape.cpp)
 
 ```
 #include "Shape.h"
@@ -1050,7 +1043,7 @@ Shape <|-- Rectangle
 
 --
 
-## [Rectangle.h](https://github.com/NCCA/CFGAA/blob/master/Lecture6Inheritance/Shape/include/Rectangle.h)
+## [Rectangle.h](https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/Shape/include/Rectangle.h)
 
 ```
 #ifndef RECTANGLE_H_
@@ -1075,7 +1068,7 @@ class Rectangle : public Shape
 
 --
 
-## [Rectangle.cpp](https://github.com/NCCA/CFGAA/blob/master/Lecture6Inheritance/Shape/src/Rectangle.cpp)
+## [Rectangle.cpp](https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/Shape/src/Rectangle.cpp)
 
 ```
 #include "Rectangle.h"
@@ -1096,7 +1089,7 @@ float Rectangle::getArea() const
 
 --
 
-## [RectangleMain.cpp](https://github.com/NCCA/CFGAA/blob/master/Lecture6Inheritance/Shape/src/RectangleMain.cpp)
+## [RectangleMain.cpp](https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/Shape/src/RectangleMain.cpp)
 
 ```
 #include <iostream>
@@ -1240,7 +1233,7 @@ Circle::stretchY(float _y) { m_y = m_y = _y; }
 
 ---
 
-## [The inheritance of Constructors](https://github.com/NCCA/CFGAA/blob/master/Lecture6Inheritance/ConstructorInheritance/example1.cpp)
+## [The inheritance of Constructors](https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/ConstructorInheritance/example1.cpp)
 
 ```
 #include <iostream>
@@ -1286,7 +1279,7 @@ int main()
 
 --
 
-## [User defined constructors](https://github.com/NCCA/CFGAA/blob/master/Lecture6Inheritance/ConstructorInheritance/example2.cpp) 
+## [User defined constructors](https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/ConstructorInheritance/example2.cpp) 
 
 ```
 #include <iostream>
@@ -1356,7 +1349,7 @@ int main()
 ---
 
 
-## [Inheriting Methods](https://github.com/NCCA/CFGAA/blob/master/Lecture6Inheritance/MethodInheritance/example1.cpp)
+## [Inheriting Methods](https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/MethodInheritance/example1.cpp)
 
 ```
 #include <iostream>
@@ -1460,7 +1453,7 @@ Base *ptr = new Derived;
 
 --
 
-## [virtual functions](https://github.com/NCCA/CFGAA/blob/master/Lecture6Inheritance/MethodInheritance/example2.cpp)
+## [virtual functions](https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/MethodInheritance/example2.cpp)
 
 ```
 #include <iostream>
@@ -1548,7 +1541,7 @@ example2.cpp:44:5: warning: delete called on non-final 'Base' that has virtual f
 
 --
 
-## [example3.cpp](https://github.com/NCCA/CFGAA/blob/master/Lecture6Inheritance/MethodInheritance/example3.cpp)
+## [example3.cpp](https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/MethodInheritance/example3.cpp)
 
 ```
 #include <iostream>
@@ -1621,7 +1614,7 @@ int main()
 
 --
 
-## [pure virtual methods](https://github.com/NCCA/CFGAA/blob/master/Lecture6Inheritance/AbstractClass/example1.cpp)
+## [pure virtual methods]https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/AbstractClass/example1.cpp)
 
 ```
 
@@ -1667,7 +1660,7 @@ example1.cpp:10:9: warning: private field 'm_v' is not used [-Wunused-private-fi
 --
 
 
-## [example2.cpp](https://github.com/NCCA/CFGAA/blob/master/Lecture6Inheritance/AbstractClass/example2.cpp)
+## [example2.cpp](https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/AbstractClass/example2.cpp)
 
 ```
 #include <iostream>
@@ -1700,7 +1693,7 @@ int main()
 
 --
 
-## [example3.cpp](https://github.com/NCCA/CFGAA/blob/master/Lecture6Inheritance/AbstractClass/example3.cpp)
+## [example3.cpp](https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/AbstractClassexample3.cpp)
 
 
 ```
@@ -1752,7 +1745,7 @@ int main()
 
 ---
 
-## [Why use override](https://github.com/NCCA/CFGAA/blob/master/Lecture6Inheritance/Mismatch/example1.cpp)
+## [Why use override](https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/Mismatch/example1.cpp)
 
 ```
 #include <iostream>
