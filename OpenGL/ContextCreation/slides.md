@@ -41,7 +41,7 @@ jmacey@bournemouth.ac.uk
 
 <img src="images/gl1.png" width="100%">
 
---
+---
 
 ## Block Diagram of OpenGL
 
@@ -75,7 +75,7 @@ jmacey@bournemouth.ac.uk
 
 ## Primitives and Vertices
 
-<img src="images/gl3.png" width="60%">
+<img src="images/gl3.png" width="55%">
 - In the OpenGL, most geometric objects are drawn by specifying a series of generic attribute sets using DrawArrays or one of the other drawing commands.
 - Points, lines, polygons, and a variety of related geometric objects can be drawn in this way.
 
@@ -113,7 +113,7 @@ jmacey@bournemouth.ac.uk
 --
 
 ## [Example drawing points](https://github.com/NCCA/OpenGLCode)
-<img src="images/gl4.png" width="40%">
+<img src="images/gl4.png" width="30%">
 - The following example will draw a series of points to the OpenGL context
 - The data is stored on the client side (our program)
 - We need to create the data (3xGLfloat values) in an array

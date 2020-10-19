@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Maya C++ API MPxNodes
 
 Jon Macey
@@ -1009,4 +1010,3 @@ MStatus NoiseNode::compute( const MPlug &_plug , MDataBlock &_data )
 ## references
 
 - Autodesk Maya API | White Paper (online pdf )
-- DevTV: Introduction to Maya Dependency Graph Programming (online)

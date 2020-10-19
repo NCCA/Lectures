@@ -5,9 +5,11 @@ Jon Macey
 ---
 
 ## The Maya Environment
+
 - When maya starts up it reads a file called Maya.env this contains a number of environment variables for Maya.
-- On a mac this is located in ~Library/Preferences/Autodesk/maya/[Version]
-- Under Linux ~/maya/version/
+- Under Linux ```~/maya/version/```
+- Under Windows ```%HOMEDRIVE%\%HOMEPATH%\Documents\maya\[version]```
+- On a mac this is located in ```~/Library/Preferences/Autodesk/maya/[Version]```
 - We are going to use this to setup some directories to use for the next few weeks Lectures
 
 --
@@ -25,37 +27,74 @@ mkdir MayaPlugs
 ``` 
 MAYA_PLUG_IN_PATH=/home/jmacey/MayaPlugs
 MAYA_SCRIPT_PATH=/home/jmacey/MayaScripts
-PYTHONPATH=/home/jmacey/MayaScripts
+MAYA_DISABLE_CLIC_IPM=1
+MAYA_DISABLE_CER=1
 ```
+- Note the last too can speed up maya start / restart which you will need __a lot__
 
 --
 
 ## A simple Mel Script Test
 
 ```
-global proc foo()
+global proc helloMel()
 {
-  print("foo\n");
+  print("hello from Mel\n");
 }
 ```
-- Save the file in the scripts directory as test.mel
-- in the Mel window source “test.mel”
-- then call foo()
+- Save the file in the scripts directory as hello.mel
+- in the Mel window source ```hello.mel```
+- then call helloMel()
+
+--
+
+
+## Python Paths
+
+- maya will use the global python path which you can set as usual
+- it is also possible to setup some default python behaviors using a file called ```userSetup.py```
+- this lives in the default maya user directory as follows
+```
+# Windows
+%HOMEDRIVE%\%HOMEPATH%\Documents\maya\[version]\scripts
+# Linux 
+~/maya/[version]/scripts
+# Mac OSX
+~/Library/Preferences/Autodesk/maya/[version]/scripts
+```
+
+--
+
+## userSetup.py
+
+- to add to the path in the userSetup.py file we can do the following
+
+```
+import sys
+sys.path.append('yourpath')
+```
+
+- it is quite common to add global python imports here such as 
+
+```
+from __future__ import print_function,division
+import maya.cmds as cmds
+```
 
 --
 
 ## A Simple Python Script
 
 ```
-def foo() :
-  print "foo \n"
+def helloPy() :
+  print ('hello from python ')
 ```
-- Again save this script as foo.py in the Scripts directory
+- Again save this script as helloPy.py in the Scripts directory
 - We need to import the module before we use it so the following is needed
 
 ```
-import foo
-foo.foo()
+from helloPy import helloPy
+helloPy()
 ```
 
 --
@@ -63,7 +102,9 @@ foo.foo()
 ## [reload](https://docs.python.org/2/library/functions.html#reload)
 - To help the development cycle, we can easily modify the script and call 
 ```
-reload (Test)
+import helloPy
+# make changes to source.
+reload (helloPy)
 ```
 
 - to reload the module from the source file, otherwise this will be the same module for the whole of the session.
@@ -72,6 +113,7 @@ reload (Test)
 --
 
 ## Command Mode
+
 - The simplest way to use Python in maya is with the command module
 - This is very similar to the mel scripting language and allows access to most of the basic maya features
 - To load the module we use the following import code
@@ -87,20 +129,21 @@ import maya.cmds as cmds
 ## [example](https://github.com/NCCA/DemoPythonCode/blob/master/Maya/mayaExample1.py)
 
 ```
-# let's create a sphere
+from __future__ import print_function,division
 import maya.cmds as cmds
 
+# let's create a sphere
 cmds.sphere(radius=2, name='Sphere1')
 
 # query the radius of the sphere named Sphere1
 radius = cmds.sphere('Sphere1', query=True, radius=True)
-print 'The sphere radius =',radius
+print('The sphere radius =',radius)
 
 # modify the radius
-print 'Increment the sphere\'s radius by one unit'
+print('Increment the sphere\'s radius by one unit')
 cmds.sphere('Sphere1', edit=True, radius=radius+1)
 radius = cmds.sphere('Sphere1', query=True, radius=True)
-print 'The new sphere radius =', radius
+print ('The new sphere radius =', radius)
 ```
 
 --
@@ -108,7 +151,7 @@ print 'The new sphere radius =', radius
 ## [moving objects](https://github.com/NCCA/DemoPythonCode/blob/master/Maya/mayaExample2.py)
 
 ```
-# let's create a sphere
+from __future__ import print_function,division
 import maya.cmds as cmds
 
 # let's delete all objects
@@ -126,7 +169,7 @@ cmds.rotate(0, '45deg', 0, 'Torus1')
 ## [Setting Attributes](https://github.com/NCCA/DemoPythonCode/blob/master/Maya/mayaExample3.py)
 
 ```
-# let's create a sphere
+from __future__ import print_function,division
 import maya.cmds as cmds
 
 # lets delete all objects
@@ -150,13 +193,15 @@ cmds.setAttr('Cube1.tz', 3)
 
 ## pymel
 - PyMEL makes python scripting in Maya work the way it should. 
-- Maya’s command module is a direct translation of MEL commands into python functions. The result is a very awkward and unpythonic syntax which does not take advantage of python’s strengths 
-  – particularly, a flexible, object-oriented design. 
+- Maya’s command module is a direct translation of MEL commands into python functions. 
+	- The result is a very awkward and unpythonic syntax which does not take advantage of python’s strengths
+- particularly, a flexible, object-oriented design. 
 - PyMEL builds on the cmds module by organizing many of its commands into a class hierarchy, and by customizing them to operate in a more succinct and intuitive way.
 
 --
 
 ## pymel
+
 - pymel is an attempt to make mel more object oriented rather than a wrapping of mel commands into python 
 - For example
 
@@ -167,6 +212,7 @@ cmds.getAttr( cmds.listRelatives( cmds.ls(type='camera')[0], p=1 )[0] + '.transl
 - becomes
 
 ```
+import pymel.core as pymel
 pymel.ls(type='camera')[0].getParent().translate.get().z
 ```
 
@@ -175,21 +221,20 @@ pymel.ls(type='camera')[0].getParent().translate.get().z
 ## [sphere example](https://github.com/NCCA/DemoPythonCode/blob/master/Maya/pymelExample1.py)
 
 ```
-# let's create a sphere
+from __future__ import print_function,division
 import pymel.core as pm
 
 pm.sphere(radius=2, name='Sphere1')
 
 # query the radius of the sphere named Sphere1
 radius = pm.sphere('Sphere1', query=True, radius=True)
-print 'The sphere radius =',radius
+print ('The sphere radius =',radius)
 
 # modify the radius
-print 'Increment the sphere\'s radius by one unit'
+print ('Increment the sphere\'s radius by one unit')
 pm.sphere('Sphere1', edit=True, radius=radius+1)
 radius = pm.sphere('Sphere1', query=True, radius=True)
-print 'The new sphere radius =', radius
-
+print ('The new sphere radius =', radius)
 ```
 
 ---
@@ -202,7 +247,6 @@ print 'The new sphere radius =', radius
 --
 
 ## Accessing API Values
-
 
 > In Python parameters of class types are passed by reference but parameters of simple types, like integers and floats, are passed by value, making it impossible to call those API methods from Python. The MScriptUtil class bridges this gap by providing methods which return pointers to values of simple types and which can extract values from such pointers. These pointers can also be used wherever an API method requires a reference to a simple type or an array of a simple type.
 
@@ -366,6 +410,167 @@ for y in range (0,img.height()) :
 </video>
 
 ---
+
+# maya.api.OpenMaya
+
+> This is a Python wrapper for the Maya C++ API, and referred to as Python API 2.0. This wrapper has better performance and is more "Pythonic" than the Python API 1.0. It is also a newer API, and is still under development, so not all classes exposed in 1.0 are available. For more information, see "Maya Python API 2.0" and ["Maya Python API 2.0 Reference"](https://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__py_ref_index_html) in the Maya Developer Help.
+
+--
+
+# [maya standalone](https://help.autodesk.com/cloudhelp/2018/JPN/Maya-Tech-Docs/PyMel/standalone.html)
+
+- it is possible to run maya python without starting the GUI
+- this is really useful for batch processing (for example pipeline and render farm work)
+- the maya executable is called ```mayapy```
+- Another good use of mayapy is to run unit test on maya python modules we are developing and using TDD
+
+--
+
+# API 2 Maya Image Class
+
+- The following code is a version of the MayaImage class developed previously 
+- You will notice the code is much cleaner and more pythonic, however we still have some weird ctype conversion for raw pointers
+
+```
+import maya.api.OpenMaya as OpenMaya
+import ctypes
+
+
+class MayaImage :
+  def __init__(self,filename=None,width=None,height=None,channels=4,imagetype=OpenMaya.MImage.kByte) :
+    """ constructor pass in the name of the file to load (absolute file name with path)
+    or width and height to create and image
+    """
+    if filename != None and isinstance(filename,str) :
+      self.filename=filename
+    elif (width !=None and height !=None) :
+      try :
+        self.width=int(width)
+        self.height=int(height)
+      except ValueError :
+        print('error converting values to int')
+        exit()
+      print('creating empty image {}x{}'.format(width,height))
+    else :
+      raise ValueError('ImageError trouble converting arguments')
+    # create an MImage object
+    self.image=OpenMaya.MImage()
+    self.channels=channels
+    self.type=imagetype
+    if filename !=None :
+      self.readImage(filename)
+    else :
+      self.image.create(self.width,self.height,self.channels,self.type)
+      self.charPixelPtr = ctypes.cast(self.image.pixels(), ctypes.POINTER(ctypes.c_char) )
+      self.width,self.height=self.image.getSize()
+      
+
+  def readImage(self,filename) :
+    # read from file MImage should handle errors for us so no need to check
+    self.image.readFromFile(filename)
+    self.width,self.height=self.image.getSize()
+    # get the pixel data
+    self.charPixelPtr = ctypes.cast(self.image.pixels(), ctypes.POINTER(ctypes.c_char) )
+    # query to see if it's an RGB or RGBA image, this will be True or False
+    self.hasAlpha=self.image.isRGBA()
+
+  def setPixel(self,x,y,r,g,b,a=255) :
+    # check the bounds to make sure we are in the correct area
+    if x<0 or x>self.width :
+      raise IndexError('x value out of range')
+    if y<0 or y>self.height :
+      raise IndexError('y value out of range')
+    # now calculate the index into the 1D array of data
+    index=(y*self.width*self.channels)+x*self.channels
+    # grab the pixels we need to convert from char to integer ordinal type so use ord
+    self.charPixelPtr[index]=ctypes.c_char(chr(r))
+    self.charPixelPtr[index+1]=ctypes.c_char(chr(g))
+    self.charPixelPtr[index+2]=ctypes.c_char(chr(b))
+    self.charPixelPtr[index+3]=ctypes.c_char(chr(a))
+
+  def save(self,filename,outputFormat='png') :
+    self.image.writeToFile(filename+'.'+outputFormat,outputFormat=outputFormat)
+    
+  def getPixel(self,x,y) :
+    """ get the pixel data at x,y and return a 3/4 tuple depending upon type """
+    # check the bounds to make sure we are in the correct area
+    if x<0 or x>self.width :
+      print "error x out of bounds\n"
+      return
+    if y<0 or y>self.height :
+      print "error y our of bounds\n"
+      return
+    # now calculate the index into the 1D array of data
+    index=(y*self.width*self.channels)+x*self.channels
+    # grab the pixels we need to convert from char to integer ordinal type so use ord
+    red   = ord(self.charPixelPtr[index])
+    green = ord(self.charPixelPtr[index+1])
+    blue  = ord(self.charPixelPtr[index+2])
+    alpha = ord(self.charPixelPtr[index+3])
+    return (red,green,blue,alpha)
+
+  def getRGB(self,x,y) :
+    r,g,b,_=self.getPixel(x,y)
+    return (r,g,b)
+
+```
+
+--
+
+## Unit Tests
+
+- in order to test this we can use maya stand alone
+
+```
+#!/Applications/Autodesk/maya2019/Maya.app/Contents/bin/mayapy
+
+import maya.standalone
+import unittest
+import MayaImage as mi
+
+class TestMayaImage(unittest.TestCase):
+  @classmethod
+  def setUpClass(self):
+    print('doing setup')
+
+  def testConstructFromWidthHeight(self) :
+    image=mi.MayaImage(width=100,height=200)
+    self.assertEqual(image.width,100)
+    self.assertEqual(image.height,200)
+    
+  def testThrowFromBadFilename(self) :
+    with self.assertRaises(ValueError) :
+      _=mi.MayaImage(200)
+  def testThrowFromIndexError(self) :
+    with self.assertRaises(IndexError) :
+      img=mi.MayaImage(width=10,height=10)
+      img.setPixel(200,100,255,255,0)
+  def testSaveImage(self) :
+    image=mi.MayaImage(width=100,height=100)
+    for h in range(0,100) :
+      for w in range(0,100) :
+        image.setPixel(w,h,255,0,0)
+    image.save("test","png")
+
+  def testOpenImage(self) :
+    self.testSaveImage()
+    image=mi.MayaImage("test.png")
+    r,g,b,_=image.getPixel(2,2)
+    self.assertEqual(r,255)
+    self.assertEqual(g,0)
+    self.assertEqual(b,0)
+    
+
+if __name__ == '__main__' :
+  maya.standalone.initialize(name='python')
+  unittest.main()
+  print('closing down maya-standalone')
+  maya.standalone.uninitialize()
+
+```
+
+---
+
 
 ## PointBake Animation
 - The following examples show how to export mesh data into our own point baked format

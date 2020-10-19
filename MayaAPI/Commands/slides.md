@@ -1,4 +1,4 @@
-# Introduction to the MayaC++ API
+# Introduction to the Maya C++ API
 
 Jon Macey
 
@@ -221,6 +221,38 @@ macx:LIBS += -L$$MAYALOCATION/Maya.app/Contents/MacOS \
 CONFIG+=c++11
 
 ```
+
+--
+
+## Visual Studio Project
+
+- Under windows we can create a simple .DLL project 
+- We need to change the target extension to .mll (maya link library) as this is the default search.
+- Full details on how to do a setup is [here](https://nccastaff.bournemouth.ac.uk/jmacey/MayaAPI/Windows/index.md.html)
+- vcxproj files wil also be included with the code.
+
+
+--
+
+## cmake
+
+- devkit is supplied with cmake configuration files which make cross platform development much easier.
+- Running cmake will generate the Makefile or MSBuild project for the correct platform
+- We just need to set the environment variable to point ot the correct location
+- For the labs this is currently 
+
+```
+export DEVKIT_LOCATION=/public/devel/2019/MayaAPI2019/devkitBase/
+```
+
+--
+
+## cmake
+
+- with cmake we typically do an "out of source build" by creating a build directory as shown.
+
+<img src="images/cmake.apng" width="100%" >
+
 
 ---
 
