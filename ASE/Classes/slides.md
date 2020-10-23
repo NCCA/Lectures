@@ -1614,7 +1614,7 @@ int main()
 
 --
 
-## [pure virtual methods]https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/AbstractClass/example1.cpp)
+## [pure virtual methods](https://github.com/NCCA/ASELectureCode/blob/master/Lecture5Classes/AbstractClass/example1.cpp)
 
 ```
 
