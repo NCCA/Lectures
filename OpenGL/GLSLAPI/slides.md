@@ -75,7 +75,7 @@ const GLchar **string
 ## Shader Source
 - vertex shader
 
-```
+```c++
 #version 120
 attribute vec3 inPosition;
 attribute vec3 inColour;
@@ -89,7 +89,7 @@ void main()
 
 - Fragment Shader
 
-```
+```c++
 #version 120
 varying vec3 vertColour;
 void main() 
@@ -102,7 +102,7 @@ void main()
 
 ##  Loading Shader Source from File
 
-```
+```c++
 void Shader::load( std::string _name ) noexcept
 {
   // see if we already have some source attached
@@ -138,7 +138,7 @@ void Shader::load( std::string _name ) noexcept
 --
 
 ## [glShaderSource](https://www.opengl.org/sdk/docs/man/html/glShaderSource.xhtml)
-```
+```c++
 void glShaderSource(	GLuint shader,
                       GLsizei count,
                       const GLchar **string,
@@ -198,7 +198,7 @@ glGetShaderInfoLog
 
 --
 
-```
+```c++
 void printInfoLog(const GLuint &_obj  )
 {
   GLint infologLength = 0;
@@ -312,7 +312,7 @@ glUseProgram(0);
 
 ## Vertex Shader
 
-```
+```c++
 #version 400 core
 
 layout (location = 0) in vec3  inPosition;
@@ -328,7 +328,7 @@ void main()
 --
 
 ## Fragment Shader
-```
+```c++
 #version 400 core
 in vec3 vertColour;
 out vec4 fragColour;
@@ -342,7 +342,7 @@ void main()
 
 ## Loading the Shader from a string
 
-```
+```c++
 GLuint loadShaderFromStrings( const std::string &_vertex, const std::string &_fragment)
 {
  // here we create a program
@@ -387,7 +387,7 @@ GLuint loadShaderFromStrings( const std::string &_vertex, const std::string &_fr
 
 ## Create a triangle
 
-```
+```c++
 GLuint createTriangle(float _size)
 {
   GLuint vaoID;
@@ -494,7 +494,7 @@ glVertexAttrib3f(1,1,0,0);
 - name is a null terminated string to identify the attribute in the shader
 - depending upon the glsl version we define as follows in the shader
 
-```
+```c++
 #version 120
 attribute vec3 inPosition;
 attribute vec3 inColour;
@@ -503,7 +503,7 @@ in vec3 inPosition;
 in vec3 inColour;
 ```
 
-```
+```c++
 #version 400
 layout (location = 0) in vec3 inPosition; 
 layout (location = 1) in vec3 inColour;
@@ -519,9 +519,10 @@ layout (location = 1) in vec3 inColour;
 --
 
 ## Drawing
+
 - Once the data is bound drawing is quite simple
 - We bind and enable the vertex arrays and then call the appropriate DrawArrays command.
-```
+```c++
 void OpenGLWindow::paintGL()
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -529,6 +530,7 @@ void OpenGLWindow::paintGL()
   glDrawArrays(GL_TRIANGLES, 0, 3);	// draw object
 }
 ```
+
 ---
 
 # Setting Uniform Values
@@ -542,7 +544,7 @@ void OpenGLWindow::paintGL()
 
 ## Shader with Uniforms
 
-```
+```c++
 #version 400 core
 layout (location = 0) in vec3  inPosition;
 layout (location = 1) in vec3 inColour;
@@ -565,7 +567,7 @@ void main()
 
 ## Save uniform Locations
 
-```
+```c++
 auto shaderID=loadShaderFromStrings(vertex,fragment);
 // we will store uniform locations here as it is expensive to look up each time
 // First MVP
@@ -578,7 +580,7 @@ auto lightPos=glGetUniformLocation(shaderID,"lightPos");
 
 ## Setting Uniform Values
 
-```
+```c++
 // create a rotation matrix around the y axis note the conversion to radians
 auto rotY=glm::rotate(glm::mat4(1.0f),glm::radians(rotation),glm::vec3(0.0f,1.0f,0.0f));
 // now set the MVP matrix of the triangle

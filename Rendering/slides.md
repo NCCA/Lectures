@@ -185,7 +185,7 @@ for (int j = 0; j < imageHeight; ++j) {
 
 ## Cameras
 
-![](http://www.pbr-book.org/3ed-2018/Introduction/Pinhole%20Camera.svg)
+![](images/PinholeCamera.svg)
 [source](http://www.pbr-book.org/3ed-2018/Introduction/Photorealistic_Rendering_and_the_Ray-Tracing_Algorithm.html)
 - The simplest model of a camera is the ["pinhole camera"](https://en.wikipedia.org/wiki/Pinhole_camera)
 - The generally need long exposures when using film, be in CGI can make things a lot simpler.
@@ -193,7 +193,7 @@ for (int j = 0; j < imageHeight; ++j) {
 --
 
 ## Cameras
-<img src="http://www.pbr-book.org/3ed-2018/Introduction/Film%20in%20front.svg" width="40%">
+<img src="images/Filminfront.svg" width="40%">
 - When we simulate pinhole cameras we place the film in the front of the hole at the near plane, the hole is then called the "eye"
 - We can then add other transformations to simulate, projections and lenses.
 
@@ -223,13 +223,13 @@ for (int j = 0; j < imageHeight; ++j) {
 
 -  Each light contributes illumination to the point being shaded only if the path from the point to the lights position is unobstructed
 
-<img src="http://www.pbr-book.org/3ed-2018/Introduction/Two%20lights%20one%20blocker.svg" width="40%">
+<img src="images/Twolightsoneblocker.svg" width="40%">
 
 
 --
 
 ## Surface Scattering
-<img src="http://www.pbr-book.org/3ed-2018/Introduction/Surface%20scattering%20geometry.svg" width="40%">
+<img src="images/Surfacescatteringgeometry.svg" width="40%">
 
 - Now we need to determine how the incident lighting is scattered at the surface. 
 - Specifically, we are interested in the amount of light energy scattered back along the ray that we originally traced to find the intersection point, since that ray leads to the camera
