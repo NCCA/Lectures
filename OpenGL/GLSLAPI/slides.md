@@ -301,12 +301,12 @@ glUseProgram(0);
 
 ---
 
-## [Demo Program](https://github.com/NCCA/FirstShaderQt)
+## [Demo Program](https://github.com/NCCA/ModernGL)
 
-<img src="images/shader.png" width="40%">
-- This simple program attaches a vertex and fragment shader to a quad
+<img src="images/ModernGL.png" width="40%">
+- This simple program attaches a vertex and fragment shader to a triangle
 - We will also introduce the use of VertexAttributes
-- This is not a particularly good example but demonstrates some concepts of the GLSL API
+- These series of demos are a basic minimum Modern OpenGL example to draw a simple triangle.
 
 --
 
@@ -320,10 +320,8 @@ layout (location = 1) in vec3 inColour;
 out vec3 vertColour;
 void main()
 {
-    gl_Position = vec4(inPosition, 1.0);
-    if (inPosition.x >0.0 && inPosition.y<0.5)
-    vertColour = inColour;
-    else vertColour=vec3(1,1,1);
+  gl_Position = vec4(inPosition, 1.0);
+  vertColour = inColour;
 }
 ```
 
@@ -345,112 +343,101 @@ void main()
 ## Loading the Shader from a string
 
 ```
-void OpenGLWindow::createShader()
+GLuint loadShaderFromStrings( const std::string &_vertex, const std::string &_fragment)
 {
  // here we create a program
- m_shaderID=glCreateProgram();
- // some raw data for our vertex shader
- const std::string vertex =
- R"(
-          #version 400 core
-
-          layout (location = 0) in vec3  inPosition;
-          layout (location = 1) in vec3 inColour;
-          out vec3 vertColour;
-          void main()
-          {
-             gl_Position = vec4(inPosition, 1.0);
-             if (inPosition.x >0.0 && inPosition.y<0.5)
-              vertColour = inColour;
-             else vertColour=vec3(1,1,1);
-          }
-  )";
+ GLuint shaderID=glCreateProgram();
+ 
   // create a Vertex shader object
   GLuint vertexID=glCreateShader(GL_VERTEX_SHADER);
   // attatch the shader source we need to convert to GL format
-  const char* source=vertex.c_str();
+  const char* source=_vertex.c_str();
   glShaderSource(vertexID,1,&source,NULL);
   // now compile the shader
   glCompileShader(vertexID);
   std::cerr<<"compiling vertex shader\n";
   printInfoLog(vertexID);
 
-  // some source for our fragment shader
-  const std::string fragment =
-  R"(
-          #version 400 core
-          in vec3 vertColour;
-          out vec4 fragColour;
-          void main()
-          {
-            fragColour = vec4(vertColour,1.0);
-          }
-  )";
 // now create a fragment shader
   GLuint fragmentID=glCreateShader(GL_FRAGMENT_SHADER);
   // attatch the shader source
-  source=fragment.c_str();
+  source=_fragment.c_str();
   glShaderSource(fragmentID,1,&source,NULL);
   // compile the shader
   std::cerr<<"compiling frag shader shader\n";
   glCompileShader(fragmentID);
   printInfoLog(fragmentID);
   // now attach to the program object
-  glAttachShader(m_shaderID,vertexID);
-  glAttachShader(m_shaderID,fragmentID);
-//    glBindAttribLocation(m_shaderID,0,"inPosition");
-//    glBindAttribLocation(m_shaderID,1,"inColour");
-
+  glAttachShader(shaderID,vertexID);
+  glAttachShader(shaderID,fragmentID);
+  
   // link the program
-  glLinkProgram(m_shaderID);
+  glLinkProgram(shaderID);
+  printInfoLog(shaderID,GL_LINK_STATUS);
   // and enable it for use
-  glUseProgram(m_shaderID);
+  glUseProgram(shaderID);
   // now tidy up the shaders as we don't need them
   glDeleteShader(vertexID);
   glDeleteShader(fragmentID);
+  return shaderID;
 }
 ```
 
 --
 
-## Create A quad
+## Create a triangle
 
 ```
-void OpenGLWindow::createQuad()
+GLuint createTriangle(float _size)
 {
-  // a simple quad object
-  std::array<float,18> vert;
-  const static float s=0.8f;
-  vert[0] =-s; vert[1] =  s; vert[2] =-1.0;
-  vert[3] = s; vert[4] =  s; vert[5] =-1.0;
-  vert[6] = -s; vert[7] = -s; vert[8]= -1.0;
-
-  vert[9] =-s; vert[10]= -s; vert[11]=-1.0;
-  vert[12] =s; vert[13]= -s; vert[14]=-1.0;
-  vert[15] =s; vert[16]= s; vert[17]=-1.0;
+  GLuint vaoID;
   // allocate a VertexArray
-  glGenVertexArrays(1, &m_vaoID);
+  glGenVertexArrays(1, &vaoID);
   // now bind a vertex array object for our verts
-  glBindVertexArray(m_vaoID);
+  glBindVertexArray(vaoID);
+    // a simple triangle
+  std::array<float,9> vert;	// vertex array
+  vert[0] =-_size; vert[1] =  -_size; vert[2] =0.0f;
+  vert[3] = 0; vert[4] =   _size; vert[5] =0.0f;
+  vert[6] = _size; vert[7] =  -_size; vert[8]= 0.0f;
   // now we are going to bind this to our vbo
   GLuint vboID;
   glGenBuffers(1, &vboID);
   // now bind this to the VBO buffer
   glBindBuffer(GL_ARRAY_BUFFER, vboID);
-  // allocate the buffer datra
-  glBufferData(GL_ARRAY_BUFFER, 18*sizeof(GLfloat), &vert[0], GL_STATIC_DRAW);
+  // allocate the buffer data
+  glBufferData(GL_ARRAY_BUFFER, vert.size()*sizeof(float), &vert[0], GL_STATIC_DRAW);
   // now fix this to the attribute buffer 0
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
   // enable and bind this attribute (will be inPosition in the shader)
   glEnableVertexAttribArray(0);
-  glBindVertexArray(0);
 
+  // Now for the colour
+
+  std::array<float,9> colour={1.0f,0.0f,0.0f,
+                              0.0f,1.0f,0.0f,
+                              0.0f,0.0f,1.0f};
+
+  GLuint colourvboID;
+  glGenBuffers(1, &colourvboID);
+  // now bind this to the VBO buffer
+  glBindBuffer(GL_ARRAY_BUFFER, colourvboID);
+  // allocate the buffer data
+  glBufferData(GL_ARRAY_BUFFER, colour.size()*sizeof(float), &colour[0], GL_STATIC_DRAW);
+  // now fix this to the attribute buffer 1
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  // enable and bind this attribute (will be inColour in the shader)
+  glEnableVertexAttribArray(1);
+  // this basically switches off the current Vertex array object
+  glBindVertexArray(0);
+  return vaoID;
 }
 ```
 
 --
 
 ## Vertex Attributes
+
 - Last week we looked at glVertexPoint, glNormalPointer and glColorPointer.
 - I pointed out that these functions were marked for deprecation and we would be using a different approach.
 - OpenGL >=2.0 and glsl >=1.2 allow the specification of generic vertex attributes and we can bind them in our client side program
@@ -538,24 +525,79 @@ layout (location = 1) in vec3 inColour;
 void OpenGLWindow::paintGL()
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  // set the first attrib (1) to 1,0,0 red
-  glVertexAttrib3f(1,1,0,0);
-  glViewport(0,0,m_width,m_height);
   glBindVertexArray(m_vaoID);		// select first bind the array
-  glDrawArrays(GL_TRIANGLES, 0, 6);	// draw object
+  glDrawArrays(GL_TRIANGLES, 0, 3);	// draw object
 }
+```
+---
+
+# Setting Uniform Values
+
+- To set uniform Values we use the set of ```glUniform``` commands 
+- These take as the first parameter a location. 
+- We use ```glUniformLocation``` to query these.
+- This [example](https://github.com/NCCA/ModernGL/tree/master/SD2Triangle3DGLMGlew) show this in action.
+
+--
+
+## Shader with Uniforms
+
+```
+#version 400 core
+layout (location = 0) in vec3  inPosition;
+layout (location = 1) in vec3 inColour;
+layout (location = 2) in vec3 inNormal;
+uniform mat4 MVP;
+uniform mat4 model;
+out vec3 vertColour;
+out vec3 normal;
+out vec3 fragPos;
+void main()
+{
+  gl_Position = MVP*vec4(inPosition, 1.0);
+  vertColour = inColour;
+  normal = normalize(inNormal);
+  fragPos = vec3(model * vec4(inPosition, 1.0));
+}
+```
+
+--
+
+## Save uniform Locations
+
+```
+auto shaderID=loadShaderFromStrings(vertex,fragment);
+// we will store uniform locations here as it is expensive to look up each time
+// First MVP
+auto MVP=glGetUniformLocation(shaderID,"MVP");
+auto model=glGetUniformLocation(shaderID,"model");
+auto lightPos=glGetUniformLocation(shaderID,"lightPos");
+```
+
+--
+
+## Setting Uniform Values
+
+```
+// create a rotation matrix around the y axis note the conversion to radians
+auto rotY=glm::rotate(glm::mat4(1.0f),glm::radians(rotation),glm::vec3(0.0f,1.0f,0.0f));
+// now set the MVP matrix of the triangle
+auto transform = project * view * rotY; 
+// note the use of glm::value_ptr to convert to gl pointer.
+glUniformMatrix4fv(MVP,1,GL_FALSE,glm::value_ptr(transform));
+glUniformMatrix4fv(model,1,GL_FALSE,glm::value_ptr(view * rotY));
+glBindVertexArray(vaoID);		// select first bind the array
+glDrawArrays(GL_TRIANGLES, 0, 3);	// draw object
 ```
 
 ---
 
-## [ngl::ShaderLib](https://nccastaff.bournemouth.ac.uk/jmacey/GraphicsLib/html/classngl_1_1_shader_lib.html)
+## ngl::ShaderLib
 
 - ngl::ShaderLib class is used to wrap up a lot of the functions needed for OpenGL Shader communication
 - It can load shaders from text files, use JSON files for more complex shaders
 - It can set Uniforms using overlaoded methods and text name lookups
 - can access the raw OpenGL shader ID for more complex operations
-- the following video show some of this in action.
-
 
 ---
 
