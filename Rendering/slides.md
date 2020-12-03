@@ -241,20 +241,19 @@ for (int j = 0; j < imageHeight; ++j) {
 - Each object in the scene provides a material, which is a description of its appearance properties at each point on the surface. 
 - This description is given by the bidirectional reflectance distribution function (BRDF).
 
-```
+```c++
 for each light:
-    if light is not blocked:
-        incident_light = light.L(point)
-        amount_reflected = 
-            surface.BRDF(hit_point, camera_vector, light_vector)
-        L += amount_reflected * incident_light
+  if light is not blocked:
+    incident_light = light.L(point)
+    amount_reflected = surface.BRDF(hit_point, camera_vector, light_vector)
+    L += amount_reflected * incident_light
 ```
 
 --
 
 ## Indirect light transport
 
-<img src="http://www.pbr-book.org/3ed-2018/Introduction/Ray%20Tree.svg" width="40%">
+<img src="images/RayTree.svg" width="40%">
 
 <blockquote><small><p>Turner Whitted’s original paper on ray tracing (1980) emphasized its recursive nature, which was the key that made it possible to include indirect specular reflection and transmission in rendered images.</p></small></blockquote>
 
