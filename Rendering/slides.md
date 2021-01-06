@@ -25,8 +25,7 @@ jmacey@bournemouth.ac.uk
 
 - With a little work we are going to break the equation down into sections which explain what they are doing.
 - [we will use diagrams not formula](https://en.wikipedia.org/wiki/Rendering_equation)
-
-![brdf](images/eq1.png)
+![brdf](images/eq1.png)<!-- .element height="50%" width="50%" -->
 
 
 --
@@ -43,6 +42,15 @@ jmacey@bournemouth.ac.uk
 <blockquote/><small/><p/>Energy Conservation plays a vital role in physically-based rendering solutions. It states that the total amount of light re-emitted by a surface (reflected and scattered back) is less than the total amount it received. In other words, the light reflected off the surface will never be more intense than it was before it hit the surface. As artists, we don't have to worry about controlling Energy Conservation. This is one of the nice aspects of PBR in that energy conservation is always enforced by the shader. It’s part of the physically-based model and it allows us to focus more on art rather than physics.
 [PBR Guide Vol 1](https://www.substance3d.com/system/files/software/download/build/PBR_Guide_Vol.1.pdf)
 
+
+--
+
+## What You Should learn from this
+
+- All Physically Based renderers are using the same equations
+- Having an understanding of the different elements allows you to make changes in any renderer.
+- Know what some of the names mean make it quicker to setup.
+- You can become "renderer agnostic" (a transferable skill)
 
 
 ---
@@ -185,7 +193,7 @@ for (int j = 0; j < imageHeight; ++j) {
 
 ## Cameras
 
-![](http://www.pbr-book.org/3ed-2018/Introduction/Pinhole%20Camera.svg)
+![](images/PinholeCamera.svg)
 [source](http://www.pbr-book.org/3ed-2018/Introduction/Photorealistic_Rendering_and_the_Ray-Tracing_Algorithm.html)
 - The simplest model of a camera is the ["pinhole camera"](https://en.wikipedia.org/wiki/Pinhole_camera)
 - The generally need long exposures when using film, be in CGI can make things a lot simpler.
@@ -193,7 +201,7 @@ for (int j = 0; j < imageHeight; ++j) {
 --
 
 ## Cameras
-<img src="http://www.pbr-book.org/3ed-2018/Introduction/Film%20in%20front.svg" width="40%">
+<img src="images/Filminfront.svg" width="40%">
 - When we simulate pinhole cameras we place the film in the front of the hole at the near plane, the hole is then called the "eye"
 - We can then add other transformations to simulate, projections and lenses.
 
@@ -223,13 +231,13 @@ for (int j = 0; j < imageHeight; ++j) {
 
 -  Each light contributes illumination to the point being shaded only if the path from the point to the lights position is unobstructed
 
-<img src="http://www.pbr-book.org/3ed-2018/Introduction/Two%20lights%20one%20blocker.svg" width="40%">
+<img src="images/Twolightsoneblocker.svg" width="40%">
 
 
 --
 
 ## Surface Scattering
-<img src="http://www.pbr-book.org/3ed-2018/Introduction/Surface%20scattering%20geometry.svg" width="40%">
+<img src="images/Surfacescatteringgeometry.svg" width="40%">
 
 - Now we need to determine how the incident lighting is scattered at the surface. 
 - Specifically, we are interested in the amount of light energy scattered back along the ray that we originally traced to find the intersection point, since that ray leads to the camera
@@ -241,20 +249,19 @@ for (int j = 0; j < imageHeight; ++j) {
 - Each object in the scene provides a material, which is a description of its appearance properties at each point on the surface. 
 - This description is given by the bidirectional reflectance distribution function (BRDF).
 
-```
+```c++
 for each light:
-    if light is not blocked:
-        incident_light = light.L(point)
-        amount_reflected = 
-            surface.BRDF(hit_point, camera_vector, light_vector)
-        L += amount_reflected * incident_light
+  if light is not blocked:
+    incident_light = light.L(point)
+    amount_reflected = surface.BRDF(hit_point, camera_vector, light_vector)
+    L += amount_reflected * incident_light
 ```
 
 --
 
 ## Indirect light transport
 
-<img src="http://www.pbr-book.org/3ed-2018/Introduction/Ray%20Tree.svg" width="40%">
+<img src="images/RayTree.svg" width="40%">
 
 <blockquote><small><p>Turner Whitted’s original paper on ray tracing (1980) emphasized its recursive nature, which was the key that made it possible to include indirect specular reflection and transmission in rendered images.</p></small></blockquote>
 
