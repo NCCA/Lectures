@@ -16,7 +16,6 @@
 ---
 
 
-
 ## Hello World
 
 <div class="stretch">
@@ -100,6 +99,17 @@
 - [more features here](https://docs.python.org/3/whatsnew/3.8.html)
 
 
+--
+
+## Python Implementations
+
+- Standard python used by most people is CPython (this is also in the DCC tools)
+- [iPython](https://ipython.org/) is another version used for many things, including the Jupyter Project
+- This can be installed using [anaconda](https://www.anaconda.com/)
+- [alternatives](https://www.python.org/download/alternatives/)
+
+
+
 ---
 
 ## Keywords
@@ -124,13 +134,14 @@ def       for       lambda    try
 - Python has 5 standard data types
   - numbers, string, list, tuple, dictionary
 
---
+---
 
 ## Numbers
 
 - Python supports four different numerical types:
   - int (signed integers)
-  - long (long integers [can also be represented in octal and hexadecimal])
+  - long (long integers [can also be represented in octal and hexadecimal]) 
+    - note long is removed in python 3.
   - float (floating point real values)
   - complex (complex numbers)
 
@@ -138,40 +149,123 @@ def       for       lambda    try
 --
 
 
-## unsigned bytes
+  ## numbers
 
 <div class="stretch">
-<iframe src="bytes.html" style="border:0px #FFFFFF solid;" name="code" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" height="100%" width="100%"></iframe>
+<iframe src="https://trinket.io/embed/python/cbb53e2114" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+</div>
+
+- The [type()](https://docs.python.org/3/library/functions.html#type) function returns the type of the specified object
+
+
+--
+
+## [operations on numbers](https://docs.python.org/3/library/stdtypes.html#typesnumeric)
+
+
+| operation | Result |
+|--------|-------|
+| ``` x+y``` | sum of x and y |
+| ``` x-y``` | difference of x and y |
+| ``` x*y``` | product of x and y |
+| ``` x/y``` | quotient of x and y |
+| ``` x//y``` | floored quotient of x and y |
+| ``` -x``` | x negated |
+| ``` +x``` | x unchanged |
+| ``` x**y``` | x to the power y |
+
+
+
+--
+
+## Number Operations 
+
+<div class="stretch">
+<iframe src="https://trinket.io/embed/python/46b8cf8940" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+
+</div>
+
+
+--
+
+# [.format](https://docs.python.org/3/tutorial/inputoutput.html)
+
+- The string format function replaces the ```{}``` placeholders with variables
+
+```
+print('{} {} {}'.format(1,a,b))
+```
+
+
+- Python 3.8 gives us a new syntax 
+
+
+```
+print(f'{1} {a} {b}')
+```
+
+- We will look at format in more detail soon
+
+--
+
+## [int](https://docs.python.org/3/library/stdtypes.html#typesnumeric)
+
+- In Python, integers are zero, positive or negative whole numbers without a fractional part and having unlimited precision
+- Python 3 has unlimited size for integers
+- Python 2 used two types normal and long.
+
+```
+# python 2
+>>> 2/3
+0
+
+# python 3
+>>> 2/3
+0.6666666666666666
+```
+
+--
+
+
+## Floating Point (Real) numbers
+
+- To represent fractions we use floating point numbers
+- we need to be explicit
+
+<div class="stretch">
+<iframe src="https://trinket.io/embed/python/dea20fc3ff" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
 </div>
 
 --
 
-## signed bytes
+## Floats can be problematic
 
 <div class="stretch">
-<iframe src="signedbyte.html" style="border:0px #FFFFFF solid;" name="code" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" height="100%" width="100%"></iframe>
+<iframe src="https://trinket.io/embed/python/4b40ddea31" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
 </div>
 
 --
 
-
-  ## [numbers](https://github.com/NCCA/DemoPythonCode/blob/master/Basic/numbers.py)
-
-<div class="stretch">
-<iframe src="numbers.html" style="border:0px #FFFFFF solid;" name="code" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" height="100%" width="100%"></iframe>
-</div>
-
---
 
 ## [Floats are complex](https://evanw.github.io/float-toy/)
-
+<div class="stretch">
 <iframe src="https://evanw.github.io/float-toy/" width=1000 height=600></iframe>
+</div>
+
+---
+
+## Strings
+ - Python strings are [immutable](https://en.wikipedia.org/wiki/Immutable_object)
+ - Python allows for either pairs of single or double quotes
+
+<div class="stretch">
+<iframe src="https://trinket.io/embed/python/3c3f22912a" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+<div>
 
 --
 
 ## Strings
- - Python strings are immutable
- - Python allows for either pairs of single or double quotes
+
  - Subsets of strings can be taken using the slice operator ( [ ] and [ : ] ) with indexes starting at 0 in the beginning of the string and working their way from -1 at the end
  - The plus ( + ) sign is the string concatenation operator, and the asterisk ( * ) is the repetition operator.
 
@@ -179,11 +273,12 @@ def       for       lambda    try
 
 ## [Strings](https://github.com/NCCA/DemoPythonCode/blob/master/Basic/strings.py) 
 
- <div class="stretch">
-<iframe src="strings.html" style="border:0px #FFFFFF solid;" name="code" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" height="100%" width="100%"></iframe>
+<div class="stretch">
+<iframe src="https://trinket.io/embed/python/ae83940224" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
 </div>
 
---
+
+---
 
 ## Lists
 
@@ -198,7 +293,7 @@ def       for       lambda    try
 ## [Lists](https://github.com/NCCA/DemoPythonCode/blob/master/Basic/list.py)
 
 <div class="stretch">
-<iframe src="lists.html" style="border:0px #FFFFFF solid;" name="code" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" height="100%" width="100%"></iframe>
+<iframe src="https://trinket.io/embed/python/a8804f84c8" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
 </div>
 
 --
@@ -212,17 +307,17 @@ def       for       lambda    try
 
 ## [Tuples](https://github.com/NCCA/DemoPythonCode/blob/master/Basic/tuple.py)
 <div class="stretch">
-<iframe src="tuple.html" style="border:0px #FFFFFF solid;" name="code" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" height="100%" width="100%"></iframe>
+<iframe src="https://trinket.io/embed/python/1eacddd6e3" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
 </div>
 
 --
 
 ## [Slice Operators](https://github.com/NCCA/DemoPythonCode/blob/master/Basic/slice.py)
 <div class="stretch">
-<iframe src="slice.html" style="border:0px #FFFFFF solid;" name="code" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" height="100%" width="100%"></iframe>
+<iframe src="https://trinket.io/embed/python/d2a27c8c48" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
 </div>
 
---
+---
 
 ## Python Dictionaries
 
@@ -234,7 +329,7 @@ def       for       lambda    try
 
 ## [Python Dictionaries](https://github.com/NCCA/DemoPythonCode/blob/master/Basic/dictionary.py)
 <div class="stretch">
-<iframe src="dictionary.html" style="border:0px #FFFFFF solid;" name="code" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" height="100%" width="100%"></iframe>
+<iframe src="https://trinket.io/embed/python/9fd202917b" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
 </div>
 
 --
@@ -255,7 +350,7 @@ def       for       lambda    try
 ## [Type Conversion](https://github.com/NCCA/DemoPythonCode/blob/master/Basic/convert.py)
 
 <div class="stretch">
-<iframe src="convert.html" style="border:0px #FFFFFF solid;" name="code" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" height="100%" width="100%"></iframe>
+<iframe src="https://trinket.io/embed/python/6a5d6c82f4" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
 </div>
 
 --
@@ -269,30 +364,14 @@ def       for       lambda    try
 ## [Membership](https://github.com/NCCA/DemoPythonCode/blob/master/Basic/membership.py)
 
 <div class="stretch">
-<iframe src="membership.html" style="border:0px #FFFFFF solid;" name="code" scrolling="yes" frameborder="1" marginheight="0px" marginwidth="0px" height="100%" width="100%"></iframe>
+<iframe src="https://trinket.io/embed/python/985dafe0e2" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
 </div>
 
----
-
-
 
 ---
 
-## References
+# What Next
 
-- [http://vt100.net/docs/tp83/chapter5.html](http://vt100.net/docs/tp83/chapter5.html)
-- [http://www.artima.com/weblogs/viewpost.jsp?thread=4829](http://www.artima.com/weblogs/viewpost.jsp?thread=4829)
-- [http://www.tutorialspoint.com/python/python_variable_types.htm](http://www.tutorialspoint.com/python/python_variable_types.htm)
-
-
---
-
-## References
-
-- [http://en.wikipedia.org/wiki/Environment_variable](http://en.wikipedia.org/wiki/Environment_variable)
-- [http://en.wikipedia.org/wiki/Main_function_(programming)](http://en.wikipedia.org/wiki/Main_function_(programming))
-- [http://docs.python.org/library/shutil.html](http://docs.python.org/library/shutil.html)
-- [http://www.devshed.com/c/a/Python/String-Manipulation/](http://www.devshed.com/c/a/Python/String-Manipulation/)
-- [http://docs.python.org/library/string.html](http://docs.python.org/library/string.html)
-- [http://www.rafekettler.com/magicmethods.html](http://www.rafekettler.com/magicmethods.html)
-
+- Next time we will look at some more programming constructs
+- How functions work in python
+- How to make programs out of our scripts
