@@ -25,8 +25,7 @@ jmacey@bournemouth.ac.uk
 
 - With a little work we are going to break the equation down into sections which explain what they are doing.
 - [we will use diagrams not formula](https://en.wikipedia.org/wiki/Rendering_equation)
-
-![brdf](images/eq1.png)
+![brdf](images/eq1.png)<!-- .element height="50%" width="50%" -->
 
 
 --
@@ -43,6 +42,15 @@ jmacey@bournemouth.ac.uk
 <blockquote/><small/><p/>Energy Conservation plays a vital role in physically-based rendering solutions. It states that the total amount of light re-emitted by a surface (reflected and scattered back) is less than the total amount it received. In other words, the light reflected off the surface will never be more intense than it was before it hit the surface. As artists, we don't have to worry about controlling Energy Conservation. This is one of the nice aspects of PBR in that energy conservation is always enforced by the shader. It’s part of the physically-based model and it allows us to focus more on art rather than physics.
 [PBR Guide Vol 1](https://www.substance3d.com/system/files/software/download/build/PBR_Guide_Vol.1.pdf)
 
+
+--
+
+## What You Should learn from this
+
+- All Physically Based renderers are using the same equations
+- Having an understanding of the different elements allows you to make changes in any renderer.
+- Know what some of the names mean make it quicker to setup.
+- You can become "renderer agnostic" (a transferable skill)
 
 
 ---
