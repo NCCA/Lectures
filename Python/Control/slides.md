@@ -99,6 +99,18 @@ def <function>(<params>):
 
 --
 
+## [indentation](https://www.python.org/dev/peps/pep-0008/)
+
+- Python uses indentation to block code 
+  - convention states we use 4 spaces for indentation (see PEP-8)
+- This is unusual as most programming languages use {}
+- This can lead to problem, especially when mixing tabs and spaces (python 3 doesn't allow this)
+- I will show different examples of this as we go 
+- usually this will follow a statement and the ```:``` operator to indicate the start of the block
+
+--
+
+
 ## A simple [Function](https://realpython.com/defining-your-own-python-function/)
 
 <iframe src="https://trinket.io/embed/python/0da890d686" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
@@ -251,9 +263,177 @@ def <function>(<params>):
 
 --
 
-
 ## Selection
 
 - selections can be embedded to create quite complex hierarchies of “questions”
 - This can sometimes make reading code and maintenance hard especially with the python white space rules as code quite quickly becomes complex to read
 - We usually prefer to put complex sequences in functions to make the code easier to read / maintain
+- can also be simplified using set operators such as ```in```
+
+---
+
+
+## iteration
+
+- iteration is the ability to repeat sections of code 
+- python has two main looping constructs 
+  - for each
+  - while
+- for-each loops operate on ranges of data 
+- while loops repeat while a condition is met
+
+--
+
+## [for](https://docs.python.org/3/tutorial/controlflow.html#for-statements)
+
+- A for loop is used for iterating over a sequence 
+  - list, tuple, dictionary, set, string
+- The iteration is always in the order that they appear in the sequence
+
+--
+
+## example
+
+<iframe src="https://trinket.io/embed/python/ad7b258486" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+
+
+--
+
+## [```range```](https://docs.python.org/3/tutorial/controlflow.html#the-range-function)
+
+- ```for``` loops are quite often used in conjunction with the ```range``` function
+- we use range to generate a sequence and the for runs through each element of the range
+
+```
+range(start,stop,step)
+```
+
+- By default an integer range value is returned
+
+--
+
+## [```break```](https://docs.python.org/3/tutorial/controlflow.html#break-and-continue-statements-and-else-clauses-on-loops)
+
+- The ```break``` clause allows us to jump out of a loop
+- It is usually used in conjunction with an if statement
+
+<iframe src="https://trinket.io/embed/python/f6d47d3f6d" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+
+
+--
+
+## [```continue```](https://docs.python.org/3/tutorial/controlflow.html#break-and-continue-statements-and-else-clauses-on-loops)
+
+- continue will stop the current loop and jump to the next item
+
+<iframe src="https://trinket.io/embed/python/98eff37dc4" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+
+
+--
+
+##  [```-```]()
+- ```_``` can be used as a general purpose "throwaway" variable name
+
+<iframe src="https://trinket.io/embed/python/9be5ad2635" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+
+
+--
+
+## for an dictionaries
+
+- the dictionary ```items()``` method returns the key and the value, we could use just ```keys()``` or ```values()```
+
+<iframe src="https://trinket.io/embed/python/635c786486" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+
+---
+
+## the [```while```]() statement
+
+-  the while loop executes a set of statements as long as a condition is ```True``` 
+
+<iframe src="https://trinket.io/embed/python/4ecccf600a" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+
+
+--
+
+## input validation
+
+- while is useful for input validation 
+
+<iframe src="https://trinket.io/embed/python/45117bc136" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+
+
+--
+
+## looping for x and y
+
+- This example shows how we can loop from -10 in the x and y in increments of 0.5
+- In C / C++ we would use a for loop
+```c++
+for(float y=-10.0f; y<10.0f; ++y)
+{
+    for(float x=-10.0f; x<10.0f; ++x)
+    {
+      std::cout<<x<<' '<<y<<'\n';
+    }
+}
+```
+
+--
+
+## float loop
+
+<iframe src="https://trinket.io/embed/python/a33d95720c" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+
+
+--
+
+## Generating values 
+
+- it is quite common to generate values within a list constructor 
+
+<iframe src="https://trinket.io/embed/python/3a23dd86b8" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+
+
+--
+
+## using [numpy](https://numpy.org/) for float values
+
+- range only give integer values, we can get float values using the [```numpy.arange```](https://numpy.org/doc/stable/reference/generated/numpy.arange.html) function
+
+<iframe src="https://trinket.io/embed/python/d84219882a" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+
+
+--
+
+## Recursion
+
+- Recursion occurs when a thing is defined in terms of itself or of its type
+- in programming this usually done by defining a function and call the same function within itself
+- obviously we will need some way of escaping this else it will go on forever
+- We use this quite a lot in graphics to traverse hierarchies.  
+
+--
+
+## Recursion 
+
+<iframe src="https://trinket.io/embed/python/704181b38f" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+
+--
+
+## Recursion 2
+
+<iframe src="https://trinket.io/embed/python/631a6e404a" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+
+---
+
+## Generator Functions and ```yield```
+
+<iframe src="https://trinket.io/embed/python/7fe74b873b" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+
+
+
+
+
+
+
