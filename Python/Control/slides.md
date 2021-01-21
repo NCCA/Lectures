@@ -7,6 +7,24 @@
 
 ---
 
+# Outline 
+
+- We are going to look at some python programming constructs today.
+- By the end of the lecture we should have a good understanding of the concepts of
+  - sequence, selection and iteration
+  - Python Functions
+  - exceptions
+
+--
+
+## And we will build an L-System
+
+<div class="stretch">
+<iframe src="https://trinket.io/embed/python/c13ac3c881" width="100%" height="500" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+</div>
+
+---
+
 ## What are control Structures?
 
 - Most programming tasks can be split into a combination of the following elements
@@ -362,6 +380,21 @@ range(start,stop,step)
 
 <iframe src="https://trinket.io/embed/python/45117bc136" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
 
+--
+
+## [exceptions](https://docs.python.org/3/tutorial/errors.html)
+
+- python uses exceptions to tell us something has gone wrong there are a number of build in exceptions
+
+<iframe src="https://trinket.io/embed/python/6ae6b5ac79?runMode=console" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+
+--
+
+## [try / except blocks](https://docs.python.org/3/reference/compound_stmts.html#try)
+
+- when we want to execute some code that may throw an exception we place it in a ```try : ``` block 
+- we then use the ```except [type]: ``` block
+<iframe src="https://trinket.io/embed/python/e2cd8c8401" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
 
 --
 
@@ -429,11 +462,31 @@ for(float y=-10.0f; y<10.0f; ++y)
 
 ## Generator Functions and ```yield```
 
+- Generator functions are a special kind of python function that returns what is know as a "Lazy iterator"
+  - This means the value is only retrieved when needed using the ```next()``` function
+- This can be useful when reading large files or other big data sets
+- In the following example we will use it to provide sequential colour values
+
+--
+
+## Colours
+
 <iframe src="https://trinket.io/embed/python/7fe74b873b" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
 
 
+---
+
+## [L-Systems](https://en.wikipedia.org/wiki/L-system)
+
+<iframe src="https://trinket.io/embed/python/c13ac3c881" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
 
 
 
+---
 
+## Next Time
 
+- next week we will look at file processing in python
+- writing stand alone python programs
+- command line processing
+- Basic Object Orientation
