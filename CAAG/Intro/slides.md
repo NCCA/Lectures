@@ -26,14 +26,14 @@ jmacey@bournemouth.ac.uk
 
 ## Unit Structure
 
-- Programming Project: 60 % of the final grade 
+- Programming Project: 100 % of the final grade 
   - This will be an individual project 
-- Exam 40 % of the final grade
-  - this will be a 2 hour covering mainly theory.
-
+  - It should be possible on home computers as well as NoMachine
+- (Used to be an exam but removed because of covid)
 --
 
 ## Unit Content
+
 - Introduction to Object Oriented Programming Objects and classes
 - Inheritance and Runtime Polymorphism
 - Generic Programming with Templates STL Containers
@@ -255,7 +255,7 @@ g++ -g -Wall -std=c++1z HelloWorld.cpp -o HelloWorld
 
 --
 
-##clang++ vs g++
+## clang++ vs g++
 - clang++ is a modern C++ compiler based on the llvm architecture.
 - It has the best error reporting and diagnostics of the two compilers
 - both now fully support c++ 14 and some of C++ 17
