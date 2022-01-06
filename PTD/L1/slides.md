@@ -9,21 +9,21 @@ jmacey@bournemouth.ac.uk
 
 - This is a new Unit developed specifically for the MSc CAVE
 - It aims to build on the ASE unit to develop more technical animation knowledge
-- As well as introduce more Python and other technologies.
+- As well as introduce more Python and other technologies
 
 --
 
 ## Aims
 
-> The aim of this unit is to enable the student to define the technological strategy required for an animation project or pipeline by defining and developing the tools and key development procedures required to see a project to completion. This will require the definition, design, implementation and maintenance of an animation pipeline and requisite data transformations.  
+> The aim of this unit is to enable the student to define the technological strategy required for an animation project or pipeline by defining and developing the tools and key development procedures required to see a project to completion. This will require the definition, design, implementation and maintenance of an animation pipeline and requisite data transformations
 
 --
 
 ## Intended learning outcomes (ILOs)
 
-1. critically evaluate and specify the required components of an animation pipeline and associated data. 
-2. implement animation, games or VFX pipelines using a variety of digital content creation tools and techniques. 
-3. maintain, document and deploy animation tools and pipelines on a specified platform.
+1. critically evaluate and specify the required components of an animation pipeline and associated data
+2. implement animation, games or VFX pipelines using a variety of digital content creation tools and techniques
+3. maintain, document and deploy animation tools and pipelines on a specified platform
 
 --
 
@@ -31,7 +31,7 @@ jmacey@bournemouth.ac.uk
 
 - This unit is assessed by a project worth 100% of the unit grade.
 - Due in 12 noon, Tuesday 24th May 2022
-- Brief is on BrightSpace and we will go over it in the Lab session.
+- Brief is on BrightSpace and we will go over it in the Lab session
 
 ---
 
@@ -62,6 +62,7 @@ jmacey@bournemouth.ac.uk
   3. Post-Production
 
 - This is similar for most productions such as Full CG, VFX and to some extent games.
+- Slightly different for Virtual Production
 
 --
 
@@ -80,7 +81,7 @@ jmacey@bournemouth.ac.uk
 - predominantly an artistic role.
 - still lots of data
   - can also be physical assets which may need to be digitized.
-- This will feed into next production stage and data needs to be accessible to all.
+- This will feed into next production stage and data needs to be accessible to all
 
 --
 
@@ -90,6 +91,7 @@ jmacey@bournemouth.ac.uk
 - 3D Layout
 - 3D Modeling
 - VFX
+- Match move / Tracking  if using live plates
 - Lighting
 - Rendering
 
@@ -111,7 +113,215 @@ jmacey@bournemouth.ac.uk
   - UV Layout
   - Rigging
   - Animation
-- Lots of data and versions. Needs careful management and control.
+- Lots of data and versions. Needs careful management and control
+
+--
+
+# VFX / Simulation
+
+- VFX / Simulation can be time consuming
+- Big sims take time and data may need to be cached
+- If dependant on other elements they need to wait (destroy buildings etc)
+- may need to work alongside the animators and modelers due to interaction with colliding FX elements
+
+--
+
+# Lighting / Rendering
+
+- Another time consuming process
+- Need other elements in place before doing renders
+- Need to ensure we get all the passes / AOV's required
+- IBL may be used so could have large input data too
+- Large amount of data to manage / pass onto compositors
+
+--
+
+# Post-production
+
+- Can be split into
+  - Compositing 
+  - 2D Effects ( lens flares, blurs, camera shakes, rain)
+  - Colour correction / grade
+- Final render to destination format
+
+--
+
+# Virtual Production
+
+- moves tasks such as rendering, lighting, matchmove, camera tracking, into the production process
+- On Set / Soundstage LED projection used to capture elements in camera
+- Still needs other element and post processing
+- Can also add 'physical computing' elements
+
+---
+
+# What is a Pipeline?
+
+- A collection of rules and tools that facilitates groups of people to work collaboratively on large-scale projects.
+
+- There can be many departments, groups and people working in the pipeline
+  - They may be spread all over the world
+
+--
+
+# <small>What are the features of a Pipeline</small>
+
+- Broad groups of users should be defined : Coordinators, Animators, Modellers, Compositors etc
+- Producers want to keep track of all progress on a show/shot
+- All artists should be able to start working on a shot as soon as possible
+- Changes to assets can be made at any time, causing as few problems to artists ‘downstream’ as possible
+- All assets are versioned
+
+--
+
+# We need standards
+
+- Naming conventions are a must.
+- An explicit understanding of downstream’s concerns
+  -  we need an Alert system when something goes wrong (send upstream?)
+- Common methods / formats / tools
+- These can be a per company or per show set of rules
+- Very common for multiple companies to now work on a show.
+
+--
+
+# A filing system
+
+- A directory structure repeated from show to show, sequence to sequence, shot to shot
+- As we may use many DCC tools this may change to suite the tool
+- Or can be a custom one
+  - Maya and Houdini have their own project setups so we need to adapt to this.
+
+--
+
+# A filing system
+
+- Using a rigid filing-system means we can use a database to track assets
+- Many tools will exist to create and maintain the filing system (usually command-line scripts)
+- Disk space always of concern so needs to be managed
+- Tools like Shotgun / Shotgrid can help with some of the tracking
+- Traditional software version control does not work well with assets
+
+--
+
+# What is an Asset?
+
+- Assets are a product of all departments/users 
+  - Producers will monitor asset progress and assign users/artists to the creation of assets.
+- Most things artists make are assets :
+  - Scenefiles, models, uv maps, textures, animation, textures, shaders, particles, light-rigs, etc.
+- Management of this data is core to all pipelines, can be Terra bytes or more
+
+--
+
+# Dependency chains
+
+- Assets can form dependency chains
+  - User Dependencies :
+    -  Rigger is dependent on the Modeler
+  - Asset Dependencies :
+    - this version of the animation is dependent on the model (version 2) and the creature-rigging (version 3)
+- Yet another complex part of the pipeline, database helps to manage this
+- check in / out of assets crucial
+
+--
+
+# <small> Dependency Accumulation </small>
+
+- Dependencies accumulate as you travel along the pipeline.
+- Just one simple animated asset could have :
+  - Model, uv map, rigging, enveloping,  animation, textures, shaders
+
+--
+
+# Database tracking
+
+- as the dependencies accumulate we can use a database to track things
+  - very handy to see if upstream assets have been updated and allow new versions to be checked out
+- can be coupled with a the filing system to allow easy updates. 
+- This is usually done via extra metadata / alert system in our tools
+
+
+--
+
+# <small> Publishing / Quarantine </small> 
+
+- Once an artist has produced an asset, that asset might need to be published so that the other users downstream can start to use it
+- All assets are quarantined prior to achieving a full publish
+- A quarantined asset can be upgraded to full publish once each group downstream has verified its quality (Department leads)
+
+---
+
+# <small>Case Study Publishing a Model </small>
+
+- A model is ready to be published 
+- Either manually or (preferably) using the pipeline tools we need to
+  -  The model scene is cleaned of all non-essentials (no materials, lights, extra node-hierarchies etc)
+  -  The model is checked for quality
+     -  checked for illegal verts, edges and faces etc
+  -  The naming convention is enforced 
+- Asset could be published in a standard format (Obj, FBX, USD etc)
+
+--
+
+# Publishing
+
+- Once the previous steps are complete the model can be published
+- Usually a tool is used to publish
+  - All downstream users of the asset need to be alerted
+- Usually some form of Metadata is filled in with the details (json asset files for example)
+- This can be controlled via our database or file system and the new asset replaces the old one
+- Could be as simple as a directory change
+
+--
+
+# Problems can occur
+
+- Any changes made since the last publish, may cause issues downstream 
+- Have the number of vertices changed?
+  - This would affect uv-maps (and thus texturing/shaders)
+  - This would affect enveloping.
+
+- Has the uv-map been altered?
+  - This can affect TD’s particle sims.
+  - Occlusion may have to be re-baked
+
+--
+
+# The role of pipeline
+
+- A good pipeline should make changes easy
+- Allowing different teams to work both together and in isolation
+  - If a modeler updates a model asset, the asset shouldn’t be inserted into scenes downstream automatically
+  - Downstream users should be able to update their scenes, when they’re ready, with relative ease
+
+--
+
+# DCC Tools
+
+- Most DCC tools asset management tools are not good. 
+  - whilst fine for a simple user or single DCC house can work ok, don't scale well to big productions
+- Most big teams use their own / 3rd party tools
+- A 'pull' pipeline where the DCC pulls in data based on meta data / schemas
+
+---
+
+# Sample Schema 
+
+- We can generate simple schemas for a shot
+- Usually simple text or json (ASCII) or could be python script to query database etc
+- A description of what the shot needs (creatures, props, cameras, resolution, etc)
+- Each user has their own shotfile and sometimes use multiple shot files within one shot.
+
+--
+
+# [USD](https://graphics.pixar.com/usd/release/index.html)
+
+- Many companies are moving to USD based pipeline or integrating USD within existing pipelines
+- USD provides for interchange of elemental assets (e.g. models) or animations 
+- But unlike other interchange packages, USD also enables assembly and organization of any number of assets into virtual sets, scenes, shots, and worlds, transmitting them from application to application
+- We will look at this later in this unit
+
 
 ---
 
@@ -119,3 +329,5 @@ jmacey@bournemouth.ac.uk
 
 - https://www.vegascreativesoftware.com/gb/post-production/3d-animation-pipeline-for-efficient-animation-production/
 
+- http://www.pipelinepatterns.com/intro/welcome.html
+- https://www.cgspectrum.com/blog/the-visual-effects-pipeline
