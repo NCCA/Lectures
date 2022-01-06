@@ -18,7 +18,7 @@
 
 Note:
 I've been programming for a long time (40 years) but I started at about your age. Whilst my background is not in programming I have always used computers and programming in my jobs.
-No it is mainly teaching programming to animators.
+Now it is mainly teaching programming to animators.
 
 
 --
@@ -48,7 +48,6 @@ I'm going to show you a video, all of this work is from our students at the NCCA
 ---
 
 
-
 > Whats the best thing about being an animator or VFX artist?
 
 --
@@ -59,14 +58,13 @@ I'm going to show you a video, all of this work is from our students at the NCCA
     <source data-src="video/smash.mp4" type="video/mp4" loop >
   </video>
 
-
 --
 
 ## And blow them up!
 
 <video controls loop >
     <source data-src="video/explode.mp4" type="video/mp4" loop >
-  </video>
+</video>
 
 
 --
@@ -75,34 +73,31 @@ I'm going to show you a video, all of this work is from our students at the NCCA
 
 <video controls loop >
     <source data-src="video/wallsmash.mp4" type="video/mp4" loop >
-  </video>
-
+</video>
 
 --
 
 ## Or Throw things at Zombies!
 
 <video controls loop >
-    <source data-src="video/zombies.mp4" type="video/mp4" loop >
-  </video>
-
-
+  <source data-src="video/zombies.mp4" type="video/mp4" loop >
+</video>
 
 --
 
 #### Programming Houdini is a bit like using scratch.
 
 <video controls loop >
-    <source data-src="video/scratch.mp4" type="video/mp4" />
-  </video>
+  <source data-src="video/scratch.mp4" type="video/mp4" />
+</video>
 
 ---
 
 ### What do Cloth and Hair have in common?
 
-  <video controls loop>
-    <source data-src="video/Spring.mp4" type="video/mp4" />
-  </video>
+<video controls loop>
+  <source data-src="video/Spring.mp4" type="video/mp4" />
+</video>
 
 --
 
@@ -380,14 +375,41 @@ void main()
 
 <a href="examples/wood/index.html" target="popup" onclick="popupWindow('examples/wood/index.html','selection',640,320);"><img src="images/run.png"></a>
 
-
-
 --
 
 ### Noise can also be a problem!
 
 <img src="images/rendereq.png" width="60%">
-<iframe src="../Renderman/Lecture3Lighting/denoise.html" width="720px" height="512px"> </iframe>
+<iframe src="examples/denoise.html" width="720px" height="512px"> </iframe>
+
+
+---
+
+## Who Plays this?
+
+<img src="images/Fortnight.png" width="60%">
+
+--
+
+## Who's seen this?
+
+<img src="images/mando.png" width="40%">
+
+--
+
+## What do they have in Common?
+
+- Both use the "Unreal Engine" a games engine
+- Virtual Production is mixing Games technology with state of the art CGI technology
+  - Allows use to use realtime 3D effects whilst filming live actors.
+
+--
+
+  <video controls>
+    <source data-src="video/Mando2.mov" type="video/mp4" />
+
+  </video>
+
 
 
 ---
@@ -427,9 +449,20 @@ void main()
   - [BA (Hons) Computer Animation Art and Design](https://www.bournemouth.ac.uk/study/courses/ba-hons-computer-animation-art-design)
   - [BA (Hons) Computer Animation Technical Arts](https://www.bournemouth.ac.uk/study/courses/ba-hons-computer-animation-technical-arts)
   - [BA (Hons) Visual Effects](https://www.bournemouth.ac.uk/study/courses/ba-hons-visual-effects)
+  - [BSc (Hons) Virtual & Augmented Reality](https://www.bournemouth.ac.uk/study/courses/bsc-hons-virtual-augmented-reality-foundation-year-option)
 
-- Required Subjects :- An Art, Design, Mathematics or Technology subject.
-- 112 - 128 tariff points including a minimum of 2 A levels or equivalent including 32 points in one required subject. 
+--
+
+## Technical Courses
+
+<img src="images/CATA.png" width="80%">
+
+
+--
+
+## Technical Courses
+
+<img src="images/VR.png" width="80%">
 
 --
 
@@ -449,109 +482,7 @@ void main()
 
 ---
 
-## Let's design some code.
 
-  <video controls>
-    <source data-src="video/Golaem.mp4" type="video/mp4" />
-  </video>
-
---
-
-## Let's design some code.
-
-- This example shows a finished flocking system.
-
-
- <a href="examples/flock/index.html" target="popup" onclick="popupWindow('examples/flock/index.html','Iteration',1400,900);"> <img src="images/run.png"> </a>
-
---
-
-## Lets do some Abstraction.
-
-- what shall we call this?
-
-<img src="images/singleboid.png" width="10%">
-
-
-<textarea id="design1" rows="6" cols="25" style="font-size: 44pt"></textarea>
-
---
-
-## Boid
-
-```
-
-struct Boid
-{
-  point2 position;
-  colourRGB colour;
-  float speed;
-  vec2 direction; 
-};
-
-```
-
---
-
-### Now some rules.
-
-<div class="row">
-  <div class="column" style="float: left;width: 30%;padding: 5px;">
-    <p/><img src="images/seperation.png" alt="sepatation" style="width:100%">
-    <p/><b>Separation</b>: steer to avoid crowding local flockmates
-  </div>
-  <div class="column" style="float: left;width: 30%;padding: 5px;">
-    <p/><img src="images/allignment.png" alt="alignment" style="width:100%">
-    <p/><b>Alignment</b>: steer towards the average heading of local flockmates
-  </div>
-  <div class="column" style="float: left;width: 30%;padding: 5px;">
-    <p/><img src="images/cohesion.png" alt="cohesion" style="width:100%">
-    <p/><b>Cohesion</b>: steer to move toward the average position of local flockmates
-  </div>
-</div>
-
---
-
-## Separation
-
-<img src="images/seperation.png" alt="sepatation" style="width:20%">
-
-- Given an array of all Boids how can we implement this algorithm?
-
-<textarea id="design1" rows="6" cols="25" style="font-size: 24pt"></textarea>
-
-Note:
-Basically we need to traverse through the array (or list) and create a new list containing any of the boids in the radius. We then give them a force (Vector) to move them so they are the distance we need them to be apart.
-
-
---
-
-## Alignment
-
-<img src="images/allignment.png" alt="allignment" style="width:20%">
-
-- Given an array of all Boids how can we implement this algorithm?
-
-<textarea id="design1" rows="6" cols="25" style="font-size: 24pt"></textarea>
-
-Note:
-Basically we need to traverse through the array (or list) and create a new list containing any of the boids in the radius. Add up all the directions and calculate the average!
-
---
-
-## Cohesion
-
-<img src="images/cohesion.png" alt="cohesion" style="width:20%">
-
-- Given an array of all Boids how can we implement this algorithm?
-
-<textarea id="design1" rows="6" cols="25" style="font-size: 24pt"></textarea>
-
-Note:
-Basically we need to traverse through the array (or list) and create a new list containing any of the boids in the radius. We then give them a force (Vector) to move them so they are the distance we need them to be apart.
-
-
----
 
 
 # Any Questions?

@@ -39,14 +39,14 @@ object2=object1;
 
 --
 
-## Overloading and the assignment operator
+### Overloading and the assignment operator
 
 - This behaviour is default for the = operator however we can program our own overloaded = operator within the class.
-- This is required when pointers are used as the object will point only to the memory address and if the initial object is destroyed so will the memory address where the pointer points to, Therefore - code will be required to create and copy the pointer data
+- This is required when pointers are used as the object will point only to the memory address and if the initial object is destroyed so will the memory address where the pointer points to, therefore - code will be required to create and copy the pointer data
 
 --
 
-## C++ Syntax
+## [C++ Syntax](https://en.cppreference.com/w/cpp/language/operators)
 - The syntax required for operator overloading is :
 - The operator keyword
 - And one of the 41 operator which may be overloaded as shown below
@@ -60,6 +60,7 @@ object2=object1;
 , ->* -> ( ) [ ]
 new delete 
 "" (c++ 11 suffix)
+<=> (C++ 20 spaceship operator)
 ```
 
 --
@@ -258,120 +259,343 @@ return Vector(_k*_v.m_x, _k*_v.m_y, _k*_v.m_z,_v.m_w);
 
 ---
 
-## Generic Programming
-- Generic programming allows us to generate an algorithm where the data types used for the algorithm are not defined at the time the user implements the algorithm.
-- Instead we declare a “template” argument which the compiler will attempt to generate when the user applies the function in a particular context.
-- This is a type of polymorphism more specifically for C++ compile time polymorphism
+## Introduction to Templates
+- “Code-generating programs are sometimes called metaprograms; writing such programs is called metaprogramming”.
+- There are many different forms of meta programs depending upon the language being used.
+- In General this can be approached either by having a program generate new code at runtime
+- Or by using some form of pre-processor.
 
 --
 
-## [Polymorphism by parameter](http://en.cppreference.com/w/cpp/language/function)
-- Parametric Overloading allows us to have multiple methods of the same name with different parameters
-- We have already seen this with the constructor method in classes
-- For example we can have the following methods
+## Macros in C/C++
+- The C/C++ pre-processor is responsible for macro expansion.
+- This happens before the code is compiled
+- Usually we limit the use of Macros to the C programming language, and try to use them sparingly
+- In C++ we will avoid and use templates
+- However Qt uses them extensively in the moc.
+
+--
+
+## Options for generic programming
+- Implement the the same behaviour again and again for each type that needs it (OpenGL ?)
+- Write generic code using void * and force the programmer to use coercion (pthreads ?)
+- Use a special pre-processor (or 3rd party tools to generate your code such as Qt’s moc)
+- This usually leads to mistakes and can cause problems of maintenance and re-use.
+
+--
+
+## templates
+- C++ requires us to declare variables, function and most other entities using specific types.
+- When we write code it usually looks the same for many different functions.
+- This is very obvious if we write an algorithm to sort a list of data, depending upon the data type we would need a different implementation of essentially the same thing.
+- This becomes more problematic if the language your are using doesn’t support generics.
+
+--
+
+## [templates in C++](http://en.cppreference.com/w/cpp/language/templates)
+- A template is a C++ entity that defines one of the following:
+	- a family of classes (class template), which may be nested classes
+	- a family of functions (function template), which may be member functions
+	- an alias to a family of types (alias template) (since C++11)
+	- a family of variables (variable template) (since C++14)
+	- a concept (constraints and concepts) (since C++20)
 
 ```
-int foo(int _a);
-int foo(int _a, int _b);
-int foo(float _b, float _b);
+template <class identifier> function_declaration; 
+template <typename identifier> function_declaration;
+```
+
+--
+
+## template terminology
+
+<img src="images/template1.png" width="70%">
+- image from [C++ Common Knowledge](http://stevedewhurst.com/commonknowledge/index.html)
+
+--
+
+## template terminology
+- precise terminology is important, especially when discussing templates.
+- In the previous diagram we show the different names for the elements.
+- The most important distinction is between the template parameter used in the definition of the template and the template argument which is used in the specialisation of the template.
+
+--
+
+## template terminology
 
 ```
-- Note that the return type of a function can not be overloaded and must remain the same value for every method
+// T is the template parameter
+template <typename T> class Heap{.....};
+
+// double is the template argument
+Heap<double> dHeap;
+
+```
 
 --
 
-### Parametric Polymorphism (genericity)
-
-<img src="images/poly1.png" width="40%">
-- The primary application of parametric polymorphism is in O-O systems to allow methods to work in a generic way.
-- However these functions are not truly generic as ad-hoc polymorphism is used and each different parameter list has it's own implementation
-- In contrast a generic method will execute the same implementation but be able to accept a range of types as parameters
-
---
-
-## Generic Functions (using templates)
-- In C++ genericity is is achieved by the use of templates
-- We have already used a lot of these when using stl
-- A template will operate on any data type for which the internal implementation is appropriate.
-- For example a template function which compares two objects using the '>' operator to return the greater will operate on any data type (including Objects) where the '>' function is appropriate.
-- From the operator overloading examples last week we can see that we can now also use a simple template function with objects.
-
---
-
-## But why use templates?
-- We often need to perform a similar process on different data types
-- The data type(s) being processed are passed to a method as parameters
-- With parametric overloading, each type of parameter will cause the compiler to use a different (type specific) method.
-- With genericity, a single generic function is able to process all data types, including those defined by the programmer (i.e. objects) - all data types are handled by one (type generic) model.
-- Genericity allows us to create generic classes, as well as simply using generic functions as methods
-
---
-
-## Generic Functions
-- Genericity is a more powerful tool than parametric overloading for O-O systems because it does not have to anticipate the type of data parameters which may be supplied at run time.
-- This means it is able to handle dynamic objects of disparate types
-- However, this approach only works if we are able to process all data types in a particular way, this means that we need to have a common interface for all objects used as parameters.
-
---
-
-## Generic function parameters
-- With generic functions parameters can be of any type
-- However they must be able to be processed by the function, which in this case means that able to use the '==' operator
-- This will also be true of any objects which use this function as they will need an overloaded '==' operator.
+## template terminology
+- template name :
+	- the simple identifier for the template 
+- template id 
+	- the template name with an appended template argument list. <T ….>
 
 ---
 
-## [Template Functions](http://en.cppreference.com/w/cpp/language/function_template)
-- Templates are a very powerful tool and are the basis of the standard template library (STL)
-- Template functions are a generic functions which can have parameters of any data type
-- The C++ syntax for creating a template function is as follows :
-- for a more in-depth notes see [here](https://nccastaff.bournemouth.ac.uk/jmacey/CA2/slides/templates/slides.html?home=/jmacey/ASE)
-
-```
-template < typename T> [return type] functionName(params )
-```
+## Function Templates
+- Function templates provide a functional behaviour that can be called on for different types.
+- This can be though of as a family of functions.
+- We basically declare a function but unlike a normal function our parameters and / or return types are abstracted so they have no initial type
+- Then the compiler will replace the types with the concrete types at compile time.
 
 --
 
-## Template Functions
-- template is a C++ keyword, and the name of the generic class name must be enclosed in pointed brackets <.....>
-- The class type name can be anything but most examples use T 
-- This value T acts as an alias for any data type actually passed to the function (whether that data type is int, char,Vector, Matrix, Vector, Colour, banana etc)
-
---
-
-## example
+## [max.h](https://github.com/NCCA/Templates/blob/master/templates1/max.h)
 
 ```
-template<typename T>
-void f(T s)
+#ifndef MAX_H_
+#define MAX_H_
+
+template <typename T> 
+T const &max(T const & a, T const & b)
 {
-    std::cout << s << '\n';
+	std::cout << __PRETTY_FUNCTION__ << '\n';
+	// if a<b then use b else use a
+	return a < b ? b : a;
 }
- 
-template void f<double>(double); // instantiates f<double>(double)
-template void f<>(char); // instantiates f<char>(char), template argument deduced
-template void f(int); // instantiates f<int>(int), template argument deduced
+
+#endif
 ```
+
+--
+
+## [maxtest.cpp](https://github.com/NCCA/Templates/blob/master/templates1/maxtest.cpp)
+```
+#include <iostream>
+#include <string>
+#include <cstdlib>
+#include "max.h"
+
+int main()
+{
+	std::cout<< ::max(2,5)<<'\n';
+	std::cout<< ::max(0.1,0.02)<<'\n';
+	std::cout<< ::max('a','c')<<'\n';
+	std::cout<< ::max("hello","world")<<'\n';
+
+	return EXIT_SUCCESS;
+}
+```
+```
+const T &max(const T &, const T &) [T = int]
+5
+const T &max(const T &, const T &) [T = double]
+0.1
+const T &max(const T &, const T &) [T = char]
+c
+const T &max(const T &, const T &) [T = char [6]]
+world
+```
+
+--
+
+## Compiler Explorer
+
+<iframe width="1000px" height="500px" src="https://godbolt.org/e#g:!((g:!((g:!((h:codeEditor,i:(j:1,lang:c%2B%2B,source:'%23include+%3Ciostream%3E%0A%23include+%3Cstring%3E%0A%23include+%3Ccstdlib%3E%0A%0Atemplate+%3Ctypename+T%3E+%0AT+const+%26max(T+const+%26+a,+T+const+%26+b)%0A%7B%0A++++//+if+a%3Cb+then+use+b+else+use+a%0A++++return+a+%3C+b+%3F+b+:+a%3B%0A%7D%0A%0A%0Aint+main()%0A%7B%0A++++auto+a%3D::max(2,5)%3B%0A++++auto+b%3D::max(0.1,0.02)%3B%0A++++auto+c%3D::max(!'a!',!'c!')%3B%0A++++auto+d%3D::max(%22hello%22,%22world%22)%3B%0A%0A++++return+EXIT_SUCCESS%3B%0A%7D'),l:'5',n:'0',o:'C%2B%2B+source+%231',t:'0')),k:50,l:'4',n:'0',o:'',s:0,t:'0'),(g:!((h:compiler,i:(compiler:g82,filters:(b:'0',binary:'1',commentOnly:'0',demangle:'0',directives:'0',execute:'1',intel:'0',libraryCode:'1',trim:'1'),lang:c%2B%2B,libs:!(),options:'',source:1),l:'5',n:'0',o:'x86-64+gcc+8.2+(Editor+%231,+Compiler+%231)+C%2B%2B',t:'0')),k:50,l:'4',n:'0',o:'',s:0,t:'0')),l:'2',n:'0',o:'',t:'0')),version:4"></iframe>
+
+--
+
+## global namespace
+- In the previous example the max template was prefixed with :: to indicate it was in the global namespace
+- This is due to potential issues with std::max
+- If one argument type is in the std name space (string) according to the lookup rules both the local and std::max will be found as per the next example
+
+--
+
+## [ambmax.cpp](https://github.com/NCCA/Templates/blob/master/templates1/ambmax1.cpp)
 
 ```
 #include <iostream>
- 
-template<typename T>
-void f(T s)
-{
-    std::cout << s << '\n';
-}
- 
+#include <string>
+#include <cstdlib>
+#include "max.h"
+
 int main()
 {
-    f<double>(1); // instantiates and calls f<double>(double)
-    f<>('a'); // instantiates and calls f<char>(char)
-    f(7); // instantiates and calls f<int>(int)
-    void (*ptr)(std::string) = f; // instantiates f<string>(string)
+	std::string a("hello");
+	std::string b("templates");
+	std::cout<< max(a,b)<<'\n';
+	return EXIT_SUCCESS;
 }
 
 ```
+
+```
+clang11 ambmax1.cpp
+ambmax1.cpp:10:14: error: call to 'max' is ambiguous
+        std::cout<< max(a,b)<<'\n';
+                    ^~~
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/algorithm:2654:1: note:
+      candidate function [with _Tp = std::__1::basic_string<char>]
+max(const _Tp& __a, const _Tp& __b)
+^
+./max.h:5:10: note: candidate function [with T = std::__1::basic_string<char>]
+T const &max(T const & a, T const & b)
+         ^
+1 error generated.
+```
+
+--
+
+## [nomax.cpp](https://github.com/NCCA/Templates/blob/master/templates1/nomax.cpp)
+- The template must be able to expand for the type and any operators
+
+```
+#include <iostream>
+#include <complex>
+#include <cstdlib>
+#include "max.h"
+
+int main()
+{
+	std::complex<float> c1,c2;
+	std::cout<< ::max(c1,c2)<<'\n';
+
+	return EXIT_SUCCESS;
+}
+
+```
+
+```
+
+In file included from nomax.cpp:4:
+./max.h:9:11: error: invalid operands to binary expression ('const
+      std::__1::complex<float>' and 'const std::__1::complex<float>')
+        return a < b ? b : a;
+               ~ ^ ~
+1 error generated.
+
+```
+
+---
+
+## template compilation
+- templates are effectively compiled twice
+	- Without instantiation they are checked for syntax ( e.g ; missing etc)
+	- At the time of instantiation (i.e. where it is used) it is checked to see if all calls are valid.
+- For ease of use and to avoid this for simple templates we can use a header and an inline function
+
+--
+
+## [Argument deduction](http://en.cppreference.com/w/cpp/language/template_argument_deduction)
+- When we call a template function for some arguments, the template parameters determined by the arguments we pass.
+- If we pass to ints to the parameter types T const & the C++ compiler must conclude that T must be an int.
+- No automatic type conversion is allowed. Each T must match exactly.
+
+
+--
+
+## [argdeduct.cpp](https://github.com/NCCA/Templates/blob/master/templates1/argdeduct.cpp)
+
+```
+#include <iostream>
+#include <string>
+#include <cstdlib>
+#include "max.h"
+
+int main()
+{
+	std::cout<< ::max(4,7)<<'\n';
+	std::cout<< ::max(4,4.2)<<'\n';
+	
+	return EXIT_SUCCESS;
+}
+```
+
+```
+clang11 argdeduct.cpp
+argdeduct.cpp:9:14: error: no matching function for call to 'max'
+        std::cout<< ::max(4,4.2)<<'\n';
+                    ^~~~~
+max.h : 5 : 10 : note : candidate template ignored : deduced conflicting types for
+      parameter 'T' ('int' vs. 'double')
+T const &max(T const & a, T const & b)
+         ^
+1 error generated.
+```
+
+--
+
+## Overloading function templates
+- Like ordinary functions, function templates can also be overloaded.
+- The compiler must then decide which ones to use
+- The rules of these decisions and how the compiler does this can get very complicated and lead to issues.
+- The rules are similar to normal functions (for an in-depth discussion see Appendix B of “C++ templates the complete guide”
+
+--
+
+## [max2.cpp](https://github.com/NCCA/Templates/blob/master/templates1/max2.cpp)
+
+```
+/* The following code example is taken from the book
+ * "C++ Templates - The Complete Guide"
+ * by David Vandevoorde and Nicolai M. Josuttis, Addison-Wesley, 2002
+ *
+ * (C) Copyright David Vandevoorde and Nicolai M. Josuttis 2002.
+ * Permission to copy, use, modify, sell and distribute this software
+ * is granted provided this copyright notice appears in all copies.
+ * This software is provided "as is" without express or implied
+ * warranty, and with no claim as to its suitability for any purpose.
+ */
+// maximum of two int values
+inline int const& max (int const& a, int const& b) 
+{
+    return  a < b ? b : a;
+}
+
+// maximum of two values of any type
+template <typename T>
+inline T const& max (T const& a, T const& b)
+{
+    return  a < b ? b : a;
+}
+
+// maximum of three values of any type
+template <typename T>
+inline T const& max (T const& a, T const& b, T const& c)
+{
+    return ::max (::max(a,b), c);
+}
+
+int main()
+{
+    ::max(7, 42, 68);     // calls the template for three arguments
+    ::max(7.0, 42.0);     // calls max<double> (by argument deduction)
+    ::max('a', 'b');      // calls max<char> (by argument deduction)
+    ::max(7, 42);         // calls the nontemplate for two ints
+    ::max<>(7, 42);       // calls max<int> (by argument deduction)
+    ::max<double>(7, 42); // calls max<double> (no argument deduction)
+    ::max('a',24);     // calls the nontemplate for two ints
+}
+
+```
+
+--
+
+## Compiler Explorer
+
+<iframe width="1000px" height="400px" src="https://godbolt.org/embed-ro#g:!((g:!((g:!((h:codeEditor,i:(j:2,lang:c%2B%2B,source:'inline+int+const%26+max+(int+const%26+a,+int+const%26+b)+%0A%7B%0A++++return++a+%3C+b+%3F+b+:+a%3B%0A%7D%0A%0A//+maximum+of+two+values+of+any+type%0Atemplate+%3Ctypename+T%3E%0Ainline+T+const%26+max+(T+const%26+a,+T+const%26+b)%0A%7B%0A++++return++a+%3C+b+%3F+b+:+a%3B%0A%7D%0A%0A//+maximum+of+three+values+of+any+type%0Atemplate+%3Ctypename+T%3E%0Ainline+T+const%26+max+(T+const%26+a,+T+const%26+b,+T+const%26+c)%0A%7B%0A++++return+::max+(::max(a,b),+c)%3B%0A%7D%0A%0Aint+main()%0A%7B%0A++++::max(7,+42,+68)%3B+++++//+calls+the+template+for+three+arguments%0A++++::max(7.0,+42.0)%3B+++++//+calls+max%3Cdouble%3E+(by+argument+deduction)%0A++++::max(!'a!',+!'b!')%3B++++++//+calls+max%3Cchar%3E+(by+argument+deduction)%0A++++::max(7,+42)%3B+++++++++//+calls+the+nontemplate+for+two+ints%0A++++::max%3C%3E(7,+42)%3B+++++++//+calls+max%3Cint%3E+(by+argument+deduction)%0A++++::max%3Cdouble%3E(7,+42)%3B+//+calls+max%3Cdouble%3E+(no+argument+deduction)%0A++++::max(!'a!',24)%3B+++++//+calls+the+nontemplate+for+two+ints%0A%7D'),l:'5',n:'0',o:'C%2B%2B+source+%232',t:'0')),header:(),k:57.42148995997847,l:'4',m:100,n:'0',o:'',s:0,t:'0'),(g:!((h:compiler,i:(compiler:g72,filters:(b:'0',binary:'1',commentOnly:'0',demangle:'0',directives:'0',execute:'1',intel:'0',trim:'0'),lang:c%2B%2B,libs:!(),options:'',source:2),l:'5',n:'0',o:'x86-64+gcc+7.2+(Editor+%232,+Compiler+%231)+C%2B%2B',t:'0')),header:(),k:42.578510040021534,l:'4',n:'0',o:'',s:0,t:'0')),l:'2',n:'0',o:'',t:'0')),version:4"></iframe>
+
+
+--
+
+## function template summary
+- Define a family of functions for different arguments
+- When arguments are passed templates are instantiated for those arguments
+- You can overload function templates
+- When overloading limit changes by explicitly specifying parameters ( <int,int> )
+- Make sure all overloaded versions are visible before being called 
+
 
 ---
 
@@ -430,7 +654,7 @@ template <typename T> T lerp(T _a, T _b, float _t) noexcept
 ---
 
 ## The Standard Template Library
-- The standard Template Library (STL) takes the idea of Template functions and extends them to a number of typical programming problems.
+- The standard Template Library (STL) takes the idea of Templates and extends them to a number of typical programming problems.
 - The STL contains templated classes which allow us to generate :-
   - [Containers](http://en.cppreference.com/w/cpp/container) (Ways of containing data)
   - [Associative](http://en.cppreference.com/w/cpp/container) Arrays (Contain data and key pairs)
@@ -465,8 +689,6 @@ template <typename T> T lerp(T _a, T _b, float _t) noexcept
 
 --
 
-
-
 # [std::stack example](https://github.com/NCCA/STLIntro/blob/master/STLStack/floatstack.cpp)
 
 ```
@@ -475,18 +697,18 @@ template <typename T> T lerp(T _a, T _b, float _t) noexcept
 
 int main()
 {
-// create a stack of floats
-std::stack <float> FloatStack;
-// push some values on the stack
-FloatStack.push(3.0f);
-FloatStack.push(2.0f);
-// get the size of the stack
-std::cout <<"Stack Size = "<<FloatStack.size()<<std::endl;
-// print the top value
-std::cout <<"top "<<FloatStack.top()<<std::endl;
-// pop the value from the top of the stack
-FloatStack.pop();
-std::cout <<"top "<<FloatStack.top()<<std::endl;
+  // create a stack of floats
+  std::stack <float> FloatStack;
+  // push some values on the stack
+  FloatStack.push(3.0f);
+  FloatStack.push(2.0f);
+  // get the size of the stack
+  std::cout <<"Stack Size = "<<FloatStack.size()<<std::endl;
+  // print the top value
+  std::cout <<"top "<<FloatStack.top()<<std::endl;
+  // pop the value from the top of the stack
+  FloatStack.pop();
+  std::cout <<"top "<<FloatStack.top()<<std::endl;
 }
 
 ```
@@ -535,7 +757,7 @@ std::cout <<"top "<<FloatStack.top()<<std::endl;
 - Efficient insertion and removal of elements anywhere in the container (constant time).
 - Efficient moving elements and block of elements within the container or even between different containers (constant time).
 - Iterating over the elements in forward or reverse order ([linear time](https://en.wikipedia.org/wiki/Time_complexity)).
-- Compared to other base standard sequence containers (vectors and deques), lists perform generally better in inserting, extracting and moving elements in any position within the container, and therefore also in algorithms that make intensive use of these, like sorting algorithms.
+- Compared to vectors and deques, lists perform generally better in inserting, extracting and moving elements in any position within the container (so can be faster for things like sorting algorithms).
 
 --
 
@@ -589,17 +811,17 @@ int main()
 
 	toSort.sort();
 	std::for_each(std::begin(toSort),std::end(toSort),[](float i){std::cout<<i<<'\n';});
-	std::cout <<"Sorted"<<std::endl;
+	std::cout <<"Sorted\n";
 	std::for_each(std::begin(toSort),std::end(toSort),[](float i){std::cout<<i<<'\n';});
-	std::cout <<"reverse" <<std::endl;
+	std::cout <<"reverse\n";
 	toSort.reverse();
 	std::for_each(std::begin(toSort),std::end(toSort),[](float i){std::cout<<i<<'\n';});
 
-	std::cout <<"Front method "<<toSort.front()<<std::endl;
-	std::cout <<"Back method "<<toSort.back()<<std::endl;
-	std::cout << "Clear List"<<std::endl;
+	std::cout <<"Front method "<<toSort.front()<<'\n';
+	std::cout <<"Back method "<<toSort.back()<<'\n';
+	std::cout << "Clear List\n";
 	toSort.clear();
-	std::cout <<"Add some more values "<<std::endl;
+	std::cout <<"Add some more values \n";
 	toSort.push_front(12.0);
 	toSort.push_front(3.0);
 	toSort.push_front(3.0);

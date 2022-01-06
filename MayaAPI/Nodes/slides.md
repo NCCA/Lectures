@@ -1,5 +1,5 @@
 <<<<<<< HEAD
-# Maya C++ API MPxNodes
+# Maya C++ API MPxNodes
 
 Jon Macey
 

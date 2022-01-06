@@ -30,6 +30,7 @@ jmacey@bournemouth.ac.uk
   - This will be an individual project 
   - It should be possible on home computers as well as NoMachine
 - (Used to be an exam but removed because of covid)
+
 --
 
 ## Unit Content

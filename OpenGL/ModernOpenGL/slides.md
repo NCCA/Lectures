@@ -50,16 +50,16 @@ We will not be using this mode and most examples on the web will use this
 --
 
 ## OpenGL Profiles
-- The current OpenGL version is 4.5, it has full compatibility with OpenGL ES 3.0 for embedded devices
+- The current OpenGL version is 4.6, it has full compatibility with OpenGL ES 3.0 for embedded devices
 - There are two profiles associated with this version
 	- Core Profile
 	- Compatibility profile
 
 --
 
-## OpenGL 4.5 Core
-- Released 2014 (see https://www.opengl.org/wiki/History_of_OpenGL)
-- The Core profile is very new and many GPU’s do not fully support this (Mac always behing currently 4.2)
+## OpenGL 4.6 Core
+- Released 2017 (see https://www.opengl.org/wiki/History_of_OpenGL)
+- Mac doesn't support anything higher than OpenGL 4.2
 - This profile doesn’t contain any of the immediate mode GL elements and has no backward compatibility
 - What we are using in the lab.
 
@@ -68,8 +68,7 @@ We will not be using this mode and most examples on the web will use this
 ## OpenGL 4 Compatibility
 - The compatibility profile contains lots of OpenGL immediate mode elements as well as earlier GLSL structures and components
 - This means legacy code will still work with the drivers but may not be optimal
-- This year the ngl library has been ported to work with only OpenGL 3.2 core profile. 
-- This needs Mac OSX Lion, linux or window with the latest drivers. There is now also a port for iOS 5 / OpenGL ES2.0 and Raspberry Pi /EGL
+- This year the ngl library has been ported to work with only OpenGL 4.2 core profile. 
 
 --
 

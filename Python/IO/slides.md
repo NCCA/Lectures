@@ -192,8 +192,7 @@ cos(2*pi)+sin(2*pi)
 - The main function is usually passed a set of global system variables called arguments
 - These are available through the life of the program and are a good way of passing values to a program
 
----
-
+--
 
 ## Python main
 

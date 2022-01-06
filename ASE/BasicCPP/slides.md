@@ -22,7 +22,8 @@ jmacey@bournemouth.ac.uk
 
 --
 
-# C++ 17 (-std=c++1z)
+
+# C++ 17 (-std=c++17)
 
 - not as common in production but being used more now. 
 - some good new features especially in the standard library (```std::string_view std::optional std::any```) 
@@ -30,9 +31,9 @@ jmacey@bournemouth.ac.uk
 
 --
 
-# C++ 14
+# C++ 17
 
-- this year we will mainly use C++ 14 (but can use 17 if needed)
+- this year we will mainly use C++ 17 as part of the [VFX reference platform](https://vfxplatform.com/)
 - core teaching will focus on C++ 11/14 features and style
 - NGL library is C++ 14
 - Most of my demos are C++ 14
@@ -40,17 +41,18 @@ jmacey@bournemouth.ac.uk
 
 --
 
-# C++ standard  flags
+# C++ default versions
 
-- to use C++ 11 we need to use compiler flags (some compilers now default to c++ 11 but not all)
+```
+g++ -x c++  -E -dM -< /dev/null | grep __cplusplus
+#define __cplusplus 201402L
 
-``` 
-clang++ -std=c++11 
-g++ -std=c++11  
+clang++ -x c++  -E -dM -< /dev/null | grep __cplusplus
+#define __cplusplus 199711L
 ```
 
-- to use C++ 14 we can use the -std=c++14
-- if supported we can use -std=c++1z for C++ 17 features!
+- This indicates that g++ defaults to c++14 and clang++ to C++ 11 (with some elements missing)
+- Note by adding the -std=c++17 to g++ we get full c++ 17
 
 ---
 

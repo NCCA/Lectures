@@ -118,8 +118,7 @@ jmacey@bournemouth.ac.uk
 - HDRI
 - Real Time Ray-tracing on consumer hardware
 - [Physically Based Rendering](http://www.pbr-book.org/3ed-2018/Introduction/A_Brief_History_of_Physically_Based_Rendering.html) 
-
-
+- Realtime Virtual Production
 
 ---
 
@@ -196,7 +195,7 @@ for (int j = 0; j < imageHeight; ++j) {
 ![](images/PinholeCamera.svg)
 [source](http://www.pbr-book.org/3ed-2018/Introduction/Photorealistic_Rendering_and_the_Ray-Tracing_Algorithm.html)
 - The simplest model of a camera is the ["pinhole camera"](https://en.wikipedia.org/wiki/Pinhole_camera)
-- The generally need long exposures when using film, be in CGI can make things a lot simpler.
+- The generally need long exposures when using film, but in CGI can make things a lot simpler.
 
 --
 
@@ -450,11 +449,10 @@ for each light:
 
 ## [BRDF](https://en.wikipedia.org/wiki/Bidirectional_reflectance_distribution_function)
 
-- __B__idirectional
-- __R__eflectance
-- __D__istribution
-- __F__unction
-
+- Bidirectional
+- Reflectance
+- Distribution
+- Function
 - Some renderers have more generic BxDF functions 
 - a black box with the inputs being any two angles, one for incoming (incident) ray and the second one for the outgoing (reflected or transmitted) ray at a given point of the surface.
 

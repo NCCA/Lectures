@@ -71,6 +71,7 @@ MAYA_DISABLE_CLIC_IPM=1
 MAYA_DISABLE_CER=1
 ```
 - Note the last too can speed up maya start / restart which you will need __a lot__
+- This list is also handy https://github.com/mottosso/Maya-Environment-Variables
 
 --
 
@@ -165,12 +166,22 @@ reload (helloPy)
 - to reload the module from the source file, otherwise this will be the same module for the whole of the session.
 - Also note that each tab of the script editor is also a different instance so each module is unique to the tab imported
 
+--
+
+## reload()
+
+- Whilst reload works well for single files more work is required for modules
+- We will look at how to do this next semester and how to arrange and setup proper [modules and packages](https://docs.python.org/3/tutorial/modules.html) in python.
+- A good overview for the interested can be found [here](https://www.aleksandarkocic.com/2020/12/19/live-reload-your-python-code-in-maya/) 
+- Re-starting Maya will clear all modules loaded, however this is slow!
+
 ---
 
 
 ## MEL (Maya Embedded Language)
 
 >As a language, MEL is descended from UNIX shell scripting. This means MEL is strongly based on executing commands to accomplish things (like executing commands in a UNIX shell), rather than manipulating data structures, calling functions, or using object oriented methods as in other languages.
+- Lecture code is [here](https://github.com/NCCA/ScriptingCode)
 
 --
 
@@ -277,7 +288,7 @@ rotate -relative 45 0 0 "big";
 --
 
 ## Imperative syntax
-- The imperative command syntax looks like a command in a shell, with optional flags and arguments after the command name
+- The [imperative command syntax](https://en.wikipedia.org/wiki/Imperative_programming) looks like a command in a shell, with optional flags and arguments after the command name
 
 ```
 sphere -name "sphere10" -radius 10;

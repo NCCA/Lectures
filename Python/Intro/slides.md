@@ -77,24 +77,21 @@
 
 --
 
-## Python in DCC Tools
+## [Python in DCC Tools](https://vfxpy.com/)
 
 - Maya 2020 and below uses Python version 2.7. 11 on all supported platforms
-	- no timeline I can find for upgrade to 3
-
+	- Maya 2022 uses Python 3.7.x
 - Houdini 18.0 features preliminary Python 3 support in the form of a separate set of Houdini build downloads. 
-
+  - Houdini 19 uses 3.7
 - The Foundry seem to be working on Python 3 Support
-
 - Most Pixar tools (Renderman / USD) work with both Python 2.7 and Python 3
 
 --
 
 ## Python 3 
 
-- The latest version of python3 is [3.9](https://www.python.org/downloads/release/python-390/)
-
-- Note that most VFX tools will use 3.7 for the next few years once transitioned
+- The latest version of python3 is [3.10.0](https://www.python.org/downloads/)
+- Note that most VFX tools will use 3.7 for the next few years once transitioned with plans for 3.9 for 2022
 - This is not much of an issue but some nice features such as [f-strings](https://realpython.com/python-f-strings/) are not present.
 - [more features here](https://docs.python.org/3/whatsnew/3.8.html)
 
@@ -105,31 +102,49 @@
 
 - Standard python used by most people is CPython (this is also in the DCC tools)
 - [iPython](https://ipython.org/) is another version used for many things, including the Jupyter Project
-- This can be installed using [anaconda](https://www.anaconda.com/)
-- [alternatives](https://www.python.org/download/alternatives/)
+  - This can be installed using [anaconda](https://www.anaconda.com/)
+- There are other [alternatives](https://www.python.org/download/alternatives/)
 
+--
 
+## [PyEnv](https://github.com/pyenv/pyenv)
+
+- It can be difficult to manage different version of python on all platforms
+  - If you need to use a specific version (for example the same as the DCC)
+- I suggest using PyEnv to manage this (it will be in the lab machines under linux soon)
+- This basically installs a local version you can use and install packages to using [pip](https://pip.pypa.io/en/stable/)
 
 ---
+
 
 ## Keywords
 
 - The following identifiers are keywords in python and must not be used as identifiers
 ``` python
-and       del       from      not       while
-as        elif      global    or        with
-assert    else      if        pass      yield
-break     except    import    print
-class     exec      in        raise
-continue  finally   is        return
-def       for       lambda    try
+False      await      else       import     pass
+None       break      except     in         raise
+True       class      finally    is         return
+and        continue   for        lambda     try
+as         def        from       nonlocal   while
+assert     del        global     not        with
+async      elif       if         or         yield
 ```
+
+--
+
+## Soft Keywords
+
+- New in version 3.10.
+
+- Some identifiers are only reserved under specific contexts. 
+- These are known as soft keywords. 
+- The identifiers ```match```, ```case``` and ```_``` can syntactically act as keywords in contexts related to the pattern matching statement, but this distinction is done at the parser level, not when tokenizing.
 
 --
 
 ## Data Types
 
-- Python is a dynamically typed language, this means that variable values are checked at run-time (sometimes known as “lazy binding”). 
+- Python is a dynamically typed language, this means that variable values are checked at run-time (sometimes known as “lazy binding”).
 - All variables in Python hold references to objects, and these references are passed to functions by value.
 - Python has 5 standard data types
   - numbers, string, list, tuple, dictionary
@@ -141,7 +156,7 @@ def       for       lambda    try
 - Python supports four different numerical types:
   - int (signed integers)
   - long (long integers [can also be represented in octal and hexadecimal]) 
-    - note long is removed in python 3.
+    - note long is removed in python 3 and int should be used
   - float (floating point real values)
   - complex (complex numbers)
 
@@ -157,11 +172,9 @@ def       for       lambda    try
 
 - The [type()](https://docs.python.org/3/library/functions.html#type) function returns the type of the specified object
 
-
 --
 
 ## [operations on numbers](https://docs.python.org/3/library/stdtypes.html#typesnumeric)
-
 
 | operation | Result |
 |--------|-------|
@@ -174,17 +187,13 @@ def       for       lambda    try
 | ``` +x``` | x unchanged |
 | ``` x**y``` | x to the power y |
 
-
-
 --
 
 ## Number Operations 
-
 <div class="stretch">
 <iframe src="https://trinket.io/embed/python/46b8cf8940" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
 
 </div>
-
 
 --
 
@@ -266,8 +275,9 @@ print(f'{1} {a} {b}')
 
 ## Strings
 
- - Subsets of strings can be taken using the slice operator ( [ ] and [ : ] ) with indexes starting at 0 in the beginning of the string and working their way from -1 at the end
- - The plus ( + ) sign is the string concatenation operator, and the asterisk ( * ) is the repetition operator.
+ - Subsets of strings can be taken using the slice operator 
+   - ( ```[ ]``` and ```[ : ]``` ) with indexes starting at 0 in the beginning of the string and working their way from -1 at the end
+ - The plus ( ```+``` ) sign is the string concatenation operator, and the asterisk ( ```*``` ) is the repetition operator.
 
 --
 
@@ -285,7 +295,7 @@ print(f'{1} {a} {b}')
   - A list is the most common of the Python data containers / types. 
   - It can hold mixed data, include lists of lists
   - A list is contained within the [] brackets and is analogous to C arrays
-  - Like a string data is accessed using the slice operator ( [ ] and [ : ] ) with indexes starting at 0 in the beginning of the list and working their way to end-1.
+  - Like a string data is accessed using the slice operator ( ```[ ]``` and ```[ : ]``` ) with indexes starting at 0 in the beginning of the list and working their way to end-1.
   - The + operator concatenates and the * duplicates
 
 --
@@ -342,7 +352,6 @@ print(f'{1} {a} {b}')
 | ```int(x ,base)```      | Converts x to an integer. base specifies the base if x is a string   |
 | ```long(x,base)```      | Converts x to an long int. base specifies the base if x is a string. |
 | ```float(x)```          | Converts x to an float.                                              |
-| ```complex(real,img)``` | Generate a complex number                                            |
 | ```str(x)```            | Converts x to a string representation                                |
 
 --
