@@ -161,7 +161,7 @@ jmacey@bournemouth.ac.uk
 
 # COW
 - [Copy on Write](https://en.wikipedia.org/wiki/Copy-on-write) used to save memory
-  - DCC's can be moving GB's of data around so we try to avoid copy's
+  - DCC's can  move GB's of data around so we try to avoid copies
 - Page allocation helps as we can decide what to copy and what to share
 - Obvious overhead in code complexity but save memory
   - Usually transparent to the user
@@ -169,9 +169,109 @@ jmacey@bournemouth.ac.uk
 
 ---
 
+# DCC structures
 
+- It can be useful to think of most DCC tools having different levels of structures
+  - High Level
+    - Scene / Pipeline etc
+  - Low Level 
+    - Geometry + Metadata etc
+
+--
+
+# DCC structures
+
+- Most modern DCC tools are node based (Maya Houdin Nuke)
+- This is either hidden or part of the workflow (Maya vs Houdini / Nuke)
+- Some tools use a more Functional approach (Katana)
+- In most cases we have some form of Graph to be evaluated
+
+---
+
+# Maya Graphs
+
+- [Direct Acyclic Graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph)  or DAG object 
+  - Any object that can be parented to another object, and can have children parented to it
+- DG  [Dependancy Graph](https://en.wikipedia.org/wiki/Dependency_graph)
+  - Nodes connected together to create an "output"
+
+--
+
+# DAG 
+
+- There are some simple rules with DAG objects :
+  - An object can only have one parent at a time.
+  - An object cannot be the child of one of own it’s children. 
+- DAG is mostly for hierarchial distinctions. 
+- Any node which has transform attributes is a DAG object. 
+- You can see DAG nodes when the Hypergraph is in the Scene Hierarchy mode.
+
+--
+
+# Dependancy Graph 
+
+- Allows the flow of node data and attributes
+Two main important things here, nodes and their attributes. 
+  - connect multiple nodes to come up with an output (rendred images, animated geometry, etc.), 
+- These connections are basically the scene (with some extra data)
+  - this could be serialized to create a new format etc. 
+
+--
+
+# Dependancy Graph 
+
+- A DG node is any node that can be connected to other nodes, and they are not necessarily visible in the Scene Hierarchy mode of the Hypergraph
+- you can show the Dependancy Graph of a particular object by selecting it and clicking the Input and Output Connections mode.
+
+---
+
+# Houdini
+
+- At it's simplest level houdini is a spreadsheet
+  - Data within this sheet are the contents feeding the nodes
+  - Can be paths to nodes or other geo
+  - Attribute Wrangle can add column to spreadsheet
+- Can sort of be seen in the .hip file
+
+--
+
+# Houdini Graphs
+
+- Normally, Houdini processes the nodes in a geometry network from top to bottom, feeding the output of each node into the input of the next node
+  - Loops were recently introduced to allow more processing
+  
+<image src="images/HouEval.png" width=40%>
+
+--
+
+# Cooking
+
+- Nodes are evaluated in houdini via cooking (this will resolve the nodes / orders)
+
+<image src="images/cook.png" width=25%>
+
+
+---
+
+# Low level structures
+
+- most DCC tools store Geo / Mesh data using arrays with index values
+  - Vertex data usually float or double
+  - Index 32 / 64 bit index values
+- Metadata can be added
+
+--
+
+## Acessibility patterns
+
+
+![](images/Hou2.png)
+
+---
 
 
 ## References and Links
 
 - [Mark Elendt CPP Con talk on Houdini](https://www.youtube.com/watch?v=2YXwg0n9e7E&t=4s&ab_channel=CppCon)
+
+-[Houdini You're Learning it wrong Matt Estela](https://www.youtube.com/watch?v=KONIvmOELu8&ab_channel=Houdini)
