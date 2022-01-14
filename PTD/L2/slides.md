@@ -176,6 +176,7 @@ jmacey@bournemouth.ac.uk
     - Scene / Pipeline etc
   - Low Level 
     - Geometry + Metadata etc
+- State (Undo / Redo is important with Maya API coding for example)
 
 --
 
@@ -192,7 +193,7 @@ jmacey@bournemouth.ac.uk
 
 - [Direct Acyclic Graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph)  or DAG object 
   - Any object that can be parented to another object, and can have children parented to it
-- DG  [Dependancy Graph](https://en.wikipedia.org/wiki/Dependency_graph)
+- DG  [Dependency Graph](https://en.wikipedia.org/wiki/Dependency_graph)
   - Nodes connected together to create an "output"
 
 --
@@ -208,7 +209,7 @@ jmacey@bournemouth.ac.uk
 
 --
 
-# Dependancy Graph 
+# [Dependency Graph ](https://patents.google.com/patent/US5929864A/en)
 
 - Allows the flow of node data and attributes
 Two main important things here, nodes and their attributes. 
@@ -218,10 +219,18 @@ Two main important things here, nodes and their attributes.
 
 --
 
-# Dependancy Graph 
+# Dependency Graph 
 
 - A DG node is any node that can be connected to other nodes, and they are not necessarily visible in the Scene Hierarchy mode of the Hypergraph
-- you can show the Dependancy Graph of a particular object by selecting it and clicking the Input and Output Connections mode.
+- you can show the Dependency Graph of a particular object by selecting it and clicking the Input and Output Connections mode.
+
+--
+
+# Dependency Graph 
+
+- Nodes have no control over updates (done in a push-pull fashion form Maya request)
+- Dirty bit (flag) is used to propagate the need to update via the outputs (the push)
+- Maya updates cause data to be pulled to the input nodes (via DataBlocks)
 
 ---
 
@@ -259,6 +268,7 @@ Two main important things here, nodes and their attributes.
   - Vertex data usually float or double
   - Index 32 / 64 bit index values
 - Metadata can be added
+- Animation data usually values per channel
 
 --
 
@@ -267,6 +277,71 @@ Two main important things here, nodes and their attributes.
 
 ![](images/Hou2.png)
 
+
+--
+
+## DCC High level differences
+
+- Houdini has native points (very powerful and core to almost everyting)
+  - Points can add attributes (```@P``` ```@pscale``` etc)
+- Maya has many low level primitives all of which can represent points.
+  - vertices, curve cv's, particles, lattice points, cluster handles, subdiv points etc
+  - However as different all have different functions  / function sets
+- In Houdini, if its a point, it can be manipulated as a point, regardless of how it was created
+
+--
+
+## Houdini Points
+
+<image src="images/HouPoints.png" width=100%>
+
+--
+
+## Houdini Points
+
+```
+node = hou.pwd()
+geo = node.geometry()
+from random import *
+
+def randP(v=1) :
+    return (uniform(-v,v),uniform(-v,v),uniform(-v,v))
+
+p=[]
+
+for i in range(0,20) :
+    p.append(randP(5))
+
+geo.createPoints(p)
+# adds to the geo spreadsheet
+geo.addAttrib(hou.attribType.Point, "Cd", (1.0, 1.0, 1.0))
+geo.addAttrib(hou.attribType.Point, "pscale", (2.0))
+geo.addAttrib(hou.attribType.Point, 'bogus' , 1)    
+# now modify the attributes for all bogus field.
+for point in geo.points():
+    point.setAttribValue('bogus', randint(0,100))
+```
+
+--
+
+## Maya Points
+
+- It is not easy to replicate the previous example in Maya
+  - Part of pipeline is choosing the right tool for the job!
+- Maya doesn't treat points as first class primitives like Houdini
+- Can do some of this using [```nParticles```](https://download.autodesk.com/us/maya/2011help/CommandsPython/nParticle.html)
+
+```
+from random import uniform
+def randP(v=1) :
+    return (uniform(-v,v),uniform(-v,v),uniform(-v,v))
+p=[]
+for i in range(0,20) :
+    p.append(randP(5))    
+cmds.nParticle( p=p )
+```
+
+
 ---
 
 
@@ -274,4 +349,6 @@ Two main important things here, nodes and their attributes.
 
 - [Mark Elendt CPP Con talk on Houdini](https://www.youtube.com/watch?v=2YXwg0n9e7E&t=4s&ab_channel=CppCon)
 
--[Houdini You're Learning it wrong Matt Estela](https://www.youtube.com/watch?v=KONIvmOELu8&ab_channel=Houdini)
+- [Houdini You're Learning it wrong Matt Estela](https://www.youtube.com/watch?v=KONIvmOELu8&ab_channel=Houdini)
+
+- [Points and Verts and Prims](https://www.tokeru.com/cgwiki/index.php?title=Points_and_Verts_and_Prims)
