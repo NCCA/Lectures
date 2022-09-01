@@ -16,11 +16,33 @@ Jon Macey
 ## C++ API
 - The maya api uses inheritance to extend the basic functionality of maya. 
 - There are a number of different class types we can work with and these will change depending upon the context
+- Devkit can be found here https://www.autodesk.com/developer-network/platform-technologies/maya
 
 ---
 
+## MObject
+
+- Also know as a "Model Object" Generic class for all Maya types. 
+- Ownership is maintained by Maya (lifetime) 
+- To access anything we need to apply a function set to the ```MObject```.
+- Is a handle/reference to a Maya internal object 
+- Valid use: determine object type and compatible function sets 
+- NEVER store an MObject use immediately 
+
+--
+
+## Mfn function sets
+
+- These are used to interact with ```MObjects``` We need to connect the correct function set to the correct object type. 
+- As they are Dependency nodes we can also attach as this. 
+  - If the ```MObject``` is pointing to a light we apply a ```MFnLight``` function set to access the light params. 
+  - However as it is also a DG object we can also apply a ```MFnDependencyNode``` function to it as well. 
+- This overlap is very limited but application of it depends upon the context we are working within.
+
+--
+
 ## MFn function Sets
-- “Set of functions” for creating, querying, and operating on a type of object
+
   - ```MFnCamera``` 
   - ```MFnLight``` 
   - ```MFnFluid``` 
@@ -61,29 +83,18 @@ Jon Macey
 
 --
 
-## Utility Classes
-
+## Utility Classes (Wrappers)
 - MGlobal – a static class. Members perform mostly UI-related tasks 
 - MStatus – passes return status codes (always check) 
 - MString 
 - MVector 
 - MDagPath 
 
---
-
-## MObject
-
-- Is a handle/reference to a Maya internal object 
-- Valid use: determine object type and compatible function sets 
-- Maya controls the deletion of MObjects 
-- NEVER store an MObject – use immediately 
-- MDagPaths can be stored 
-
 ---
 
 ## Getting Started
 - Maya plugins are built as platform specific shared libraries, (.so, .mll , .bundle) 
-- Under mac/linux we must use the same version of the compiler as used to build maya to avoid linker problems with the standard libraries
+- We must ensure correct ABI / VFX Reference platform on some platforms (Not as bad as it used to be!)
 - Linux: stdout is directed to shell (where goMaya was called in the case of the studio)
 - Windows: stdout is directed to an output window 
 - General: stdout may not appear unless flushed
@@ -98,142 +109,6 @@ Jon Macey
 
 --
 
-## Qt Project
-- To help aid with development I have created a basic qt .pro file which will allow for maya plugin development
-- At present it works for both mac and linux and will select the correct versions of the compiler etc bases on the platform
-- This gives the advantage of using the Qt IDE for our development.
-
---
-
-## [Qt Project](https://github.com/NCCA/MayaAPICode/blob/master/Lecture1/Hello/HelloMaya.pro)
-
-```
-####################################################################################
-# This file is split into Three sections
-# The first configures Qt and the source files for all platforms
-# The second is the linux build
-# The third the mac build
-# (if your using windows you will need to add a fourth one!)
-# first lets remove Qt core and gui not going to need it
-####################################################################################
-QT -= core gui
-####################################################################################
-# This is the name of the plugin / final lib file
-####################################################################################
-TARGET = HelloMaya
-####################################################################################
-# for for mac we need a bundle so change the name
-####################################################################################
-macx:TARGET=HelloMaya.bundle
-####################################################################################
-# here we add the source files (and headers if required)
-####################################################################################
-SOURCES+=HelloMaya.cpp
-# these are defines required by Maya to re-define some C++
-# stuff, we will add some more later to tell what platform
-# we are on as well
-DEFINES+=REQUIRE_IOSTREAM \
-         _BOOL
-####################################################################################
-# These are the maya libs we need to link to, this will change depending
-# upon which maya framework we use, just add them to the end of
-# this list as required and they will be added to the build
-####################################################################################
-MAYALIBS=-lOpenMaya \
-         -lFoundation
-####################################################################################
-# these are all the libs usually included by mayald in case you need
-# them just add them to the list above and make sure you escape
-####################################################################################
-#-lOpenMayalib \
-#-lOpenMaya \
-#-lAnimSlice \
-#-lDeformSlice \
-#-lModifiers \
-#-lDynSlice \
-#-lKinSlice \
-#-lModelSlice \
-#-lNurbsSlice \
-#-lPolySlice \
-#-lProjectSlice \
-#-lImage \
-#-lShared \
-#-lTranslators \
-#-lDataModel \
-#-lRenderModel \
-#-lNurbsEngine \
-#-lDependEngine \
-#-lCommandEngine \
-#-lFoundation \
-#-lIMFbase \
-#-lm -ldl
-####################################################################################
-# now tell linux we need to build a lib
-####################################################################################
-linux-*:TEMPLATE = lib
-####################################################################################
-# this tells qmake where maya is
-####################################################################################
-linux-*:MAYALOCATION=/opt/autodesk/maya/
-# and now the devkit is not part of maya where to find it
-# in the Uni I have it in /public/devel/mayaDevkit
-linux-*:DEVKITLOCATION=/public/devel/mayaDevkit
-####################################################################################
-# under linux we need to use the version of g++ used to build maya
-# in this case g++412
-####################################################################################
-#linux-g++-64:QMAKE_CXX = g++412
-####################################################################################
-# set the include path for linux
-####################################################################################
-linux-*:INCLUDEPATH += $$DEVKITLOCATION/include \
-												/usr/X11R6/include
-####################################################################################
-# set which libs we need to include
-####################################################################################
-linux-*:LIBS += -L$$MAYALOCATION/lib \
-									 $$MAYALIBS
-####################################################################################
-# tell maya we're building for linux
-####################################################################################
-linux:DEFINES+=linux
-
-####################################################################################
-# tell maya we're building for Mac
-####################################################################################
-macx:DEFINES+=OSMac_
-macx:MAYALOCATION=/Applications/Autodesk/maya2016
-macx:CONFIG -= app_bundle
-macx:INCLUDEPATH+=$$MAYALOCATION/devkit/include
-####################################################################################
-# under mac we need to build a bundle, to do this use
-# the -bundle flag but we also need to not use -dynamic lib so
-# remove this
-####################################################################################
-macx:LIBS +=-bundle
-mac:LIBS -=-dynamiclib
-####################################################################################
-
-####################################################################################
-macx:LIBS += -L$$MAYALOCATION/Maya.app/Contents/MacOS \
-						 $$MAYALIBS
-####################################################################################
-CONFIG+=c++11
-
-```
-
---
-
-## Visual Studio Project
-
-- Under windows we can create a simple .DLL project 
-- We need to change the target extension to .mll (maya link library) as this is the default search.
-- Full details on how to do a setup is [here](https://nccastaff.bournemouth.ac.uk/jmacey/MayaAPI/Windows/index.md.html)
-- vcxproj files wil also be included with the code.
-
-
---
-
 ## cmake
 
 - devkit is supplied with cmake configuration files which make cross platform development much easier.
@@ -242,7 +117,7 @@ CONFIG+=c++11
 - For the labs this is currently 
 
 ```
-export DEVKIT_LOCATION=/public/devel/2019/MayaAPI2019/devkitBase/
+export DEVKIT_LOCATION=/public/devel/2021/MayaDevkit/devkitBase
 ```
 
 --
@@ -254,9 +129,19 @@ export DEVKIT_LOCATION=/public/devel/2019/MayaAPI2019/devkitBase/
 <img src="images/cmake.apng" width="100%" >
 
 
+--
+
+## Visual Studio Project
+
+- Under windows we can create a simple .DLL project 
+- We need to change the target extension to .mll (maya link library) as this is the default search.
+- Full details on how to do a setup is [here](https://nccastaff.bournemouth.ac.uk/jmacey/OldWeb/MayaAPI/Windows/index.md.html)
+- vcxproj files wil also be included with the code.
+
 ---
 
 ## A Simple Maya Command
+
 - The following example will create and register a simple maya command
 - We are going to use a macro supplied with the maya API which will create the correct class / code we require
 - This is the simplest possible way and is good for quick command development
@@ -374,6 +259,7 @@ void* CustomSphere::creator()
 --
 
 ## doIt method
+
 - the doIt method will be passed any arguments passed when the command is invoked.
 - It is the responsibility of the doIt command to parse these and store in the class any values which may be required for do / undo.
 - Arguments are processed by the MArgList class as shown in the following example
@@ -534,6 +420,111 @@ MStatus uninitializePlugin( MObject obj )
 
 ---
 
+# Python Plugins
+
+- Python now supports plugins developed in python
+- They are very similar to the C++ plugins but don't need to be compiled
+- Performance may vary as the code needs to still be interpreted
+- Can be an easier solution for development
+
+--
+
+# HelloMayaPy
+
+```
+import maya.api.OpenMaya as om
+import maya.cmds as cmds
+
+
+def maya_useNewAPI():
+    """
+    Can either use this function (which works on earlier versions)
+    or we can set maya_useNewAPI = True
+    """
+    pass
+
+
+maya_useNewAPI = True
+
+
+class HelloMaya(om.MPxCommand):
+
+    CMD_NAME = "HelloMayaPy"
+
+    def __init__(self):
+        super(HelloMaya, self).__init__()
+
+    def doIt(self, args):
+        """
+        Called when the command is executed in script
+        """
+        print("This should come from the python shell")
+        om.MGlobal.displayWarning("This should be a warning")
+        om.MGlobal.displayError("This should be an error")
+        om.MGlobal.displayInfo("This should be an info message")
+
+    @classmethod
+    def creator(cls):
+        """
+        Think of this as a factory
+        """
+        return HelloMaya()
+
+
+def initializePlugin(plugin):
+    """
+    Load our plugin
+    """
+    vendor = "NCCA"
+    version = "1.0.0"
+
+    plugin_fn = om.MFnPlugin(plugin, vendor, version)
+
+    try:
+        plugin_fn.registerCommand(HelloMaya.CMD_NAME, HelloMaya.creator)
+    except:
+        om.MGlobal.displayError(
+            "Failed to register command: {0}".format(HelloMaya.CMD_NAME)
+        )
+
+
+def uninitializePlugin(plugin):
+    """
+    Exit point for a plugin
+    """
+    plugin_fn = om.MFnPlugin(plugin)
+    try:
+        plugin_fn.deregisterCommand(HelloMaya.CMD_NAME)
+    except:
+        om.MGlobal.displayError(
+            "Failed to deregister command: {0}".format(HelloMaya.CMD_NAME)
+        )
+
+
+if __name__ == "__main__":
+    """
+    So if we execute this in the script editor it will be a __main__ so we can put testing code etc here
+    Loading the plugin will not run this
+    As we are loading the plugin it needs to be in the plugin path.
+    """
+
+    plugin_name = "HelloMaya.py"
+
+    cmds.evalDeferred(
+        'if cmds.pluginInfo("{0}", q=True, loaded=True): cmds.unloadPlugin("{0}")'.format(
+            plugin_name
+        )
+    )
+    cmds.evalDeferred(
+        'if not cmds.pluginInfo("{0}", q=True, loaded=True): cmds.loadPlugin("{0}")'.format(
+            plugin_name
+        )
+    )
+
+```
+
+---
+
 ## Exercise
 
 - Using the maya api documentation for MArgList modify the customCreateSphere plugin to take the following arguments
@@ -549,6 +540,6 @@ MStatus uninitializePlugin( MObject obj )
 ## Hint
 
 - You will need to add class attributes for each of the new parameters, there is quite a lot of sample code in the MArgList class you can use.
-- If you want a more advanced solution follow this tutorial http://nccastaff.bournemouth.ac.uk/jmacey/RobTheBloke/www/maya/MSyntax.html
+- If you want a more advanced solution follow this tutorial http://nccastaff.bournemouth.ac.uk/jmacey/OldWeb/RobTheBloke/www/maya/MSyntax.html
 - Solution next week (mine is based on the above)
 

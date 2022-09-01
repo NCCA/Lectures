@@ -272,6 +272,14 @@ Two main important things here, nodes and their attributes.
 
 --
 
+# Nodes
+
+- Most systems use Nodes with connections
+  - Many systems use [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) to name nodes
+  - ```974967AA-DE42-7E05-3670-3DAFB96967A5``` can use ```uuidgen``` or other libraries
+
+--
+
 ## Acessibility patterns
 
 
@@ -341,9 +349,160 @@ for i in range(0,20) :
 cmds.nParticle( p=p )
 ```
 
+--
+
+## Meshes 
+
+- in Houdini connecting points creates a primitive
+  - These can have attributes as well as the points (but shared per prim)
+- SOA format in Houdini. 
+
+<image src="images/HouPrim.png" width=100%>
+
+--
+
+## Simple Mesh Formats
+
+- Most mesh formats have lists of values (verts / points) is the minimum
+  - Faces are generated as index values into these lists
+- Obj format is one of the simplest and serves as a good starting point
+
+--
+
+## The Obj File format
+
+- Alias Wavefront obj files define the geometry and other properties for objects which can be easily used within animation packages. 
+- Object files can be in ASCII format .obj or binary format .mod. 
+- For simplicity the ASCII format will be discussed here as it is easier to parse the data and is a good exercise for file and string handling. 
+- In its current release, the .obj file format supports both polygonal objects and free-form objects such as curves, nurbs etc.
+
+--
+
+## File Format
+
+- The following types of data may be included in an .obj file. In this list, the keyword (in parentheses) follows the data type.
+
+  - geometric vertices (v)
+  - texture vertices (vt)
+  - vertex normals (vn)
+  - face (f)
+
+--
+
+## File Format
+- group name (g)
+- smoothing group (s)
+- material name (usemtl)
+- material library (mtllib)
+- all values are stored on a single line terminated with a \n (new line character)
+
+--
+
+## Face Format
+
+- A valid vertex index matches the corresponding vertex elements of a previously defined vertex list.
+
+```
+f v1 v2 v3 ....
+f v1/vt1 v2/vt2 v3/vt3 ...
+f v1/vt1/vn1 v2/vt2/vn2 v3/vt3/vn3 ...
+f v1//vn1 v2//vn2 v3//vn3 ...
+```
+- It is also possible to reference points using negative indices, where the indices are specified relative to the current maximum vertex position (-1 references the last vertex defined). 
+
+--
+
+## Face Format
+
+- This makes it easy to describe the points in a face, then the face, without the need to store a large list of points and their indexes. In this way, "v" commands and "f" commands can be interspersed.
+
+```
+v -0.500000 0.000000 0.400000
+v -0.500000 0.000000 -0.800000
+v -0.500000 1.000000 -0.800000
+v -0.500000 1.000000 0.400000
+f -4 -3 -2 -1
+
+```
 
 ---
 
+# Other formats
+
+- whilst obj is a serialization (file) format it demonstrates principles used internally in DCC tools and renderers
+- Having an understanding of the basics help to learn new formats
+- Usually I try to generate a simple triangle then extrapolate from there
+- The following examples will demonstrate this and we will also look at other formats (for example in renderman)
+
+--
+
+## [```MfnMesh```](https://help.autodesk.com/view/MAYAUL/2017/ENU/?guid=__py_ref_class_open_maya_1_1_m_fn_mesh_html)
+
+```python
+import maya.cmds as cmds
+import maya.api.OpenMaya as OpenMaya
+
+numVertices=3
+numFaces=1
+
+outputMesh = OpenMaya.MObject()
+points = OpenMaya.MFloatPointArray()
+faceConnects = OpenMaya.MIntArray()
+faceCounts = OpenMaya.MIntArray()
+
+p = OpenMaya.MFloatPoint(-1.0,0.0,-1.0)
+points.append(p)
+p = OpenMaya.MFloatPoint(0.0,0.0,1.0)
+points.append(p)
+p = OpenMaya.MFloatPoint(1.0,0.0,-1.0)
+points.append(p)
+faceConnects.append(0)
+faceConnects.append(1)
+faceConnects.append(2)
+faceCounts.append(3)
+
+meshFN = OpenMaya.MFnMesh()
+
+meshFN.create(points,faceCounts,faceConnects)
+nodeName = meshFN.name()
+print(nodeName)
+cmds.sets(nodeName, add='initialShadingGroup')  
+cmds.select(nodeName)  
+meshFN.updateSurface()
+```
+
+--
+
+## MfnMesh
+
+- As is typical with most mesh formats we have lists
+  - in this case we have face counts and face connects
+- This allows the mesh to have multiple faces of different sizes (Tri, Quad, Polygon)
+- Each of these lists index from 0
+
+---
+
+## [Houdini Simple Poly](https://www.sidefx.com/docs/houdini/hom/hou/Face.html#addVertex)
+
+```
+node = hou.pwd()
+geo = node.geometry()
+
+# Add code to modify contents of geo.
+# Use drop down menu to select examples.
+node = hou.pwd()
+geo = node.geometry()
+poly = geo.createPolygon()
+
+p=[(-1,0,-1),(0,0,1),(1,0,-1)]
+
+points=geo.createPoints(p)
+for p in points :
+    poly.addVertex(p)
+
+```
+
+---
 
 ## References and Links
 

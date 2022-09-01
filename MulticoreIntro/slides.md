@@ -162,6 +162,7 @@ $$speedup=\frac{t\_{ser}}{t\_{par}}$$
 --
 
 ## Benefits?
+
 - Parallel solutions can be expensive to develop ( programmer time / hardware).
 - It is only justifiable if it generates tangible benefits.
 - Can also be based on input data (small amounts may not show a benefit)
@@ -170,6 +171,7 @@ $$speedup=\frac{t\_{ser}}{t\_{par}}$$
 ---
 
 ## Efficiency
+
 - speedup is only part of the story, It can tell us if it is feasible to accelerate the solution to a problem ( $ speedup>1 $ )
 - The second metric employed for this purpose is efficiency, defined as:
 
@@ -189,6 +191,7 @@ $$
 --
 
 ## Efficiency
+
 - If efficiency == 100% this means that the speedup is $ N $ and the workload is equally divided between the $ N $ Processors.
 - Unfortunately this is an idea scenario, we need to co-ordinate the processors (usually via messaging or semaphores) or handling shared resource.
 - The activity related to coordination robs the CPU time and reduces the speedup to below $ N $
@@ -207,6 +210,7 @@ $$
 ---
 
 ## Does it scale?
+
 - to make sure it is worth implementing a parallel algorithm we need to ask
   >How does the parallel algorithm behave with increased computational resources and / or problem size.
 
@@ -259,6 +263,7 @@ $$
 ---
 
 ## Prediction and Measurement
+
 - Building Parallel applications is more complex and time consuming than a sequential equivalent.
 - How do we know if an application will benefit from becoming parallel.
 - We need a baseline, this is almost always a sequential version that we need to measure against.
@@ -267,6 +272,7 @@ $$
 --
 
 ## Measurement is key
+
 - *Which are the most time consuming parts of the program*?
   - These should be prime candidates for parallel execution.
 - Once these are identified and assuming the can be parallelized
@@ -285,6 +291,7 @@ $$
 --
 
 ## Profiling
+
 - The most common profiling techniques are
 - **Instrumentation** : which modifies the code of the program being profiled so that the information can be collected.
   - very accurate but also adds to the program execution time and needs re-compilation.
@@ -383,6 +390,7 @@ $
 --
 
 ## Analysis
+
 - Neither law is correct
 - The assumption of zero communication overhead is too optimistic, even with shared-memory platforms.
 - Parallel solutions may decrease computation time
