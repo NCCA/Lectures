@@ -1,163 +1,260 @@
-# Image I/O and OpenGL Textures
+# OpenGL Textures
 Jon Macey
 
 jmacey@bournemouth.ac.uk
 
 ---
 
-## Creating Images
-- Using dynamic memory allocation we can create an array for an RGB image.
-- The easiest way to do this is as follows
-  - Create an array based on the Width, Height and Number of Pixels in the Image depth
-  - Loop through these and fill in the pixels for each RGB Component
-  - Write to some image file format
-  - Free the array
-- Most of the steps for this are simple but the saving of the image file relies on another library
+## [Texturing](https://en.wikipedia.org/wiki/Texture_mapping) 
+- Texture mapping originally referred to a method (now more accurately called diffuse mapping) that simply wrapped and mapped pixels from an image to a 3D surface.
+- The basic technique begins with some texture function, ```texture(s,t)``` in “texture space” which is traditionally marked off by parameters named s and t.
+- The function ```texture(s,t)``` produces a colour or intensity value for each value of s and t between 0 and 1.
+- The function ```texture``` can do either image lookups or run procedures to generate an intensity value.
 
 --
 
-## [ImageMagick / Magick++](https://www.imagemagick.org/script/index.php)
-- Magick++ provides a simple C++ API to the ImageMagick image processing library which supports reading and writing a huge number of image formats as well as supporting a broad spectrum of traditional image processing operations. 
-- Magick++ provides access to most of the features available from the C API but in a simple object-oriented and well-documented framework.
-- The simplest operation with the Magick++ Library is the dumping of an array to an image file. 
+## Bitmap Textures
+- In this case Colour holds an RGB(A) triple.
+- If for example  R=400 and C=600, then the texture(0.261,0.783) evaluates to texture[156][313]
+- Note the variation in s from 0 to 1 encompasses 600 pixels whereas the same variation in t encompasses 400 pixels.
+- To avoid distortion during rendering, this texture must be mapped onto a rectangle with aspect ration 6/4.
 
 --
 
-## [Simple Image Write](https://github.com/NCCA/ImageIO/blob/master/SimpleImage/SimpleImageWrite.cpp)
+## Pasting Textures onto a Flat Surface
+- Since texture space is flat, it is simplest to paste texture onto a flat surface.
+- We must specify how to associate points on the texture with points on the face. 
+- In OpenGL 2.x we use the function ```glTexCoord2f()``` to associate a point in texture space, ```P=(si,ti)``` with each vertex ``V`` of the face.
+- The function ```glTexCoord2f(s,t)``` sets the “current texture coordinates” to (s,t) and they are attached to subsequently defined vertices.
+
+--
+
+## Pasting Textures onto a Flat Surface 
+- Normally each call to glVertex3f is preceded by a call to glTexCoord2f so each vertex gets a new pair of texture coordinates.
+- For example to define a quadrilateral face and to position a texture on it we send OpenGL four texture coordinates and four 3D points as follows
 
 ```
-#include <iostream>
-#include <Magick++.h>
-#include <iostream>
-#include <cmath>
-#include <memory>
-#include <cstdlib>
-
-// define widht and height of image
-constexpr int WIDTH=720;
-constexpr int  HEIGHT=576;
-
-int main()
-{
-  // allocate and array of char for image
-  // where data is packed in RGB format 0-255 where 0=no intensity
-  // 255 = full intensity
-  std::unique_ptr<unsigned char  []>image( new unsigned char [WIDTH*HEIGHT*3*sizeof(char)]);
-  // index into our image array
-  size_t index=0;
-  // now loop for width and height of image and fill in
-  for(size_t y=0; y<HEIGHT; ++y)
-  {
-    for(size_t x=0; x<WIDTH; ++x)
-    {
-      // set red channel to full
-      image[index]=255;
-      // G&B to off
-      image[index+1]=0;
-      image[index+2]=0;
-      // now skip to next RGB block
-      index+=3;
-    } // end of width loop
-  } // end of height loop
-  // now create an image data block
-  Magick::Image output(WIDTH,HEIGHT,"RGB",Magick::CharPixel,image.get());
-  // set the output image depth to 16 bit
-  output.depth(16);
-  // write the file
-  output.write("Test.tiff");
-  
-  return EXIT_SUCCESS;
-}
-
+glBegin(GL_QUADS);
+  glTexCoord2f(0.0,0.0); glVertex(1.0,2.5,1.5);
+  glTexCoord2f(0.0,0.6); glVertex(1.0,3.7,1.5);
+  glTexCoord2f(0.8,0.6); glVertex(2.0,3.7,1.5);
+  glTexCoord2f(0.8,0.0); glVertex(2.0,2.5,1.5);
+glEnd();
 ```
 
 --
 
-## Building
+## Pasting Textures onto a Flat Surface 
 
-- Like SDL image magick has a config script we can use in qmake
-
-```
-TEMPLATE = app
-TARGET = SimpleImageWrite
-CONFIG -= app_bundle
-DEPENDPATH += .
-INCLUDEPATH += .
-
-QMAKE_CXXFLAGS+=$$system(Magick++-config --cppflags )
-LIBS+=$$system(Magick++-config --ldflags --libs )
-
-# Input
-SOURCES += SimpleImageWrite.cpp
-```
+- Attaching a Pi to each Vi is equivalent to prescribing a polygon P in texture space that has the same number of vertices as F.
+- Usually P has the same shape as F so the mapping is linear and adds little distortion
 
 --
 
-
-## Why not use char[][]?
-
-- You will notice that the array used for the image data is a char []
-- You may think it would be easier to use a two dimensional array for x,y co-ordinates
-- However we will see in various examples this is not the case.
-- It doesn’t take much code to allow use to set individual pixels in a single char [] array.
-
---
-
-## The % (modulus) Operator
-- The remainder operator (%) returns the integer remainder of the result of dividing the first operand with the second
-- For example the value of 7 % 2 is 1
-![alt](images/mod.png)
-
-- The magnitude of m % n must always be lest than the division n
-
---
-
-## Sphere 
-
-- The following function is used to describe a sphere
-``` 
-// code modified from Computer Graphics with OpenGL F.S. Hill
-// get the value on the sphere at co-ord s,t
-float fakeSphere(float _s, float _t)
-{
-	float r=sqrt((_s-0.5)*(_s-0.5)+(_t-0.5)*(_t-0.5));
-	if(r<0.5)
-	{
-		return 1-r/0.5;
-	}
-	else
-	{
-		return 1.0;
-	}
-}
-```
-
-- This function will work for any value of s and t in the range of 0 - 1.
-- The values will then range from 1.0 outside the sphere to black edges and then to white in the centre as shown on the image above
-- Using the template code add this function and draw a sphere.
-
---
-
-## Repeating Patterns
-- As the previous function works from 0-1 if we make the Sphere values range from 0 - 8 and only use the part after the decimal point we can create a pattern as shown above
-- To do this we use the C++ function fmod
-- The fmod() functions computes the floating-point remainder of x/ y.    
-- Specifically, the functions return the value x-i*y, for some integer i such that, if y is non-zero, the result has the same sign as x and magnitude less than the magnitude of y. 
-- So to make the value of T repeat 8 times we would use
-
-```
-float ss=fmod(S*8,1);
-float tt=fmod(T*8,1);
-```
+## OpenGL 3.x
+- In OpenGL 3.2 and above we just past in the texture co-ordinates using attributes in our call to ```glDrawArray...```
+- We then access these values in shader to determine the s,t values.
+- Depending upon how these are created we may also have to do other transformations on the co-ordinates.
 
 ---
 
-# Reading Images
-- The read method of the image will attempt to read the image and determine the format.
-- We can then access the different elements of the image (size, pixels etc) via the different methods
-- The following example loads an image and generates mipmaps
+## [Textures are not Pictures](https://paroj.github.io/gltut/Texturing/Tutorial%2014.html)
+
+- Whilst we may create image based textures texture are not images in OpenGL
+- Unfortunately some of the naming of the functions in OpenGL add to this implication as they refer to "images" and "colours"
+- In reality it is easier to think of OpenGL textures as being lookup tables of data that may represent an image.
 
 --
+
+## Getting Started
+
+- It can be confusing specifying and activating textures
+- We need to manage this ourselves and keeping track of active textures can be a difficult task
+- For the simple examples we will use a single texture, however later we will render to a buffer which can later be used as a texture
+- Use multiple textures of different formats and create complext pipelines 
+
+--
+
+## OpenGL Texture Mapping Steps
+- To use texture mapping, you perform the following steps for each texture
+  1. Create a texture object and specify a texture for that object
+  2. Indicate how the texture is to be applied to each pixel.
+  2. Enable texture mapping and bind correct texture
+  3. Draw the scene, supplying both texture and geometric coordinates.
+
+--
+
+## [Creating a Texture Object](https://www.khronos.org/opengl/wiki/Texture)
+
+- As with all OpenGL objects this is stored as a GLuint.
+- OpenGL has no way of loading image data and this must be done by the user (usually using an image lib)
+
+```
+void glGenTextures(GLsizei n​, GLuint * textures​);
+```
+
+--
+
+## glGentextures
+
+- Textures in OpenGL are OpenGL Objects, and they follow the standard conventions of such. So they have the standard glGenTextures, glBindTexture, as you would expect.
+
+- The target parameter of glBindTexture corresponds to the texture's type. So when you use a freshly generated texture name, the first bind helps define the type of the texture. It is not legal to bind an object to a different target than the one it was previously bound with. So if you generate a texture and bind it as GL_TEXTURE_1D, then you must continue to bind it as such.
+
+--
+
+## Texture Types
+
+- ```GL_TEXTURE_1D``` 1D texture (single values useful for lines)
+- ```GL_TEXTURE_2D``` 2D texture (typically image RGB(A) or Z depth values)
+- ```GL_TEXTURE_3D``` 3D texture for volume data
+
+- There are also array values for each of these GL_TEXTURE_[1,2,3]D_ARRAY
+
+--
+
+## Texture Types
+
+- [GL_TEXTURE_CUBE_MAP](https://www.khronos.org/opengl/wiki/Cubemap_Texture) / GL_TEXTURE_CUBE_MAP_ARRAY are used for cube map packed data
+
+-  [GL_TEXTURE_BUFFER](https://www.khronos.org/opengl/wiki/Buffer_Texture) are generic 1D buffer texture object used for passing arbitrary data. They are used to allow a shader to access a large table of memory that is managed by a buffer object.
+
+- [GL_TEXTURE_2D_MULTISAMPLE](https://www.khronos.org/opengl/wiki/Multisample_Texture) can have multiple samples per pixel
+
+--
+
+## glTexImage[1/2/3]D 
+
+- the glTexImage function is similar to other buffer functions
+- it does a memory allocation and optional copy of data 
+- Many of the parameters are common to the different versions
+
+--
+
+
+## [glTexImage2D](https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexImage2D.xhtml)
+
+```
+void glBindTexture(GLenum target​, GLuint texture​);
+void glTexImage2D(	GLenum target,
+ 	GLint level,
+ 	GLint internalFormat,
+ 	GLsizei width,
+ 	GLsizei height,
+ 	GLint border,
+ 	GLenum format,
+ 	GLenum type,
+ 	const GLvoid * data);
+```
+
+- The function glTexImage2D defines a 2D texture it takes several arguments as shown below
+- The Target is set to either GL_TEXTURE_2D or GL_PROXY_TEXTURE_2D
+- Level is used to specify the level of multiple images (mipmaps) if this is not used set to 0.
+
+--
+
+## [glTexImage2D](https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexImage2D.xhtml)
+
+- The internalFormat specifies the format of the data there are 38 different constants but most common are GL_RGB and GL_RGBA
+- width and height specify the extents of the image and values may have to be a power of 2 (128, 256, 512 etc)
+- border value must be 0 (used to do something else but is deprecated)
+- format and type specify the format of the data type of the texture image data.
+
+--
+
+## [glTexImage2D](https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexImage2D.xhtml)
+
+- format is usually is GL_RGB GL_RGBA GL_LUMINANCE
+- type tells how the data in the image is actually stored (i.e. unsigned int float char etc) and is set using GL_BYTE GL_INT GL_FLOAT GL_UNSIGNED_BYTE etc.
+- Finally texels contains the texture image data.
+
+--
+
+## [glTexParameter](https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexParameter.xhtml)
+
+- glTexParameter is used to specify how textures behave. It has many different parameters as follows
+- The target parameter is GL_TEXTURE_[1D,2D,3D] depending on the texture type
+- The pname and param types are shown in the following table
+
+--
+
+
+|<small>Parameter</small>	|<small>Values</small> |
+|-----------|-------|
+|<small>GL_TEXTURE_WRAP_S</small> |	<small>GL_CLAMP, GL_CLAMP_TO_EDGE, GL_REPEAT </small>|
+|<small>GL_TEXTURE_WRAP_T</small> |	<small>GL_CLAMP, GL_CLAMP_TO_EDGE, GL_REPEAT </small>|
+|<small>GL_TEXTURE_WRAP_R</small> |	<small>GL_CLAMP, GL_CLAMP_TO_EDGE, GL_REPEAT </small>|
+|<small>GL_TEXTURE_MAG_FILTER</small> |	<small>GL_NEAREST, GL_LINEAR </small>|
+|<small>GL_TEXTURE_MIN_FILTER</small> |	<small>GL_NEAREST, GL_LINEAR, GL_NEAREST_MIPMAP_NEAREST,GL_NEAREST_MIPMAP_LINEAR,GL_LINEAR_MIPMAP_NEAREST,GL_LINEAR_MIPMAP_LINEAR </small>|
+|<small>GL_TEXTURE_BORDER_COLOR</small> |	<small>any four colour values in [0.0 1.0]</small> |
+|<small>GL_TEXTURE_PRIORITY</small> |	<small>[0.0, 1.0] for the current texture object</small> |
+|<small>GL_TEXTURE_MIN_LOD</small>	| <small>any floating point value</small> |
+|<small>GL_TEXTURE_MAX_LOD</small>	 | <small>any floating point value</small> |
+|<small>GL_TEXTURE_BASE_LEVEL</small> |	<small>any non-negative integer</small> |
+|<small>GL_TEXTURE_MAX_LEVEL</small>	 | <small>any non-negative integer </small>|
+
+---
+
+### Creating a Texture Object with OpenGL
+
+```
+GLuint textureName;
+float Data = some image data
+glGenTextures(1,&textureName);
+glBindTexture(GL_TEXTURE_2D,textureName);
+glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
+glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);
+glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,SIZE,SIZE,0,GL_RGB,GL_FLOAT,Data);
+glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+```
+
+- In the above example textureName is the id of the texture object
+- Data is an array of the RGB tuple data created for the texture (either procedurally or loaded in from a file)
+
+--
+
+## [Samplers](https://www.khronos.org/opengl/wiki/Sampler_Object)
+- A Sampler Object is an OpenGL Object that stores the sampling parameters for a Texture access inside of a shader.
+
+--
+
+## Texture image units
+- Binding textures for use in OpenGL is a little weird. There are two reasons to bind a texture object to the context: to change the object (e.g. modify its storage or its parameters) or to render something with it.
+- Changing the texture's stored state can be done with the above simple glBindTexture call. However, actually rendering with a texture is a bit more complicated.
+
+--
+
+## Texture image units
+
+- A texture can be bound to one or more locations. These locations are called texture image units. OpenGL contexts have a maximum number of texture image units, queriable from the constant GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS.
+- What image unit a glBindTexture call binds the texture to depends on the current active texture image unit. This value is set by calling:
+
+```
+void glActiveTexture( GLenum texture​ );
+```
+
+--
+
+## [Samplers GLSL](http://tinyurl.com/ldobvsv)
+- A sampler is used to access the texture unit in glsl
+
+```
+#version 400
+// this is a pointer to the current 2D texture object uniform sampler2D tex;
+// the vertex UV
+smooth in vec2 vertUV;
+// the final fragment colour
+layout (location =0) out vec4 outColour;
+void main ()
+{
+ // set the fragment colour to the current texture
+ outColour = texture(tex,vertUV);
+}
+```
+
+---
 
 ## Mipmapping 
 
@@ -292,6 +389,64 @@ int main(int argc, char **argv)
 
 --
 
+## OpenGL MipMapping
+
+- we can get OpenGL to generate mip maps (typically in hardware) using a call to 
+
+```
+void glGenerateMipmap(	GLenum target);
+// 4.6 
+void glGenerateTextureMipmap(	GLuint texture);
+```
+
+- The first version will work on the current bound texture, the 2nd newer command will work on the ID
+
+--
+
+## OpenGL Mipmaps
+
+![](images/mipmap2.png)
+
+- OpenGL will choose which mip map texture to use 
+- It is also possible to for users to specify mipmap textures per level using glTexImage
+
+--
+
+## [ShowMipMap](https://github.com/NCCA/Textures/tree/main/ShowMipMap)
+
+```
+  int mipLevel = 0;
+
+  glGenTextures(1, &m_textureName);
+  glBindTexture(GL_TEXTURE_2D, m_textureName);
+  // using an image width of 128 gives us 6 mip levels so need 6 colours;
+  std::array<ngl::Vec3, 6> colours = {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}, {1, 1, 0}, {1, 1, 1}, {1, 0, 1}}};
+  for (int ml = 128; ml >= 4; ml /= 2)
+  {
+    std::cout << "mip level" << ml << '\n';
+    std::vector<ngl::Vec3> data(ml * ml);
+    std::cout << "data size " << data.size() << "using colour" << colours[mipLevel] << '\n';
+    for (auto &c : data)
+    {
+      c = colours[mipLevel];
+    }
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, mipLevel, GL_RGB, ml, ml, 0, GL_RGB, GL_FLOAT, &data[0].m_r);
+
+    ++mipLevel;
+  }
+  //  glGenerateMipmap(GL_TEXTURE_2D);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, mipLevel - 1);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LOD, mipLevel - 1);
+
+  glBindTexture(GL_TEXTURE_2D, 0);
+```
+
+---
+
+
 ## [QImage](http://doc.qt.io/qt-5/qimage.html)
 
 - Qt Has a built in image loading class called QImage
@@ -301,6 +456,22 @@ int main(int argc, char **argv)
 - NGL uses this as default but can also use OpenimageIO or ImageMagick
 
 --
+
+
+## ngl::Texture
+
+- ngl has a very simple texture class which will load in an image file using the default image loader class
+- It will determine is the image is either RGB, or RGBA and allocate the correct texture data
+- It will be default make the current active texture unit be texture 0
+- However we can set other texture units be calling setMultiTexture before generating the textureID
+
+
+--
+
+
+
+
+---
 
 ## [Demo](https://github.com/NCCA/ImageHeightMap)
 ![alt](images/map.png)
@@ -427,214 +598,4 @@ glPrimitiveRestartIndex(restartFlag);
 - When draw elements encounters the restartFlag value it will re-start the draw.
 
 ---
-
-## [Texturing](https://en.wikipedia.org/wiki/Texture_mapping) 
-- Texture mapping originally referred to a method (now more accurately called diffuse mapping) that simply wrapped and mapped pixels from a texture to a 3D surface.
-- The basic technique begins with some texture function, ```texture(s,t)``` in “texture space” which is traditionally marked off by parameters named s and t.
-- The function ```texture(s,t)``` produces a colour or intensity value for each value of s and t between 0 and 1.
-- The function ```texture``` can do either image lookups or run procedures to generate an intensity value.
-
---
-
-## Bitmap Textures
-- In this case Colour holds an RGB(A) triple.
-- If for example  R=400 and C=600, then the texture(0.261,0.783) evaluates to texture[156][313]
-- Note the variation in s from 0 to 1 encompasses 600 pixels whereas the same variation in t encompasses 400 pixels.
-- To avoid distortion during rendering, this texture must be mapped onto a rectangle with aspect ration 6/4.
-
---
-
-## Pasting Textures onto a Flat Surface
-- Since texture space is flat, it is simplest to paste texture onto a flat surface.
-- We must specify how to associate points on the texture with points on the face. 
-- In OpenGL 2.x we use the function ```glTexCoord2f()``` to associate a point in texture space, ```P=(si,ti)``` with each vertex ``V`` of the face.
-- The function ```glTexCoord2f(s,t)``` sets the “current texture coordinates” to (s,t) and they are attached to subsequently defined vertices.
-
---
-
-## Pasting Textures onto a Flat Surface 
-- Normally each call to glVertex3f is preceded by a call to glTexCoord2f so each vertex gets a new pair of texture coordinates.
-- For example to define a quadrilateral face and to position a texture on it we send OpenGL four texture coordinates and four 3D points as follows
-
-```
-glBegin(GL_QUADS);
-  glTexCoord2f(0.0,0.0); glVertex(1.0,2.5,1.5);
-  glTexCoord2f(0.0,0.6); glVertex(1.0,3.7,1.5);
-  glTexCoord2f(0.8,0.6); glVertex(2.0,3.7,1.5);
-  glTexCoord2f(0.8,0.0); glVertex(2.0,2.5,1.5);
-glEnd();
-```
-
---
-
-## Pasting Textures onto a Flat Surface 
-
-- Attaching a Pi to each Vi is equivalent to prescribing a polygon P in texture space that has the same number of vertices as F.
-- Usually P has the same shape as F so the mapping is linear and adds little distortion
-
---
-
-## OpenGL 3.x
-- In OpenGL 3.2 and above we just past in the texture co-ordinates using attributes in our call to ```glDrawArray...```
-- We then access these values in shader to determine the s,t values.
-- Depending upon how these are created we may also have to do other transformations on the co-ordinates.
-
---
-
-## OpenGL Texture Mapping Steps
-- To use texture mapping, you perform the following steps for each texture
-  1. Create a texture object and specify a texture for that object
-  2. Indicate how the texture is to be applied to each pixel.
-  2. Enable texture mapping and bind correct texture
-  3. Draw the scene, supplying both texture and geometric coordinates.
-
---
-
-## [Creating a Texture Object](https://www.khronos.org/opengl/wiki/Texture)
-- As with all OpenGL objects this is stored as a GLuint.
-- OpenGL has no way of loading image data and this must be done by the user (usually using an image lib)
-
-```
-void glGenTextures(GLsizei n​, GLuint * textures​);
-```
-
---
-
-## glGentextures
-
-- Textures in OpenGL are OpenGL Objects, and they follow the standard conventions of such. So they have the standard glGenTextures, glBindTexture, as you would expect.
-
-- The target parameter of glBindTexture corresponds to the texture's type. So when you use a freshly generated texture name, the first bind helps define the type of the texture. It is not legal to bind an object to a different target than the one it was previously bound with. So if you generate a texture and bind it as GL_TEXTURE_1D, then you must continue to bind it as such.
-
---
-
-## [glTexImage2D](https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexImage2D.xhtml)
-
-```
-void glBindTexture(GLenum target​, GLuint texture​);
-void glTexImage2D(	GLenum target,
- 	GLint level,
- 	GLint internalFormat,
- 	GLsizei width,
- 	GLsizei height,
- 	GLint border,
- 	GLenum format,
- 	GLenum type,
- 	const GLvoid * data);
-```
-
-- The function glTexImage2D defines a 2D texture it takes several arguments as shown below
-- The Target is set to either GL_TEXTURE_2D or GL_PROXY_TEXTURE_2D
-- Level is used to specify the level of multiple images (mipmaps) if this is not used set to 0.
-
---
-
-## [glTexImage2D](https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexImage2D.xhtml)
-
-- The internalFormat specifies the format of the data there are 38 different constants but most common are GL_RGB and GL_RGBA
-- width and height specify the extents of the image and values may have to be a power of 2 (128, 256, 512 etc)
-- border value must be 0 (used to do something else but is deprecated)
-- format and type specify the format of the data type of the texture image data.
-
---
-
-## [glTexImage2D](https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexImage2D.xhtml)
-
-- format is usually is GL_RGB GL_RGBA GL_LUMINANCE
-- type tells how the data in the image is actually stored (i.e. unsigned int float char etc) and is set using GL_BYTE GL_INT GL_FLOAT GL_UNSIGNED_BYTE etc.
-- Finally texels contains the texture image data.
-
---
-
-## [glTexParameter](https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexParameter.xhtml)
-
-- glTexParameter is used to specify how textures behave. It has many different parameters as follows
-- The target parameter is GL_TEXTURE_[1D,2D,3D] depending on the texture type
-- The pname and param types are shown in the following table
-
---
-
-
-|<small>Parameter</small>	|<small>Values</small> |
-|-----------|-------|
-|<small>GL_TEXTURE_WRAP_S</small> |	<small>GL_CLAMP, GL_CLAMP_TO_EDGE, GL_REPEAT </small>|
-|<small>GL_TEXTURE_WRAP_T</small> |	<small>GL_CLAMP, GL_CLAMP_TO_EDGE, GL_REPEAT </small>|
-|<small>GL_TEXTURE_WRAP_R</small> |	<small>GL_CLAMP, GL_CLAMP_TO_EDGE, GL_REPEAT </small>|
-|<small>GL_TEXTURE_MAG_FILTER</small> |	<small>GL_NEAREST, GL_LINEAR </small>|
-|<small>GL_TEXTURE_MIN_FILTER</small> |	<small>GL_NEAREST, GL_LINEAR, GL_NEAREST_MIPMAP_NEAREST,GL_NEAREST_MIPMAP_LINEAR,GL_LINEAR_MIPMAP_NEAREST,GL_LINEAR_MIPMAP_LINEAR </small>|
-|<small>GL_TEXTURE_BORDER_COLOR</small> |	<small>any four colour values in [0.0 1.0]</small> |
-|<small>GL_TEXTURE_PRIORITY</small> |	<small>[0.0, 1.0] for the current texture object</small> |
-|<small>GL_TEXTURE_MIN_LOD</small>	| <small>any floating point value</small> |
-|<small>GL_TEXTURE_MAX_LOD</small>	 | <small>any floating point value</small> |
-|<small>GL_TEXTURE_BASE_LEVEL</small> |	<small>any non-negative integer</small> |
-|<small>GL_TEXTURE_MAX_LEVEL</small>	 | <small>any non-negative integer </small>|
-
---
-
-## Creating a Texture Object with OpenGL
-
-```
-GLuint textureName;
-float Data = some image data
-glGenTextures(1,&textureName);
-glBindTexture(GL_TEXTURE_2D,textureName);
-glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
-glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);
-glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,SIZE,SIZE,0,GL_RGB,GL_FLOAT,Data);
-glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-```
-
-- In the above example textureName is the id of the texture object
-- Data is an array of the RGB tuple data created for the texture (either procedurally or loaded in from a file)
-
---
-
-## [Samplers](https://www.khronos.org/opengl/wiki/Sampler_Object)
-- A Sampler Object is an OpenGL Object that stores the sampling parameters for a Texture access inside of a shader.
-
---
-
-## Texture image units
-- Binding textures for use in OpenGL is a little weird. There are two reasons to bind a texture object to the context: to change the object (e.g. modify its storage or its parameters) or to render something with it.
-- Changing the texture's stored state can be done with the above simple glBindTexture call. However, actually rendering with a texture is a bit more complicated.
-
---
-
-## Texture image units
-
-- A texture can be bound to one or more locations. These locations are called texture image units. OpenGL contexts have a maximum number of texture image units, queriable from the constant GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS.
-- What image unit a glBindTexture call binds the texture to depends on the current active texture image unit. This value is set by calling:
-
-```
-void glActiveTexture( GLenum texture​ );
-```
-
---
-
-## [Samplers GLSL](http://tinyurl.com/ldobvsv)
-- A sampler is used to access the texture unit in glsl
-
-```
-#version 400
-// this is a pointer to the current 2D texture object uniform sampler2D tex;
-// the vertex UV
-smooth in vec2 vertUV;
-// the final fragment colour
-layout (location =0) out vec4 outColour;
-void main ()
-{
- // set the fragment colour to the current texture
- outColour = texture(tex,vertUV);
-}
-```
-
---
-
-## ngl::Texture
-- ngl has a very simple texture class which will load in an image file using QImage
-- It will determine is the image is either RGB, or RGBA and allocate the correct texture data
-- It will be default make the current active texture unit be texture 0
-- However we can set other texture units be calling setMultiTexture before generating the textureID
 

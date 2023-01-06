@@ -430,8 +430,6 @@ class World
 
 
 ```
-
-
 --
 
 # Aggregation

@@ -78,6 +78,8 @@ jmacey@bournemouth.ac.uk
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/495nCzxM9PI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
+
+
 --
 
 ## 1970's
@@ -97,6 +99,7 @@ jmacey@bournemouth.ac.uk
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/0KrCh5qD9Ho" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
+- [but now in the web](https://erichlof.github.io/THREE.js-PathTracing-Renderer/Classic_Scene_Whitted_TheCompleatAngler.html)
 - Pixar start to develop Shaders / Shading Languages
 - Introduction of real time graphics boards (first GPU's)
 

@@ -277,7 +277,7 @@ return Vector(_k*_v.m_x, _k*_v.m_y, _k*_v.m_z,_v.m_w);
 --
 
 ## Options for generic programming
-- Implement the the same behaviour again and again for each type that needs it (OpenGL ?)
+- Implement the the same behavior again and again for each type that needs it (OpenGL ?)
 - Write generic code using void * and force the programmer to use coercion (pthreads ?)
 - Use a special pre-processor (or 3rd party tools to generate your code such as Qt’s moc)
 - This usually leads to mistakes and can cause problems of maintenance and re-use.
@@ -317,7 +317,7 @@ template <typename identifier> function_declaration;
 ## template terminology
 - precise terminology is important, especially when discussing templates.
 - In the previous diagram we show the different names for the elements.
-- The most important distinction is between the template parameter used in the definition of the template and the template argument which is used in the specialisation of the template.
+- The most important distinction is between the template parameter used in the definition of the template and the template argument which is used in the specialization of the template.
 
 --
 
@@ -1242,6 +1242,422 @@ int main()
 	return EXIT_SUCCESS;
 }
 ```
+
+---
+
+## [```std::pair```](https://en.cppreference.com/w/cpp/utility/pair)
+
+- Contains a pair of values (used in most associated containers like ```std::unordered_map<T>```)
+- std::pair is a class template that provides a way to store two heterogeneous objects as a single unit. 
+- A pair is a specific case of a std::tuple with two elements.
+- We access the elements using ```.first``` and ```.second```
+- ```std::make_pair<T1,T2>``` can be used to create a pair
+
+--
+
+## Example 
+
+```
+#include <iostream>
+#include <utility>
+#include <string>
+int main()
+{
+  auto p = std::make_pair<int, std::string>(1, "one");
+  std::cout << p.first << ' ' << p.second << '\n';
+  std::pair<int, std::string> p2(2, "two");
+  std::cout << p2.first << ' ' << p2.second << '\n';
+
+  return EXIT_SUCCESS;
+}
+
+```
+
+--
+
+## [```std::tuple<class ...>```](https://en.cppreference.com/w/cpp/utility/tuple)
+
+- Class template ```std::tuple``` is a fixed-size collection of heterogeneous values. It is a generalization of ```std::pair```.
+- Can make code easier for return values from function
+- Especially with C++ 17 unpacking as show in the following example.
+
+--
+
+## std::tuple
+
+```
+#include <iostream>
+#include <utility>
+#include <string>
+
+struct Vec3
+{
+  float x, y, z;
+};
+
+std::tuple<std::string, Vec3, float> getAgent()
+{
+  auto agent = std::make_tuple<std::string, Vec3, float>("Agent0", Vec3{2, 3, 4}, 50.2f);
+  return agent;
+}
+
+int main()
+{
+
+  auto agent = getAgent();
+  std::cout << "Using get<> " << std::get<0>(agent) << " ["
+            << std::get<1>(agent).x << ',' << std::get<1>(agent).y << ',' << std::get<1>(agent).z
+            << "] " << std::get<2>(agent) << '\n';
+  // for c++ 17 we can use structured bindings
+  auto [name, pos, size] = getAgent();
+  std::cout << name << " [" << pos.x << ',' << pos.y << ',' << pos.z << "] " << size << '\n';
+  return EXIT_SUCCESS;
+}
+```
+
+---
+
+# [```std::bitset<>```](https://en.cppreference.com/w/cpp/utility/bitset)
+
+- The class template bitset represents a fixed-size sequence of N bits. 
+- Bitsets can be manipulated by standard logic operators and converted to and from strings and integers. 
+- Can be easier to maintain than using ```<< or >>``` operators
+- See My [Grid examples](https://nccastaff.bournemouth.ac.uk/jmacey/post/GridVis/gridvis/) where I use it for checking SIMD flags. 
+
+--
+
+## Example
+
+
+```
+#include <iostream>
+#include <bitset>
+#include <cstdlib>
+#include <string>
+
+int main(void)
+{
+	std::bitset<8> first(std::string("101101101"));
+	std::bitset<8> second(std::string("00011001"));
+
+	std::cout << first << '\n';
+	std::cout << second << '\n';
+	first[1] = 0;
+	std::cout << '|' << (first | second) << '\n';
+	std::cout << '&' << (first & second) << '\n';
+	std::cout << '^' << (first ^ second) << '\n';
+
+	for (int i = 0; i < first.size(); ++i)
+	{
+		std::cout << first[i] << '\n';
+	}
+
+	return EXIT_SUCCESS;
+}
+```
+
+---
+
+## [```std::hash```](https://en.cppreference.com/w/cpp/utility/hash)
+
+- Each specialization of this template is either enabled ("untainted") or disabled ("poisoned").
+
+- The enabled specializations of the hash template defines a function object that implements a hash function. 
+- Instances of this function object satisfy Hash. In particular, they define an operator() 
+- If the operator() is not implemented we can implement our own.
+- We can use this to create similar hash functions to python examples (for example dictionary of tuples)
+
+--
+
+## Example
+
+```
+#include <iostream>
+#include <utility>
+#include <string>
+#include <functional>
+#include <vector>
+#include <algorithm>
+#include <unordered_map>
+
+// Overload the has operator for a std::pair of ints
+
+template <>
+struct std::hash<std::pair<int, int>>
+{
+  std::size_t operator()(std::pair<int, int> const &s) const noexcept
+  {
+    std::size_t a = std::hash<int>{}(s.first);
+    std::size_t b = std::hash<int>{}(s.second);
+    // https://en.wikipedia.org/wiki/Pairing_function#Cantor_pairing_function
+    return (a + b) * (a + b + 1) / 2 + a;
+  }
+};
+
+int main()
+{
+  std::string name("This needs hashing");
+  auto hash = std::hash<std::string>{}(name);
+  std::cout << hash << '\n';
+
+  std::pair<int, int> xy1(2, 3);
+  std::pair<int, int> xy2(3, 5);
+  std::cout << std::hash<std::pair<int, int>>{}(xy1) << '\n';
+  std::cout << std::hash<std::pair<int, int>>{}(xy2) << '\n';
+  std::vector<size_t> hashes;
+  for (int y = 0; y < 10; ++y)
+  {
+    for (int x = 0; x < 10; ++x)
+    {
+      std::pair<int, int> xy(x, y);
+      std::cout << "( " << x << ',' << y << ") ";
+      auto h = std::hash<std::pair<int, int>>{}(xy);
+      hashes.push_back(h);
+      std::cout << h << '\n';
+    }
+  }
+  // see if our hash works and creates unique values for x,y
+  std::sort(std::begin(hashes), std::end(hashes));
+  auto it = std::unique(std::begin(hashes), std::end(hashes));
+  std::cout << ((it == hashes.end()) ? "Unique\n" : "Duplicate(s)\n");
+
+  std::unordered_map<std::pair<int, int>, int> maps;
+  for (int i = 0; i < 10; ++i)
+    maps[std::pair<int, int>(i, i)] = i;
+  for (auto m : maps)
+    std::cout << '(' << m.first.first << ',' << m.first.second << ") " << m.second << '\n';
+}
+```
+
+---
+
+## [```std::string_view```](https://en.cppreference.com/w/cpp/string/basic_string_view)
+
+- std::string can be expensive to initialize and copy
+- we often pass ```const std::string &``` to functions 
+-  C++17 introduced std::string_view to provide read-only access to an existing string (a C-style string literal, a std::string, or a char array) without making a copy.
+- prefer this over other string types.
+
+--
+
+## A note of caution
+
+- ```std::string_view``` may cause issues with C API's which rely on null terminated strings.
+- The ```.data()``` method returns the underlying string data but it is not guaranteed to be null terminated (if the view is a substring)
+- If in doubt convert to a std::string if required.
+- Also we need to convert when opening files.
+
+--
+
+## Example
+
+```
+#include <string_view>
+#include <iostream>
+
+void view(std::string_view s)
+{
+  std::cout << "view not copying " << s << '\n';
+}
+
+int main()
+{
+  view("this is a string");
+  std::string more("this is a longer string");
+  view(more);
+  return EXIT_SUCCESS;
+}
+```
+
+---
+
+# [```std::variant```](https://en.cppreference.com/w/cpp/utility/variant)
+
+- The class template std::variant represents a type-safe union. 
+- An instance of std::variant at any given time either holds a value of one of its alternative types, or in the case of error no value
+- QVariant is common in Qt and we will use it a lot.
+- A variant is not permitted to hold references, arrays, or the type void. Empty variants are also ill-formed (std::variant<std::monostate> can be used instead).
+
+
+--
+
+## Example
+
+```
+#include <vector>
+#include <iostream>
+#include <variant>
+#include <random>
+#include <ostream>
+struct Vec3
+{
+  float x, y, z;
+  friend std::ostream &operator<<(std::ostream &os, const Vec3 &)
+  {
+    os << "Vec3\n";
+    return os;
+  }
+};
+
+struct Colour
+{
+  float r, g, b, a;
+  friend std::ostream &operator<<(std::ostream &os, const Colour &)
+  {
+    os << "Colour\n";
+    return os;
+  }
+};
+
+int main()
+{
+
+  std::random_device rd;
+  std::mt19937 mt(rd());
+  std::uniform_int_distribution<> dist(0, 10);
+
+  using colour_or_point = std::variant<Vec3, Colour>;
+  std::vector<colour_or_point> cp;
+  for (int i = 0; i < 10; ++i)
+  {
+    if (dist(mt) > 5)
+      cp.push_back(Vec3());
+    else
+      cp.push_back(Colour());
+  }
+
+  for (auto v : cp)
+  {
+    auto index = v.index();
+    if (index == 0)
+      std::cout << std::get<0>(v);
+    else
+      std::cout << std::get<1>(v);
+  }
+
+  return EXIT_SUCCESS;
+}
+
+```
+
+--
+
+# [```std::any```](https://en.cppreference.com/w/cpp/utility/any)
+
+- The class any describes a type-safe container for single values of any copy constructible type.
+
+```
+#include <iostream>
+#include <vector>
+#include <any>
+#include <random>
+
+struct Vec3
+{
+  float x, y, z;
+  friend std::ostream &operator<<(std::ostream &os, const Vec3 &)
+  {
+    os << "Vec3\n";
+    return os;
+  }
+};
+
+struct Colour
+{
+  float r, g, b, a;
+  friend std::ostream &operator<<(std::ostream &os, const Colour &)
+  {
+    os << "Colour\n";
+    return os;
+  }
+};
+
+int main()
+{
+
+  std::random_device rd;
+  std::mt19937 mt(rd());
+  std::uniform_int_distribution<> dist(0, 10);
+
+  std::vector<std::any> cp;
+  for (int i = 0; i < 10; ++i)
+  {
+    if (dist(mt) > 5)
+      cp.push_back(Vec3());
+    else
+      cp.push_back(Colour());
+  }
+
+  for (auto v : cp)
+  {
+    if (v.has_value())
+      std::cout << v.type().name() << ' ';
+    if (v.type() == typeid(Vec3))
+      std::cout << std::any_cast<Vec3>(v);
+    else if (v.type() == typeid(Colour))
+      std::cout << std::any_cast<Colour>(v);
+  }
+
+  return EXIT_SUCCESS;
+}
+```
+
+--
+
+# [```std::optional<T>```](https://en.cppreference.com/w/cpp/utility/optional)
+
+- The class template std::optional manages an optional contained value
+- A common use case for optional is the return value of a function that may fail. 
+- As opposed to other approaches, such as std::pair<T,bool>, optional handles expensive-to-construct objects well and is more readable, as the intent is expressed explicitly.
+- Can be useful for factory functions
+
+--
+
+## Example
+
+```
+#include <optional>
+#include <functional>
+#include <iostream>
+#include <memory>
+#include <string_view>
+
+class FactoryObject
+{
+};
+
+std::optional<std::unique_ptr<FactoryObject>> createObject(std::string_view _name)
+{
+  if (_name == "tree")
+    return std::make_unique<FactoryObject>();
+  else
+    return std::nullopt;
+}
+
+int main()
+{
+  auto object = createObject("grass");
+  if (object == std::nullopt)
+    std::cout << "error creating grass\n";
+
+  object = createObject("tree");
+  if (object)
+    std::cout << "created tree\n";
+
+  return EXIT_SUCCESS;
+}
+```
+
+--
+
+## Should I use them?
+
+- I would recommend not using any of these in hot path code.
+- It's convenient but like virtual inheritance will slow things down. 
+- https://www.reddit.com/r/cpp/comments/ktyxqa/variants_suck_but_you_can_get_good_performance/
+
+
+
 
 ---
 
