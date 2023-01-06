@@ -218,6 +218,8 @@ glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 ## [Samplers](https://www.khronos.org/opengl/wiki/Sampler_Object)
 - A Sampler Object is an OpenGL Object that stores the sampling parameters for a Texture access inside of a shader.
 
+<img src="images/textureUnits.png" width="60%">
+
 --
 
 ## Texture image units
@@ -446,6 +448,202 @@ void glGenerateTextureMipmap(	GLuint texture);
 
 ---
 
+## ngl::Texture
+
+- ngl has a very simple texture class which will load in an image file using the default image loader class
+- It will determine is the image is either RGB, or RGBA and allocate the correct texture data
+- It will be default make the current active texture unit be texture 0
+- However we can set other texture units be calling setMultiTexture before generating the textureID
+
+--
+
+## ngl::Texture
+
+- we load the textures and store the ID's usually we need to only generate the mipmaps once so we can do it all at once
+- Note setTextureGL will bind the texture
+
+```
+ngl::Texture t("textures/Colour.png");
+t.setMultiTexture(0);
+m_colourID=t.setTextureGL();
+
+t.loadImage("textures/Specular.jpg");
+t.setMultiTexture(1);
+m_specID=t.setTextureGL();
+
+t.loadImage("textures/Normal.png");
+t.setMultiTexture(2);
+m_normalID=t.setTextureGL();
+```
+
+--
+
+## ngl::Texture::setTextureGL()
+
+```
+GLuint Texture::setTextureGL() const noexcept
+{
+  GLuint textureName;
+  glGenTextures(1, &textureName);
+  glActiveTexture(GL_TEXTURE0 + m_multiTextureID);
+  glBindTexture(GL_TEXTURE_2D, textureName);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+  glTexImage2D(GL_TEXTURE_2D, 0, m_format, m_width, m_height, 0, m_format, GL_UNSIGNED_BYTE, m_image.getPixels());
+
+  NGLMessage::addMessage(fmt::format("texture GL set texure ID is {0} Active Texture unit is {1}", textureName, m_multiTextureID));
+  glGenerateMipmap(GL_TEXTURE_2D);
+  return textureName;
+}
+```
+
+--
+
+## Binding and using
+
+- once the textures are loaded we can bind them and use them
+- it is important that the samplers are set to the correct texture unit and the required textures are bound to the correct active texture
+- as this is an OpenGL state if we set this once it will remain
+- typically we do this per mesh 
+
+---
+
+## TexturePack class
+
+- To manage an automate texture loading and activation in my PBR demos I developed a TexturePack class
+- it is designed to load the required textures from a json file
+
+```
+{
+  "TexturePack": {
+  "material": "wood",
+  "Textures"  : [
+    {
+      "location": 0,
+      "name": "albedoMap",
+      "path" : "textures/wood/albedo.png"
+    },
+    {
+      "location": 1,
+      "name": "normalMap",
+      "path" : "textures/wood/normal.png"
+    },
+    {
+      "location": 2,
+      "name": "metallicMap",
+      "path" : "textures/wood/metallic.png"
+    },
+    {
+      "location": 3,
+      "name": "roughnessMap",
+      "path" : "textures/wood/roughness.png"
+    },
+    {
+      "location": 4,
+      "name": "aoMap",
+      "path" : "textures/wood/ao.png"
+    }
+    ]
+ },
+}
+```
+
+--
+
+## TexturePack.h
+
+```
+#ifndef TEXTUREPACK_H_
+#define TEXTUREPACK_H_
+
+#include <unordered_map>
+#include <string>
+#include <vector>
+#include <ngl/Types.h>
+
+class TexturePack
+{
+  public :
+    TexturePack();
+    TexturePack(const TexturePack &)=delete;
+    ~TexturePack();
+    static bool loadJSON(const std::string &_filename);
+    static bool activateTexturePack(const std::string &_tname);
+  private :
+
+    struct Texture
+    {
+      GLuint id;
+      std::string name;
+      GLint location;
+      Texture(GLint _location, const std::string &_name, const std::string &_path);
+    };
+    struct Textures
+    {
+      std::vector<Texture> pack;
+    };
+
+    static std::unordered_map<std::string,Textures> s_textures;
+};
+
+#endif
+
+```
+
+--
+
+## TexturePack.cpp
+
+- Most of the class is for loading the json file 
+- I use rapidjson for parsing then load the texture using ngl::Texture
+
+```
+TexturePack::Texture::Texture(GLint _location, const std::string &_name,const std::string &_path)
+{
+  auto setTextureParams=[]()
+  {
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+  };
+
+  location=_location;
+  name=_name;
+  ngl::Texture t(_path);
+  t.setMultiTexture(GL_TEXTURE0+location);
+  id=t.setTextureGL();
+  setTextureParams();
+}
+
+
+```
+
+--
+
+## activating textures
+
+```
+bool TexturePack::activateTexturePack(const std::string &_tname)
+{
+  bool success=false;
+  auto pack=s_textures.find(_tname);
+  // make sure we have a valid shader
+  if(pack!=s_textures.end())
+  {
+    success=true;
+    for(auto t : pack->second.pack)
+    {
+      glActiveTexture(GL_TEXTURE0+t.location);
+      glBindTexture(GL_TEXTURE_2D, t.id);
+    }
+  }
+  return success;
+}
+```
+
+---
 
 ## [QImage](http://doc.qt.io/qt-5/qimage.html)
 
@@ -456,22 +654,6 @@ void glGenerateTextureMipmap(	GLuint texture);
 - NGL uses this as default but can also use OpenimageIO or ImageMagick
 
 --
-
-
-## ngl::Texture
-
-- ngl has a very simple texture class which will load in an image file using the default image loader class
-- It will determine is the image is either RGB, or RGBA and allocate the correct texture data
-- It will be default make the current active texture unit be texture 0
-- However we can set other texture units be calling setMultiTexture before generating the textureID
-
-
---
-
-
-
-
----
 
 ## [Demo](https://github.com/NCCA/ImageHeightMap)
 ![alt](images/map.png)
@@ -597,5 +779,4 @@ glPrimitiveRestartIndex(restartFlag);
 - This is very similar to the old glBegin / glEnd type commands but works on indexed buffer data
 - When draw elements encounters the restartFlag value it will re-start the draw.
 
----
 
