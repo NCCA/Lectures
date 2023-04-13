@@ -33,4 +33,5 @@ jmacey@bournemouth.ac.uk
 ## Example Code
 
 - The source code for the demo projects in the video can be found on [GitHub](https://github.com/NCCA/ScriptingForDCC)
+- Demo Project ClutterBase [vlog](https://nccastaff.bournemouth.ac.uk/jmacey/post/ClutterBase/ClutterBase/)
 

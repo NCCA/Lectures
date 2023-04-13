@@ -28,8 +28,7 @@ jmacey@bournemouth.ac.uk
 
 - Programming Project: 100 % of the final grade 
   - This will be an individual project 
-  - It should be possible on home computers as well as NoMachine
-- (Used to be an exam but removed because of covid)
+  - It should be possible on home computers using Windows or Mac as well as Linux in the labs
 
 --
 
@@ -46,8 +45,10 @@ jmacey@bournemouth.ac.uk
 ---
 
 ## What we will use
-- C++ using the [clang++](http://clang.llvm.org/) compiler (and also [g++](https://gcc.gnu.org/)) and other tools
+
+- C++ using the [g++](https://gcc.gnu.org/)  compiler (and also [clang++](http://clang.llvm.org/) and MSVC) and other tools
 - [OpenGL](https://www.opengl.org/)
+- [VSCode](https://code.visualstudio.com/) as an Editor /  IDE
 - [QtCreator](https://www.qt.io/) IDE and Qt for GUI applications
 - Loads of external libraries ( OpenGL, Qt, [Boost](http://www.boost.org/),  [Bullet](http://bulletphysics.org/wordpress/))
 - [git](https://guides.github.com/activities/hello-world/) and [git-hub](https://github.com/) for versions control and code submission
@@ -239,15 +240,17 @@ int main()
 
 --
 
-##Compile
+## Compile
+
+```bash
+g++ -g -Wall -std=c++1z HelloWorld.cpp -o HelloWorld
+```
 
 ```bash
 clang++ -g -Wall -std=c++1z HelloWorld.cpp -o HelloWorld
 ```
 
-```bash
-g++ -g -Wall -std=c++1z HelloWorld.cpp -o HelloWorld
-```
+
 - flags control the compiler function
   - -g turn on debug information
   - -Wall enable all warnings
@@ -257,6 +260,7 @@ g++ -g -Wall -std=c++1z HelloWorld.cpp -o HelloWorld
 --
 
 ## clang++ vs g++
+
 - clang++ is a modern C++ compiler based on the llvm architecture.
 - It has the best error reporting and diagnostics of the two compilers
 - both now fully support c++ 14 and some of C++ 17
@@ -364,10 +368,10 @@ g++ -g -Wall -std=c++1z HelloWorld.cpp -o HelloWorld
 
 ## The Build process
 ```bash
-clang++ -c -Wall -g -std=c++11 main.cpp
-clang++ -c -Wall -g -std=c++11 external.cpp
-clang++ -c -Wall -g -std=c++11 foo2.cpp
-clang++  main.o external.o foo2.o -o MultiFile
+g++ -c -Wall -g -std=c++11 main.cpp
+g++ -c -Wall -g -std=c++11 external.cpp
+g++ -c -Wall -g -std=c++11 foo2.cpp
+g++  main.o external.o foo2.o -o MultiFile
 ```
 
 --
@@ -431,38 +435,10 @@ make -f Makefile.linux
 - Makefiles can be complicated to generate especially for large projects
 - The syntax and whitespace rules can be problematic
 - Best to use a meta language / tool to generate the Makefiles
-- We will use two
-  - qmake (part of Qt)
+- We will use Cmake but we also have
+  - qmake (part of Qt) now being deprecated so will not use
   - cmake (which is very common in VFX development) 
-
-
---
-
-# [qmake](https://doc.qt.io/qt-5/qmake-manual.html)
-
-- Is a system which allows the automatic generation of Makefiles from within the Qt development environment
-- It reads a file called a .pro file (Qt Project) and will then generate the Makefile for us
-- This .pro file is also used by the QtCreator IDE as the main project development system 
-
---
-
-# [qmake](https://doc.qt.io/qt-5/qmake-manual.html)
-
-```
-# We are not using Qt for this project so remove the depends
-CONFIG-=qt
-# We want a simple console app so remove bundles form mac
-macx:CONFIG-=app_bundle
-#TARGET is the name of the exe
-TARGET=Multifile
-SOURCES+= external.cpp foo2.cpp main.cpp
-HEADERS+= external.h
-```
-
-```bash
-qmake
-make
-```
+- Nobody should write Makefiles by hand let the tools do it!
 
 --
 
