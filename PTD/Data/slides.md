@@ -408,3 +408,134 @@ if __name__ == "__main__" :
     pprint.pprint(scene)
 ```
 
+---
+
+## Schemas
+
+- "a representation of a plan or theory in the form of an outline or model". "a schema of scientific reasoning"
+- To us a way of representing data typically in a database but also for structured file data.
+- Most file format specifications have a schema too
+  - [xml](https://www.w3.org/standards/xml/schema)
+  - [json](https://json-schema.org/)
+  - [USD](https://openusd.org/release/tut_generating_new_schema.html)
+
+--
+
+## Some terms
+
+- [DOM](https://en.wikipedia.org/wiki/Document_Object_Model) document object model 
+  - "is a cross-platform and language-independent interface that treats an HTML or XML document as a tree structure wherein each node is an object representing a part of the document"
+- [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML) Simple API for XML A programming interface (API) for accessing the contents of an XML
+- [expat](https://libexpat.github.io/) Expat, a stream-oriented XML parser library written in C great for large files
+
+
+---
+
+## XML eXtensible Markup Language
+
+- Doesn't really do anything just contains data, we use <tags> </tags> like html but define our own
+- Uses much more space as needs open and close tags 
+- XML forms a tree structure using <> tags to enclose the different elements
+
+ ```
+<?xml version="1.0" encoding="UTF-8"?>
+<NCCAModelViewer>
+  <keyLight>
+    <position>-2 1 1 </position>
+    <active>1</active>
+    <colourSlider>153</colourSlider>
+    <colour>153 153 153</colour>
+    <specSlider>153</specSlider>
+    <specColour>76 76 76</specColour>
+  </keyLight>
+</NCCAModelViewer>
+```
+
+--
+
+## Escaping
+- XML provides escape facilities for including characters which are problematic to include directly.
+```
+&lt; represents <
+&gt; represents >
+&amp; represents &
+&apos; represents '
+&quot; represents "
+```
+
+--
+
+## XML Usage 
+
+- Most DCC tools use XML for setup and parameters
+  - Maya uses it for the render node descriptions in hypershade
+  - The render description files for the renderers
+  - Houdini Menus and tabs are xml files
+  - Houdini shelves are xml (but with a .shelf extension)
+- There are many more cases, this is a legacy and is gradually changing to json.
+
+--
+
+## XML libraries
+
+- There are many xml libraries we can use
+  - C++ I suggest [RapidXML](https://github.com/Fe-Bell/RapidXML)
+  - if using Qt they have their own [QtXml](https://doc.qt.io/qt-5/qtxml-index.html)
+- The python standard library has an [xml](https://docs.python.org/3/library/xml.html) module
+  - there are many more 3rd party ones to choose as well
+
+--
+
+## Designing data formats
+- Writing XML files is largely up to the developer 
+- We specify the format we need and which data tags are required
+- These can then be written to the file using normal file writing processes
+
+--
+
+## Point Bake Format
+
+```
+<?xml version="1.0" encoding="UTF-8" ?>
+<NCCAPointBake>
+  <MeshName> polySurface1 </MeshName>
+  <NumVerts> 912 </NumVerts>
+  <StartFrame> 0 </StartFrame>
+  <EndFrame> 151 </EndFrame>
+  <NumFrames> 151 </NumFrames>
+  <TranslateMode> absolute </TranslateMode>
+  <Frame number="0">
+  </Frame>
+</NCCAPointBake>
+```
+
+--
+
+## Per Vertex Data
+
+```
+<Vertex number="0" attrib="translate"> -0.103412 15.294069 3.914999 </Vertex>
+<Vertex number="1" attrib="translate"> -0.114753 15.167216 3.920175 </Vertex>
+<Vertex number="2" attrib="translate"> -0.073407 15.167994 3.865294 </Vertex>
+<Vertex number="3" attrib="translate"> -0.075351 15.262026 3.872085 </Vertex>
+```
+- The per vertex values are written out as shown above
+- The attribute is used to indicate what the data is
+- Then the actual point data is written
+
+--
+
+
+## Demos
+
+- There are a series of demos for thing in the following repo https://github.com/NCCA/PointBake 
+- Simple scripts to export and load from maya and C++ code for NGL
+- There is also another example to import into Houdini
+
+
+---
+
+##
+
+
+
