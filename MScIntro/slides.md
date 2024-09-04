@@ -1,4 +1,4 @@
-# MSc CAVe Welcome 
+# MSc CAVE Welcome 
 
 Jon Macey
 
@@ -37,7 +37,7 @@ jmacey@bournemouth.ac.uk
 ## Semester 1
 
 - Animation Software Engineering (Jon Macey)
-- CGI Tools (Adam Twycross, Phil Spicer (Jon Macey))
+- CGI Tools (Ari Sarafopolous , Phil Spicer (Jon Macey))
 - CGI Techniques (Jian Zhang, Jian Chang)
 
 --
@@ -46,13 +46,13 @@ jmacey@bournemouth.ac.uk
 
 - Simulation and Rendering (Ian Stephenson, Jian Chang, Lihua You)
 - Group Project (Shared with MADE and MA3D)  (Ari Sarafopoulos)
-- Personal Inquiry (Shared with MADE and MA3D) (Hongchuan Yu)
+- Pipeline and Technical Direction (Jon Macey)
 
 --
 
 ## Semester 3
 
-- MSc Project (Jon Macey)
+- MSc Project (Jian Chang + team)
 
 
 ---
@@ -65,31 +65,13 @@ The online timetable can be found here https://timetable.bournemouth.ac.uk/
 
 --
 
-## Timetable
 
-- All times are UK Times
-- If scheduled on Teams it will adjust to local time
-- Unit Leaders will arrange invites to Lectures (Check teams)
+## Your Lab
 
---
+- WG04 (Weymouth House Ground floor room 4)
+- Door code C1695Z
+- I will take you on a tour and show you the room later
 
-## Lectures and Labs
-
-- We are all new to online teaching
-- Basic Rules :-
-  - No longer that 1 hr without a break
-  - 15 minute break between 1hr sessions
-  - Will try and limit to max 4hrs a day online (induction week a bit busy!)
-
---
-
-## Virtual Workstations
-
-- We have two virtual workstation solutions
-  - For Windows we will use VMWare Horizon
-  - For Linux we will use NoMachine
-- There will also be VPN access to some elements (License servers / ssh to lab machines)
-- More details on this next week.
 
 ---
 

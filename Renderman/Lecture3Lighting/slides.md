@@ -2035,7 +2035,9 @@ ri.AttributeEnd()
 
 ## Arbitrary Output Variables
 
-- Arbitrary Output Variables (AOVs) are the secondary images produced by the renderer. - There can be any number of them generated simultaneously and each one may go to a different file, a different display driver, or use different pixel filter settings. 
+- Arbitrary Output Variables (AOVs) are the secondary images produced by the renderer. 
+
+- There can be any number of them generated simultaneously and each one may go to a different file, a different display driver, or use different pixel filter settings. 
 
 - In RIS we have 3 options
 	- built-in / integrator (global), custom, and light path expressions
@@ -2099,10 +2101,9 @@ lpe:C[<L.>O]
 
 ## [Light Path Expressions](https://rmanwiki.pixar.com/display/REN22/Light+Path+Expressions)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/kw0gg8oINeM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-- [good tutorial](https://www.clarissewiki.com/4.0/introduction-to-light-path-exp.html)
-
+- [SideFx Notes](https://www.sidefx.com/docs/houdini/render/lpe.html)
+- [Maya Notes](https://help.autodesk.com/view/MAYAUL/2024/ENU/?guid=arnold_for_maya_aovs_am_Introduction_to_Light_Path_Expressions_html)
 
 --
 

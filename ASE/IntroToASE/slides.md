@@ -1,4 +1,4 @@
-# Introduction to Animation Software Engineering 
+## Introduction to Animation Software Engineering 
 Jon Macey
 
 jmacey@bournemouth.ac.uk
@@ -10,16 +10,14 @@ jmacey@bournemouth.ac.uk
 - Develop 2D / 3D Applications and Tools
 - Use OpenGL for Real-time applications
 - Develop Algorithms for graphics simulations
-- Output files to Renderman for High Quality production level graphics
 - Write tools to help with the Graphics Production Pipeline
 
 ---
 
 ## What we will use
-- C++ using the [clang++](http://clang.llvm.org/) compiler (and also [g++](https://gcc.gnu.org/)) and other tools
-- [Doxygen](http://www.stack.nl/~dimitri/doxygen/) for documenting our code
+- C++ using the [g++](https://gcc.gnu.org/) or [clang++](http://clang.llvm.org/) compiler  and other tools
 - [OpenGL](https://www.opengl.org/)
-- [QtCreator](https://www.qt.io/) IDE and Qt for GUI applications
+- [Qt](https://www.qt.io/) for GUI applications
 - Loads of external libraries ( OpenGL, Qt, [Boost](http://www.boost.org/),  [Bullet](http://bulletphysics.org/wordpress/))
 - [git](https://guides.github.com/activities/hello-world/) and [git-hub](https://github.com/) for versions control and code submission
 
@@ -220,16 +218,16 @@ int main()
 ##Compile
 
 ```bash
-clang++ -g -Wall -std=c++1z HelloWorld.cpp -o HelloWorld
+clang++ -g -Wall -std=c++17 HelloWorld.cpp -o HelloWorld
 ```
 
 ```bash
-g++ -g -Wall -std=c++1z HelloWorld.cpp -o HelloWorld
+g++ -g -Wall -std=c++17 HelloWorld.cpp -o HelloWorld
 ```
 - flags control the compiler function
   - -g turn on debug information
   - -Wall enable all warnings
-  - -std=c++1z turn on c++ 17 (use c++11 or c++14 for other versions) 
+  - -std=c++17 turn on c++ 17 (use c++11 or c++14 for other versions) most compilers will default to 17 no so no need to use this flag
   - -o output name (default if not used a.out)
 
 --
@@ -237,7 +235,7 @@ g++ -g -Wall -std=c++1z HelloWorld.cpp -o HelloWorld
 ##clang++ vs g++
 - clang++ is a modern C++ compiler based on the llvm architecture.
 - It has the best error reporting and diagnostics of the two compilers
-- both now fully support c++ 14 and some of C++ 17
+- both now fully support c++ 17 and some of C++ 20 and beyond
 - some ABI elements are compatible however mixing both compilers is usually problematic 
 - However this is also true of different version of the same compiler.
   - On mac clang is default, however some support is missing (such as OpenMP)
@@ -409,39 +407,12 @@ make -f Makefile.linux
 - Makefiles can be complicated to generate especially for large projects
 - The syntax and whitespace rules can be problematic
 - Best to use a meta language / tool to generate the Makefiles
-- We will use two
-  - qmake (part of Qt)
-  - cmake (which is very common in VFX development) 
+- We will use cmake (which is very common in VFX development) 
+  - We will also get cmake to build Ninja build files which are much faster than makefiles
 
 
 --
 
-#qmake
-
-- Is a system which allows the automatic generation of Makefiles from within the Qt development environment
-- It reads a file called a .pro file (Qt Project) and will then generate the Makefile for us
-- This .pro file is also used by the QtCreator IDE as the main project development system 
-
---
-
-#qmake
-```
-# We are not using Qt for this project so remove the depends
-CONFIG-=qt
-# We want a simple console app so remove bundles form mac
-macx:CONFIG-=app_bundle
-#TARGET is the name of the exe
-TARGET=Multifile
-SOURCES+= external.cpp foo2.cpp main.cpp
-HEADERS+= external.h
-```
-
-```bash
-qmake
-make
-```
-
---
 
 ##cmake
 

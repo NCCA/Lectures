@@ -84,13 +84,13 @@ class Colour
 ## [Special member functions](https://en.cppreference.com/w/cpp/language/member_functions#Special_member_functions)
 
 - Some member functions are special : they can defined by the compiler even if not defined by the user.
-  - Default constructor
-  - Copy constructor
+  - [Default constructor](https://www.learncpp.com/cpp-tutorial/default-constructors/)
+  - [Copy constructor](https://www.learncpp.com/cpp-tutorial/introduction-to-the-copy-constructor/)
   - Move constructor (since C++11)
   - Copy assignment operator
   - Move assignment operator (since C++11)
   - Destructor
-- These Special member functions are the only functions that can be defaulted  ```= default``` 
+- These Special member functions are the only functions that can be defaulted  ```=default``` 
 
 --
 
@@ -135,11 +135,10 @@ class Point
 
 </div>
 
-
 ---
 
 ## [Constructors (ctor)](http://www.modernescpp.com/index.php/c-core-guidelines-constructors)
-- When an object is created there are certain processes which must take place
+- When an object is created there are certain [processes](https://www.learncpp.com/cpp-tutorial/class-initialization-and-copy-elision/) which must take place
 - Instantiation always involves the allocation of memory for the objects state data.
 - The methods do not require and memory as these are consistent for all objects of the class and are handled in the class itself.
 - The special method which allocates the memory for an object is know as the 'constructor'
@@ -202,7 +201,8 @@ private :
 
 ## [C++ 11 in class initialisation](http://en.cppreference.com/w/cpp/language/initializer_list)
 - This saves a bit of typing, but the real benefits come in classes with multiple constructors. Often, all constructors use a common initializer for a member:
-- for full explaination see [stroustrup](http://www.stroustrup.com/C++11FAQ.html) section :- In-class member initializers
+- for full explaination see [stroustrup](http://www.stroustrup.com/C++11FAQ.html) 
+  - section :- In-class member initializers
 - [C++ core guidelines has much more depth](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#S-ctor) 
 
 --
@@ -368,6 +368,20 @@ void Colour::setAlpha(float _a)
 ```
 
 - note the coding standard uses the Qt Convention of prefixing with set
+
+
+
+--
+
+## [Avoid trivial getters and setters](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#c131-avoid-trivial-getters-and-setters)
+
+> A trivial getter or setter adds no semantic value; the data item could just as well be public.
+
+-  The main reason for using getters and setters is to hide the internal representation of the class
+-  If you are just returning the value of the class then you are not hiding anything
+
+- Consider making such a class a struct; all public data and no member functions.
+
 
 ---
 
@@ -565,7 +579,7 @@ int main()
 # [The destructor](http://en.cppreference.com/w/cpp/language/destructor)
 - The destructor is called when an object is destroyed
 - The responsibility of the destructor is to cleanup after the object and de-allocate any memory that the object has created
-- [As a general rule is you allocate anything dynamically in the class you need a dtor](http://www.modernescpp.com/index.php/c-core-guidelines-destructor-rules). 
+- [As a general rule is you allocate anything dynamically in the class you need a destructor](http://www.modernescpp.com/index.php/c-core-guidelines-destructor-rules). 
 - Even better use a smart pointer!
 
 

@@ -136,7 +136,6 @@ export DEVKIT_LOCATION=/public/devel/2021/MayaDevkit/devkitBase
 - Under windows we can create a simple .DLL project 
 - We need to change the target extension to .mll (maya link library) as this is the default search.
 - Full details on how to do a setup is [here](https://nccastaff.bournemouth.ac.uk/jmacey/OldWeb/MayaAPI/Windows/index.md.html)
-- vcxproj files wil also be included with the code.
 
 ---
 
@@ -145,6 +144,9 @@ export DEVKIT_LOCATION=/public/devel/2021/MayaDevkit/devkitBase
 - The following example will create and register a simple maya command
 - We are going to use a macro supplied with the maya API which will create the correct class / code we require
 - This is the simplest possible way and is good for quick command development
+
+<img src="images/maya1.png" width="80%" >
+
 
 --
 
@@ -157,7 +159,7 @@ export DEVKIT_LOCATION=/public/devel/2021/MayaDevkit/devkitBase
 // This is a macro to create a simple command
 // the compiler expands it to a bunch of code
 
-DeclareSimpleCommand( HelloMaya , "NCCA", "Maya 2016");
+DeclareSimpleCommand( HelloMaya , "NCCA", "Maya 2020");
 
 MStatus HelloMaya::doIt( const MArgList& )
 {
@@ -170,7 +172,6 @@ MStatus HelloMaya::doIt( const MArgList& )
 }
 ```
 
-<img src="images/maya1.png" width="80%" >
 
 --
 
@@ -224,6 +225,7 @@ HelloMaya
 ## Utility macros
 
 - This macro makes it easy to check for errors and will be replaced by the compiler every time we use it.
+- This is taken from the maya api documentation / examples
 
 ```
 
@@ -312,36 +314,47 @@ MStatus CustomSphere::doIt( const MArgList& _args )
 ## redoIt method
 
 ```
+#include <random>
+std::mt19937 g_RandomEngine;
 
 MStatus CustomSphere::redoIt()
 {
+  static const MString create("sphere -name \"sphere^1s\" -r ^2s");
+  static const MString move("move ^1s ^2s ^3s \"sphere^4s\"");
+  int seed=0;
+  MString cmd,index,radius,x,y,z;
+  std::uniform_real_distribution<float>radiusDist(0.8f,4.5f);
+  std::uniform_real_distribution<float>positionDist(-20,20);
   // loop for the number of arguments passed in and create some random spheres
   for(  int i = 0; i < m_count; ++i )
 	{
     // fist I'm going to create a maya command as follows
     // sphere -name "sphere[n]" where n is the value of i
-    std::string cmd;
-    float rad=randFloat(0.8,4.5);
-    cmd=boost::str(boost::format("sphere -name \"sphere%d\" -r %f") %i %rad)  ;
+    // and this is why I hate MString!
+    radius.set(radiusDist(g_RandomEngine));
+    index.set(i);
+    cmd.format(create, index, radius);
     // now execute the command
-    MStatus status = MGlobal::executeCommand( cmd.c_str() );
-    // and check that is was succesfull
-    CHECK_STATUS_AND_RETURN_IF_FAIL(status,"Unable to execute sphere command");
+    MStatus status = MGlobal::executeCommand( cmd );
+    // and check that is was successful
+    checkStatusAndReturnIfFail(status,"Unable to execute sphere command");
 
     // now move to a random position first grab some positions
-    float x=randFloat(-20,20);
-    float y=randFloat(-20,20);
-    float z=randFloat(-20,20);
+    x.set(positionDist(g_RandomEngine));
+    y.set(positionDist(g_RandomEngine));
+    z.set(positionDist(g_RandomEngine));
     // build the command string
     // move x y z "sphere[n]"
-    cmd=boost::str(boost::format("move %f %f %f \"sphere%d\"") %x %y %z %i)  ;
+    cmd.format(move, x, y, z, index);
     // execute
-    status=MGlobal::executeCommand(cmd.c_str());
-    CHECK_STATUS_AND_RETURN_IF_FAIL(status,"unable to move object");
+    status=MGlobal::executeCommand(cmd);
+    checkStatusAndReturnIfFail(status,"unable to move object");
 
 	}
-  std::string mesg=boost::str(boost::format("%d Spheres created") %m_count)  ;
-  MGlobal::displayInfo( mesg.c_str() );
+  MString message,count;
+  count.set(m_count);
+  message.format("Created ^1s spheres", count) ;
+  MGlobal::displayInfo( message );
 	return MStatus::kSuccess;
 }
 
@@ -356,15 +369,17 @@ MStatus CustomSphere::redoIt()
 MStatus CustomSphere::undoIt()
 {
   // here we undo what was done in the re-do method,
-  // this will be called when maya calles the undo method
+  // this will be called when maya calls the undo method
+  MString cmd,index;
+
   for(  int i = 0; i < m_count; ++i )
   {
-    std::string cmd;
+    index.set(i);
     // delete the objects as created previously
-    cmd=boost::str(boost::format("delete  \"sphere%d\"") %i)  ;
-    MStatus status=MGlobal::executeCommand(cmd.c_str());
+    cmd.format("delete  \"sphere^1s\"", index) ;
+    MStatus status=MGlobal::executeCommand(cmd);
     // check that is was ok
-    CHECK_STATUS_AND_RETURN_IF_FAIL(status,"unable to delete objects in undo");
+    checkStatusAndReturnIfFail(status,"unable to delete objects in undo");
 
   }
 	return MStatus::kSuccess;
@@ -427,7 +442,7 @@ MStatus uninitializePlugin( MObject obj )
 - Performance may vary as the code needs to still be interpreted
 - Can be an easier solution for development
 
---
+---
 
 # HelloMayaPy
 
@@ -483,9 +498,7 @@ def initializePlugin(plugin):
     try:
         plugin_fn.registerCommand(HelloMaya.CMD_NAME, HelloMaya.creator)
     except:
-        om.MGlobal.displayError(
-            "Failed to register command: {0}".format(HelloMaya.CMD_NAME)
-        )
+        om.MGlobal.displayError(f"Failed to register command: {HelloMaya.CMD_NAME}")
 
 
 def uninitializePlugin(plugin):
@@ -496,9 +509,7 @@ def uninitializePlugin(plugin):
     try:
         plugin_fn.deregisterCommand(HelloMaya.CMD_NAME)
     except:
-        om.MGlobal.displayError(
-            "Failed to deregister command: {0}".format(HelloMaya.CMD_NAME)
-        )
+        om.MGlobal.displayError(f"Failed to deregister command: {HelloMaya.CMD_NAME}")
 
 
 if __name__ == "__main__":
@@ -511,16 +522,11 @@ if __name__ == "__main__":
     plugin_name = "HelloMaya.py"
 
     cmds.evalDeferred(
-        'if cmds.pluginInfo("{0}", q=True, loaded=True): cmds.unloadPlugin("{0}")'.format(
-            plugin_name
-        )
+        'if cmds.pluginInfo("{0}", q=True, loaded=True): cmds.unloadPlugin(f"{plugin_name}")'
     )
     cmds.evalDeferred(
-        'if not cmds.pluginInfo("{0}", q=True, loaded=True): cmds.loadPlugin("{0}")'.format(
-            plugin_name
-        )
+        'if not cmds.pluginInfo("{0}", q=True, loaded=True): cmds.loadPlugin(f"{plugin_name}")'
     )
-
 ```
 
 ---

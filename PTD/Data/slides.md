@@ -1,5 +1,5 @@
 ## Let's talk about Data
-### serialization,formats and schema's
+### serialization,formats and schema's 
 
 Jon Macey
 
@@ -16,7 +16,7 @@ jmacey@bournemouth.ac.uk
 
 --
 
-## What comes first Saving or Loading?
+#### What comes first Saving or Loading?
 
 - Typically we design data formats around a specification
   - In animation tools we are saving structured data (Vertex?)
@@ -412,7 +412,8 @@ if __name__ == "__main__" :
 
 ## Schemas
 
-- "a representation of a plan or theory in the form of an outline or model". "a schema of scientific reasoning"
+- "a representation of a plan or theory in the form of an outline or model". 
+- "a schema of scientific reasoning"
 - To us a way of representing data typically in a database but also for structured file data.
 - Most file format specifications have a schema too
   - [xml](https://www.w3.org/standards/xml/schema)
@@ -431,7 +432,7 @@ if __name__ == "__main__" :
 
 ---
 
-## XML eXtensible Markup Language
+#### XML eXtensible Markup Language
 
 - Doesn't really do anything just contains data, we use <tags> </tags> like html but define our own
 - Uses much more space as needs open and close tags 
@@ -535,7 +536,746 @@ if __name__ == "__main__" :
 
 ---
 
-##
+## JSON
+
+- JavaScript Object Notation a text format for storing Javascript objects
+- Now used a lot for config and setup files
+- Similar to XML as "self describing" schema
+- scheme used to define and validate data
+
+--
+
+## example Schema
+
+```
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "",
+    "title": "Simple Scene",
+    "description": "A Simple cross platform scene schema",
+    "type": "object",
+    "properties": {
+      "scene_name": {
+        "type": "string",
+        "description": "The name of the scene"
+      },
+      "meshes": {
+        "type": "array",
+        "description": "The meshes in the scene",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "The name of the mesh"
+            },
+            "path": {
+              "path": "string",
+              "description": "the location of the mesh"
+            },
+            "position": {
+              "type": "object",
+              "description": "The position of the mesh",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "description": "The x position of the mesh"
+                },
+                "y": {
+                  "type": "number",
+                  "description": "The y position of the mesh"
+                },
+                "z": {
+                  "type": "number",
+                  "description": "The z position of the mesh"
+                }
+              }
+            },
+            "rotation": {
+              "type": "object",
+              "description": "The rotation of the mesh",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "description": "The x rotation of the mesh"
+                },
+                "y": {
+                  "type": "number",
+                  "description": "The y rotation of the mesh"
+                },
+                "z": {
+                  "type": "number",
+                  "description": "The z rotation of the mesh"
+                }
+              }
+            },
+            "scale": {
+              "type": "object",
+              "description": "The scale of the mesh",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "description": "The x scale of the mesh"
+                },
+                "y": {
+                  "type": "number",
+                  "description": "The y scale of the mesh"
+                },
+                "z": {
+                  "type": "number",
+                  "description": "The z scale of the mesh"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "required": ["scene_name", "meshes"]
+  }
+```
 
 
+--
+
+### write_scene.py
+
+```python
+#!/usr/bin/env python
+
+import json
+from jsonschema import validate
+
+with open('scene_schema.json') as f:
+    schema = json.load(f)
+
+scene={}
+
+scene["scene_name"] = "test_scene"
+scene["meshes"] = []
+
+# add mesh
+mesh = {}
+mesh["name"] = "test_mesh"
+mesh["path"] = "1.obj"
+mesh["position"] = { "x"  : 0, "y" :  0, "z" : 0}
+scene["meshes"].append(mesh)
+
+validate(instance=scene, schema=schema)
+
+with open('scene.json', 'w') as f:
+    json.dump(scene, f, indent=4)
+```
+
+--
+
+## read_scene.py
+
+- The data gets read back in as a dictionary. 
+
+```python
+#!/usr/bin/env python
+
+import json
+
+with open('scene.json') as f:
+    scene = json.load(f)
+
+print(scene)
+
+```
+
+---
+
+
+## HDF5
+
+- supports large, complex, heterogeneous data.
+- HDF5 uses a "file directory" like structure that allows you to organize data within the file in many different structured ways, as you might do with files on your computer.
+- The HDF5 format also allows for embedding of metadata making it _self-describing_.
+- Can be used within other formats as data encoder (Alembic used to use it)
+
+--
+
+# Python Install
+
+- ```pip install h5py``` 
+
+```python
+#!/usr/bin/env python
+
+import random
+import h5py
+
+def write_data(n : int = 1000 ) -> None :
+	"""write a single layer of data to the file this is an array of n lists of floats"""
+	points=[[random.uniform(-1.0,1.0),random.uniform(-1.0,1.0),random.uniform(-1.0,1.0)] for _ in range(0,n)]
+	with h5py.File("points.hdf5", "w") as file :
+		file.create_dataset("points",data=points)
+
+def read_data() -> None :
+	with h5py.File("points.hdf5", "r") as file :
+		data=file['points']
+		print(data)
+		# we can now slice the data
+		print(data[:20])
+
+  
+def main() -> None :
+	write_data()
+	read_data()
+
+if __name__ == "__main__" :
+	main()
+```
+
+--
+
+# Custom Dataset
+
+```python
+#!/usr/bin/env python
+from __future__ import annotations
+
+import random
+from itertools import chain
+
+import h5py
+
+
+class Vec3() :
+    __slots__ = ("x", "y", "z")
+    def __init__(self,x : float=0.0 , y : float=0.0 , z : float =0.0) -> None:
+        self.x=x
+        self.y=y
+        self.z=z
+
+    @staticmethod
+    def random(min : float=-1.0 , max : float=1.0)-> Vec3 :
+        return Vec3(random.uniform(min,max),random.uniform(min,max),random.uniform(min,max))
+
+    def to_list(self)  -> List :
+        return [self.x,self.y,self.z]
+
+    def __str__(self) ->str :
+        return f"[{self.x},{self.y},{self.z}]\n"
+    def __repr__(self) ->str :
+        return f"[{self.x},{self.y},{self.z}]\n"
+
+def write_data(n : int = 1000 ) -> None :
+    """write a single layer of data to the file this is an array of n lists of floats"""
+    points=[ Vec3.random(-10,10).to_list() for _ in range(0,n)]
+    with h5py.File("points.hdf5", "w") as file :
+        file.create_dataset("points",data=points)
+
+def read_data() -> None :
+    with h5py.File("points.hdf5", "r") as file :
+        data=file['points']
+        print(data)
+        points=[]
+        for point in data :
+            points.append(Vec3(point[0],point[1],point[2]))
+
+        print(points[:10])        
+
+def main() -> None :
+    write_data()
+    read_data()
+
+
+if __name__ == "__main__" :
+    main()
+
+```
+
+---
+
+
+## [USD](https://remedy-entertainment.github.io/USDBook/usd_primer.html)
+
+- USD is a way to describe 3D scene Hierarchies
+- It is a file format and a set of libraries to read and write this data
+- Scenes are composed of layers, prims, and properties
+  - you can no-destructively layer changes on top of each other (create edits)
+
+--
+
+## [USD](https://www.pixar.com/usd)
+
+- Wow it can do everything this solves all of the problems
+  - well not quite but it is a very powerful format
+  - it is also very complex and has a steep learning curve
+  - it is also very new and not widely adopted yet (but getting there)
+
+--
+
+# Lab Installation
+
+- I have installed a version of OpenUSD in /public/devel to be used with the pyenv python 3.9.7 version
+- You need to add the following to your .bashrc file
+
+```
+export PYTHONPATH=$PYTHONPATH:/public/devel/23-24/OpenUSD/lib/python
+export PATH=$PATH:/public/devel/23-24/OpenUSD/bin
+```
+
+```
+python -c "from pxr import Usd"
+```
+
+- If you need other versions of python you will need to build your own version of USD from source, for the DCC tools use the version they ship with.
+
+
+
+---
+
+## USD Concepts
+
+- A USD file is called a Layer , it can contain anything such as meshes,lights, shaders primitives etc.
+- 3 main extensions are used
+  - USDC (crate) compressed memory mapped files with fast access
+  - USDA (ascii) human readable text files
+  - USDZ (zip) compressed files which can also contain supporting files like textures etc (typically 3rd party tools used for authoring)
+- We will mainly use usda files as they are human readable and easy to understand
+
+--
+
+# cube.usda
+
+```
+#usda 1.0
+
+def Xform "World"
+{
+  def Mesh "Cube"
+  {
+    # Cube geometry:
+    float3[] extent = [(-0.5, -0.5, -0.5), (0.5, 0.5, 0.5)]
+    int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
+    int[] faceVertexIndices = [0, 1, 3, 2, 2, 3, 5, 4, 4, 5, 7, 6, 6, 7, 1, 0, 1, 7, 5, 3, 6, 0, 2, 4]
+    point3f[] points = [(-0.5, -0.5, 0.5), (0.5, -0.5, 0.5), (-0.5, 0.5, 0.5), (0.5, 0.5, 0.5), (-0.5, 0.5, -0.5), (0.5, 0.5, -0.5), (-0.5, -0.5, -0.5), (0.5, -0.5, -0.5)]
+    
+    # Surface color:
+    color3f[] primvars:displayColor = [(0.463, 0.725, 0.0)]
+    
+    # Coordinates:
+    double3 xformOp:translate = (1.0, 0.0, 0.0)
+    double3 xformOp:rotateXYZ = (0.0, 45.0, 0.0)
+    float3 xformOp:scale = (1.0, 2.0, 1.0)
+    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+  }
+}
+```
+
+```
+usdtree cube.usda
+/
+ `--World [def Xform]
+     `--Cube [def Mesh]
+```
+
+
+--
+
+# cube.usda
+
+- In this file there is a transform called "World" which contains a mesh called "Cube"
+- The mesh has a number of properties
+  - extent is the size of the cube
+  - faceVertexCounts is the number of vertices for each face
+  - faceVertexIndices is the index of the vertices for each face
+  - points is the actual vertex data
+
+--
+
+# cube.usda
+
+  - primvars:displayColor is the colour of the cube (used in vsdview)
+  - xformOp:translate is the position of the cube
+  - xformOp:rotateXYZ is the rotation of the cube
+  - xformOp:scale is the scale of the cube
+  - xformOpOrder is the order of the operations
+
+--
+
+# usdview
+
+- usdview is a tool to view usd files
+
+![usdview](images/usdview.png)
+
+
+--
+
+## a python version
+
+- This script will create the cube.usda file presented before. Note USD also has a cube primitive we could use as well. 
+
+```python
+#!/usr/bin/env python
+from pxr import Usd, UsdGeom
+
+# Create a temporary stage in memory
+stage = Usd.Stage.CreateInMemory("Cube.usda")
+
+# Create a transform and add a Cube as mesh data
+xformPrim = UsdGeom.Xform.Define(stage, "/World")
+
+
+prim = UsdGeom.Mesh.Define(stage, "/World/Cube")
+prim.CreatePointsAttr().Set([(-0.5, -0.5, 0.5), (0.5, -0.5, 0.5), (-0.5, 0.5, 0.5), (0.5, 0.5, 0.5), (-0.5, 0.5, -0.5), (0.5, 0.5, -0.5), (-0.5, -0.5, -0.5), (0.5, -0.5, -0.5)])
+prim.CreateFaceVertexCountsAttr().Set([4, 4, 4, 4, 4, 4])
+prim.CreateFaceVertexIndicesAttr().Set([0, 1, 3, 2, 2, 3, 5, 4, 4, 5, 7, 6, 6, 7, 1, 0, 1, 7, 5, 3, 6, 0, 2, 4])
+prim.CreateExtentAttr().Set([(-0.5, -0.5, -0.5), (0.5, 0.5, 0.5)])
+
+# Set the color of the cube
+colorAttr = prim.GetDisplayColorAttr()
+colorAttr.Set([(0.463, 0.725, 0.0)])
+
+# Add transforms to the cube
+UsdGeom.XformCommonAPI(prim).SetRotate((0, 45.0, 0))
+UsdGeom.XformCommonAPI(prim).SetTranslate((1, 0, 0))
+UsdGeom.XformCommonAPI(prim).SetScale((1, 2.0, 1.0))
+
+
+# Print out the stage
+print(stage.GetRootLayer().ExportToString())
+
+# Save the resulting layer
+stage.Export("cube.usda", addSourceFileComment=False)
+```
+
+
+
+---
+
+## [Composition Arcs](https://openusd.org/release/glossary.html#usdglossary-compositionarcs)
+
+- There are a number of ways you can combine USD files, and these are usually referred to as _composition arcs_.
+- **Sublayers**: similar to layers in Photoshop, sublayers in USD define a stack of USD layers. A stack is in strength order, and sublayers can override each other. If two sublayers have values for the same attribute, the strongest sublayer wins.
+- **References**: used to add new items into a scene. For instance, if you have a chair model, and you want 4 chairs around a table, you could add 4 references to the chair model.
+
+--
+
+# [Composition Arcs](https://openusd.org/release/glossary.html#usdglossary-compositionarcs)
+ 
+- **Payloads**: like a reference that can be loaded in a deferred way. You can open a scene and choose which item of the scene to load in memory.
+
+-  **Variants**: used to switch between items in a collection. For example, if the chair model had a weather version, a wood version and an Office version, a variant would let us choose between them.
+
+
+--
+
+## [Composition Arcs](https://openusd.org/release/glossary.html#usdglossary-compositionarcs)
+
+- **Specializes**: behaves in a similar way to _Inherits_, but with subtle differences that may be too specific for the scope of this brief overview.
+-  **Inherits**: works in a similar fashion to a class in an object-oriented programming language. You define a class of items, like "Humans", which all have an `eyeColour` property. All human Prims could inherit from that class, and automatically have the shared `eyeColour` property.
+
+
+---
+
+## Sublayers
+
+- Sublayers are used to build up a scene from a number of different files
+
+```
+#usda 1.0
+
+over  "World" {
+  over  "Cube" {
+    color3f[] primvars:displayColor = [(0.0, 0.0, 1.0)]
+    # double3 xformOp:rotateXYZ = (45.0, 45.0, 0.0)
+    # float3 xformOp:scale = (1.0, 2.0, 3.0)
+  }
+}
+```
+
+```python
+#!/usr/bin/env python
+from pxr import Usd, UsdGeom,Sdf
+
+
+# Create a temporary stage in memory
+stage = Usd.Stage.CreateInMemory("stage.usda")
+
+# Override the world as a prim
+world = stage.OverridePrim("/World")
+cube = stage.OverridePrim("/World/Cube")
+prim = UsdGeom.Gprim(cube)
+prim.CreateDisplayColorAttr([(0.0, 0.0, 1.0)])
+xformable = UsdGeom.Xformable(cube)
+
+xformable.AddRotateXYZOp().Set((45.0, 45.0, 0.0))
+
+# Print out the stage
+print(stage.GetRootLayer().ExportToString())
+
+# Save the resulting layer
+stage.Export("blue-cube.usda", addSourceFileComment=False)
+```
+--
+
+## Sublayers
+
+```
+#usda 1.0
+
+(
+  subLayers = [
+    @./blue-cube.usda@,
+    @./cube.usda@
+  ]
+)
+```
+
+```python
+#!/usr/bin/env python
+from pxr import Usd, UsdGeom, Sdf
+
+def add_sub_layer(sub_layer_path: str, root_layer) -> Sdf.Layer:
+    sub_layer: Sdf.Layer = Sdf.Layer.CreateNew(sub_layer_path)
+    # You can use standard python list.insert to add the subLayer to any position in the list
+    root_layer.subLayerPaths.append(sub_layer.identifier)
+    return sub_layer
+
+# Open a stage for writing
+stage = Usd.Stage.CreateNew('layer-cube.usda')
+
+# Add the sub layer to the root layer
+root=stage.GetRootLayer()
+add_sub_layer("./blue-cube.usda", root)
+add_sub_layer("./cube.usda", root)
+
+# Print out the stage
+print(stage.GetRootLayer().ExportToString())
+
+# Save the resulting layer
+#stage.Export("layer-cube.usda", addSourceFileComment=False)
+stage.GetRootLayer().Save()
+
+```
+--
+
+## Sublayers
+
+- _cube.usda_ is  on top of  a new _blue-cube.usda_ file in a stack
+- The _blue-cube.usda_ file being on top of the sublayer stack, the properties it has in common with the "weaker" _cube.usda_ file carry more weight. 
+- The `displayColor` property is using an `over` on the mesh to overwrite any values.
+
+---
+
+## USD References
+
+- used to combine assets together 
+- this example uses the cube from the previous example and references it into a new file
+- the asset will only be loaded into memory once even though it is used multiple times
+
+
+```
+#usda 1.0
+
+def Xform "World" {
+
+  def "CubeOne" (references = @./cube-model.usda@</World/Cube>) {
+    
+  }
+
+  def "CubeTwo" (references = [@./cube-model.usda@</World/Cube>]) {
+    # Try changing the position of one of the references:
+    double3 xformOp:translate = (4.0, 0.0, 0.0)
+    uniform token[] xformOpOrder = ["xformOp:translate"]
+  }
+
+  def "CubeThree" (references = [@./cube-model.usda@</World/Cube>]) {
+    # ... or its scale:
+    float3 xformOp:scale = (2.0, 2.0, 2.0)
+    double3 xformOp:translate = (2.25, 0.0, 0.0)
+    uniform token[] xformOpOrder = ["xformOp:scale", "xformOp:translate"]
+  }
+
+  def "CubeFour" (references = [@./cube-model.usda@</World/Cube>]) {
+    # ... or even multiple properties at once:
+    float3 xformOp:scale = (1.5, 2.5, 4.0)
+    double3 xformOp:translate = (4.5, 0.0, 0.0)
+    uniform token[] xformOpOrder = ["xformOp:scale", "xformOp:translate"]
+    color3f[] primvars:displayColor = [(0.8, 0.2, 0.5)]
+  }
+}
+
+```
+
+--
+
+## USD References
+
+- USD can infer the type from the reference  
+- The prim path [@./cube-model.usda@</World/Cube>] indicates we only want the Cube prim from the cube-model.usda file
+- The prim path [@./cube-model.usda@</World>] would reference the entire World prim from the cube-model.usda file
+
+---
+
+##  [Strength Ordering (LIVERPS)](https://remedy-entertainment.github.io/USDBook/terminology/LIVRPS.html)
+
+> Each composition arc has a “strength” assigned to it. Meaning that if for example opinions targeting a property are authored on 3 different composition arcs within the same layer stack, the composition arc that is the “strongest” wins. This is where the acronym `LIVRPS (Liver Peas)` comes into play.
+
+--
+
+## LIVERPS
+
+- `L`ocal
+- `I`nherits
+- `V`ariants
+- `R`eferences
+- `P`ayloads
+- `S`pecializes
+
+--
+
+## order
+
+![](images/liverps.png)
+
+
+---
+
+#### Graphics Foundation Gf module
+
+-  The Gf (Graphics Foundations) library contains classes and functions for working with basic mathematical aspects of graphics.
+
+```python
+#!/usr/bin/env python
+
+from pxr import Gf, Usd, UsdGeom
+
+# create a point
+point = Gf.Vec3f(1, 2, 3)
+print(point)
+# Now a matrix
+tx = Gf.Matrix3f()
+print(tx)
+# We can do maths as normal
+print(tx * point)
+print(point * tx)
+
+# We can set the matrix using various methods for example rotate.
+tx.SetRotate(Gf.Rotation(Gf.Vec3d(0, 0, 1), 45.0))
+print(tx)
+print(tx * point)
+print(point * tx)
+
+
+# for more complex operations we can combine matrices as per normal
+
+rotation = Gf.Matrix4f().SetRotate(Gf.Rotation(Gf.Vec3d(0, 0, 1), 45.0))
+translation = Gf.Matrix4f().SetTranslate(Gf.Vec3f(1, 2, 3))
+scale = Gf.Matrix4f().SetScale(Gf.Vec3f(1, 2, 1))
+
+points = [
+    Gf.Vec4f(1, 0, 1, 1),
+    Gf.Vec4f(1, 0, -1, 1),
+    Gf.Vec4f(-1, 0, -1, 1),
+    Gf.Vec4f(-1, 0, 1, 1),
+]
+
+# now create transform matrix
+
+tx = scale * rotation * translation
+print(tx)
+
+for point in points:
+    print(tx * point)
+
+
+quat = Gf.Quath(1, 0.1, 0.2, 0)
+print(quat)
+print(quat.GetImaginary())
+print(quat.GetReal())
+print(quat.GetInverse())
+print(quat.GetNormalized())
+print(quat.GetConjugate())
+print(quat.Transform(Gf.Vec3h(1, 2, 3)))
+
+rot=Gf.Rotation(Gf.Vec3d(0, 0, 1), 45.0)
+print(rot)
+print(rot.GetQuaternion())
+```
+
+--
+
+# USD Types
+
+```
+from pxr import Sdf
+>>> print(dir(Sdf.ValueTypeNames))
+['Asset', 'AssetArray', 'Bool', 'BoolArray', 'Color3d', 'Color3dArray',
+ 'Color3f', 'Color3fArray', 'Color3h', 'Color3hArray', 'Color4d',
+ 'Color4dArray', 'Color4f', 'Color4fArray', 'Color4h', 'Color4hArray', 'Double',
+ 'Double2', 'Double2Array', 'Double3', 'Double3Array', 'Double4',
+ 'Double4Array', 'DoubleArray', 'Find', 'Float', 'Float2', 'Float2Array',
+ 'Float3', 'Float3Array', 'Float4', 'Float4Array', 'FloatArray', 'Frame4d',
+ 'Frame4dArray', 'Group', 'Half', 'Half2', 'Half2Array', 'Half3', 'Half3Array',
+ 'Half4', 'Half4Array', 'HalfArray', 'Int', 'Int2', 'Int2Array', 'Int3',
+ 'Int3Array', 'Int4', 'Int4Array', 'Int64', 'Int64Array', 'IntArray',
+ 'Matrix2d', 'Matrix2dArray', 'Matrix3d', 'Matrix3dArray', 'Matrix4d',
+ 'Matrix4dArray', 'Normal3d', 'Normal3dArray', 'Normal3f', 'Normal3fArray',
+ 'Normal3h', 'Normal3hArray', 'Opaque', 'PathExpression', 'PathExpressionArray',
+ 'Point3d', 'Point3dArray', 'Point3f', 'Point3fArray', 'Point3h',
+ 'Point3hArray', 'Quatd', 'QuatdArray', 'Quatf', 'QuatfArray', 'Quath',
+ 'QuathArray', 'String', 'StringArray', 'TexCoord2d', 'TexCoord2dArray',
+ 'TexCoord2f', 'TexCoord2fArray', 'TexCoord2h', 'TexCoord2hArray', 'TexCoord3d',
+ 'TexCoord3dArray', 'TexCoord3f', 'TexCoord3fArray', 'TexCoord3h',
+ 'TexCoord3hArray', 'TimeCode', 'TimeCodeArray', 'Token', 'TokenArray', 'UChar',
+ 'UCharArray', 'UInt', 'UInt64', 'UInt64Array', 'UIntArray', 'Vector3d',
+ 'Vector3dArray', 'Vector3f', 'Vector3fArray', 'Vector3h', 'Vector3hArray',
+ '__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__',
+ '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__',
+ '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__',
+ '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__',
+ '__str__', '__subclasshook__', '__weakref__']
+```
+
+
+---
+
+### Prims
+
+-  [Prims](https://graphics.pixar.com/usd/docs/USD-Glossary.html#USDGlossary-Prim)  are the most powerful objects in USD. 
+- Prims are referenced by their path in the stage, 
+	- which is a string in the form of `/Prim/ChildPrim`. 
+- `/` is a special prim known as the root prim in a stage.
+- To get a reference to a prim at a path use `stage_ref.GetPrimAtPath(path)`:
+
+--
+
+### Attributes
+
+- [Attributes](https://graphics.pixar.com/usd/docs/USD-Glossary.html#USDGlossary-Attribute) are used for storing actual data inside a Prim.
+- Attributes are often defined as part of [Schemas](https://graphics.pixar.com/usd/docs/USD-Glossary.html#USDGlossary-Schema) to make it easier to access context-relevant data from within an instance of that Type.
+- For example, `Xform` typed Prims have an attribute called `Purpose` which is used to specify the purpose of an imageable prim. It contains one of the following values: `[default, render, proxy, guide]`
+
+--
+
+### Attributes
+
+- To get attriburtes we use  `prim_ref.GetAttribute(name)` 
+
+- The other way is to use the Xform Schema's exposed function for getting the purpose, which is `xform_ref.GetPurposeAttr()`, which returns the same object   
+- after we get an Attribute object, we will want to get the attribute's actual value or set it.
+- That can be done with *attribute_ref.Get()* to retrieve the value, and `attribute_ref.Set(value)` to set the value.
+
+---
+
+## Hierarchy and Traversal
+
+- Stages are organised in a hierarchy of Prims: there is a special root prim at `/` and it may have any number of direct Prim descendants
+ - Each branch can have more descendants as well. 
+- Paths are string and similar to unix paths (or Houdini ones)
+  
+
+---
+
+## References
+
+- https://www.pythonforthelab.com/blog/how-to-use-hdf5-files-in-python/
+- https://developer.nvidia.com/usd/tutorials
 

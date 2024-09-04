@@ -1738,8 +1738,7 @@ for(int y=0; y<HEIGHT; ++y)
 - http://en.wikipedia.org/wiki/Multiton_pattern
 - http://en.wikipedia.org/wiki/Prototype_pattern
 - http://en.wikipedia.org/wiki/Liskov_substitution_principle
-- “The Pragmatic Programmer”  Andrew Hunt  , David Thomas
-- http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.50.3681&rep=rep1&type=pdf
+- [“The Pragmatic Programmer”  Andrew Hunt  , David Thomas](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.50.3681&rep=rep1&type=pdf)
 
 --
 
@@ -1750,11 +1749,4 @@ for(int y=0; y<HEIGHT; ++y)
 - http://sourcemaking.com/
 - http://sourcemaking.com/design_patterns/observer/cpp/3
 - http://www.c2.com/cgi-bin/wiki?ModelViewController
-
---
-
-# References
-
-- http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller
-- http://sourcemaking.com/design_patterns/memento
 - http://advancedcppwithexamples.blogspot.co.uk/2010/09/c-example-for-composite-design-pattern.html

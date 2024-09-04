@@ -6,6 +6,114 @@ jmacey@bournemouth.ac.uk
 
 ---
 
+## GL Command Syntax
+- GL commands are functions or procedures. 
+- Various groups of commands perform the same operation but differ in how arguments are supplied to them. 
+- To specify the type of parameter GL uses a specific syntax
+- GL commands are formed from a name which may be followed, depending on the particular command, by a sequence of characters describing a parameter to the command. 
+- If present, a digit indicates the required length (number of values) of the indicated type. 
+- Next, a string of characters making up one of the type descriptors 
+
+--
+
+## GL Command Syntax
+
+| Type descriptor | Corresponding GL Type |
+|-----------------|-----------------------|
+| b | byte |
+| s | short |
+| i | int     |
+| f | float   |
+| d | double  |
+| ub | ubyte  |
+| us | ushort |
+| ui | uint   |
+
+--
+
+# GL Command Syntax
+- There are also some 64bit versions but I have never seen them in use.
+-  A final v character, if present, indicates that the command takes a pointer to an array (a vector) of values rather than a series of individual arguments. 
+
+--
+
+## GL Command Syntax
+
+<img src="images/gl1.png" width="100%">
+
+---
+
+## Block Diagram of OpenGL
+
+<img src="images/gl2.png" width="100%">
+
+--
+
+## Block Diagram of OpenGL
+- To aid learning we will concentrate on each of the elements in turn
+- Ignoring the others and assuming they just work out of the box without setup
+- Finally we shall put the whole system together
+
+--
+
+## Block Diagram of OpenGL
+
+- Commands enter the GL on the left. Some commands specify geometric objects to be drawn while others control how the objects are handled by the various stages. Commands are effectively sent through a processing pipeline.
+- The first stage operates on geometric primitives described by vertices: points, line segments, and polygons.
+- In this stage vertices may be transformed and lit, followed by assembly into geometric primitives, which may optionally be used by the next stage, geometry shading, to generate new primitives.
+
+--
+
+## Block Diagram of OpenGL
+
+- The final resulting primitives are clipped to a viewing volume in preparation for the next stage, rasterization.
+- The rasterizer produces a series of framebuffer addresses and values using a two-dimensional description of a point, line segment, or polygon.
+- Each fragment produced is fed to the next stage that performs operations on individual fragments before they finally alter the framebuffer.
+- Finally, values may also be read back from the framebuffer or copied from one portion of the framebuffer to another.
+
+--
+
+## Primitives and Vertices
+
+<img src="images/gl3.png" width="55%">
+- In the OpenGL, most geometric objects are drawn by specifying a series of generic attribute sets using DrawArrays or one of the other drawing commands.
+- Points, lines, polygons, and a variety of related geometric objects can be drawn in this way.
+
+--
+
+## Primitives and Vertices
+- Each vertex is specified with one or more generic vertex attributes. 
+- Each attribute is specified with one, two, three, or four scalar values.	
+- Generic vertex attributes can be accessed from within vertex shaders and used to compute values for consumption by later processing stages.
+- For example we may set vertex colour, vertex normals, texture co-ordinates or generic vertex attributes used by the processing shader
+
+--
+
+## Primitive types
+- OpenGL has a number of primitive types that can be specified to DrawArrays and other primitive drawing commands
+- These are
+  - Points, Line Strips, Line Loops, Separate Lines,Triangle Strips, Triangle Fans, Separate Triangles, Lines with adjacency, Line Strips with Adjacency, Triangles with Adjacency, Triangle Strips with Adjacency, Separate Patches
+- We will investigate these elements later for now we will concentrate on drawing some points
+
+---
+
+## [Vertex Arrays](https://www.opengl.org/wiki/Vertex_Specification)
+- Vertex data is placed into arrays that are stored in the server’s address space (GPU). 
+- Blocks of data in these arrays may then be used to specify multiple geometric primitives through the execution of a single OpenGL command. 
+- The client may specify up to the value of [MAX_VERTEX_ATTRIBS](https://www.opengl.org/sdk/docs/tutorials/ClockworkCoders/attributes.php) arrays to store one or more generic vertex attributes.
+
+--
+
+## [Vertex Arrays](https://www.opengl.org/wiki/Vertex_Specification)
+- Vertex arrays are a simple way of storing data for models so that Vertices, normals and other information may be shared.
+- This allows a more compact representation of data and reduces the number of calls OpenGL needs to make and the reduction of data stored.
+- We can create the data in a series of arrays either procedurally or by loading it from some model format
+- The data may then be stored either by downloading it to the GPU or storing it on the client side and telling the GPU to bind to it.
+
+
+---
+
+
 ## [Vertex Buffer Objects](https://www.opengl.org/wiki/Buffer_Object)
 - The idea behind VBOs is to provide regions of memory (buffers) accessible through identifiers. 
 A buffer is made active through binding, following the same pattern as other OpenGL entities such as display lists or textures. 
@@ -48,307 +156,6 @@ struct Vertex
 };
 
 Vertex vertices[VERTEX_COUNT];
-```
-
----
-
-
-## [Grid example](https://github.com/NCCA/OpenGLCode/tree/master/Grid)
-<img src="images/grid.png" width="50%">
-
-```
-void  makeGrid(GLfloat _size, size_t _steps);
-/// @brief a pointer to our VBO data
-GLuint m_vboPointer=0;
-/// @brief store the size of the vbo data
-GLint m_vboSize=0;
-
-```
-
---
-
-## [Grid example](https://github.com/NCCA/OpenGLCode/tree/master/Grid)
-<img src="images/grid2.png" width="80%">
-
---
-
-
-## [Grid example](https://github.com/NCCA/OpenGLCode/tree/master/Grid)
-
-```
-void  OpenGLWindow::makeGrid( GLfloat _size, size_t _steps )
-{
-	// allocate enough space for our verts
-	// as we are doing lines it will be 2 verts per line
-	// and we need to add 1 to each of them for the <= loop
-	// and finally muliply by 12 as we have 12 values per line pair
-  m_vboSize= (_steps+2)*12;
-  std::unique_ptr<float []>vertexData( new float[m_vboSize]);
-	// k is the index into our data set
-  int k=-1;
-	// claculate the step size for each grid value
-	float step=_size/(float)_steps;
-	// pre-calc the offset for speed
-	float s2=_size/2.0f;
-	// assign v as our value to change each vertex pair
-	float v=-s2;
-	// loop for our grid values
-  for(size_t i=0; i<=_steps; ++i)
-	{
-		// vertex 1 x,y,z
-		vertexData[++k]=-s2; // x
-		vertexData[++k]=v; // y
-		vertexData[++k]=0.0; // z
-
-		// vertex 2 x,y,z
-		vertexData[++k]=s2; // x
-		vertexData[++k]=v; // y
-		vertexData[++k]=0.0; // z
-
-		// vertex 3 x,y,z
-		vertexData[++k]=v;
-		vertexData[++k]=s2;
-		vertexData[++k]=0.0;
-
-		// vertex 4 x,y,z
-		vertexData[++k]=v;
-		vertexData[++k]=-s2;
-		vertexData[++k]=0.0;
-		// now change our step value
-		v+=step;
-  }
-	// now we will create our VBO first we need to ask GL for an Object ID
-  glGenBuffers(1, &m_vboPointer);
-	// now we bind this ID to an Array buffer
-  glBindBuffer(GL_ARRAY_BUFFER, m_vboPointer);
-	// finally we stuff our data into the array object
-	// First we tell GL it's an array buffer
-	// then the number of bytes we are storing (need to tell it's a sizeof(FLOAT)
-	// then the pointer to the actual data
-	// Then how we are going to draw it (in this case Statically as the data will not change)
-  glBufferData(GL_ARRAY_BUFFER, m_vboSize*sizeof(GL_FLOAT) , vertexData.get(), GL_STATIC_DRAW);
-}
-```
-
---
-
-## binding the data
-- Once we have bound the data it will be copied to the GPU and we can delete it on the client (in this case it falls out of scope with the smart pointer)
-- Now we bind the data onto the GPU and once this is done we can delete the client side data as it’s not needed
-
---
-
-## Building the Grid
-- We must have a valid GL context before we can call this function, and if required we must initialise GLEW
-- In Qt this is done in the initializeGL method
-
-```
-void OpenGLWindow::initializeGL()
-{
-  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);	
-  makeGrid(gridSize,steps);
-}
-```
-
---
-
-## Drawing the buffer
-- To draw we need to use the identifier stored when the VBO was created
-
-```
-void OpenGLWindow::paintGL()
-{
-  // set the viewport
-  glViewport(0,0,m_width,m_height);
-  // clear the colour and depth buffers ready to draw.
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  // enable  vertex array drawing
-  glEnableClientState(GL_VERTEX_ARRAY);
-  // bind our VBO data to be the currently active one
-  glBindBuffer(GL_ARRAY_BUFFER, m_vboPointer);
-  // tell GL how this data is formated in this case 3 floats tightly packed starting at the begining
-  // of the data (0 = stride, 0 = offset)
-  glVertexPointer(3,GL_FLOAT,0,0);
-  // draw the VBO as a series of GL_LINES starting at 0 in the buffer and _vboSize*GLfloat
-  glDrawArrays( GL_LINES, 0, m_vboSize);
-  // now turn off the VBO client state as we have finished with it
-  glDisableClientState(GL_VERTEX_ARRAY);
-}
-```
-
----
-
-## Vertex arrays
-- To enable the use of vertex arrays we need very few steps as shown below
-  - Invoke the function glEnableClientState(GL_VERTEX_ARRAY); to activate the vertex-array feature of OpenGL
-  - Use the function glVertexPointer to specify the location and data format for the vertex co-ordinates
-  - Display the scene using a routine such as glDrawArrays
-
---
-
-## [example cube](https://github.com/NCCA/OpenGLCode/tree/master/Cube)
-<img src="images/cube.png" width="50%">
-- This cube has vertex colours and vertex normals
-- The data is stored contiguously in one buffer
-  - Vertex, Normal, Colour
-
---
-
-## Cube Vertices
-
-<img src="images/cube2.png" width="20%">
-
-```
-// vertex coords array
-// The array  stores the vertices for a unit cube in face order of quads
-std::array<GLfloat,12*6> vertices = {{
-                        1, 1, 1, -1, 1, 1, -1,-1, 1,  1,-1, 1,  // v0-v1-v2-v3
-                        1, 1, 1,  1,-1, 1,  1,-1,-1,  1, 1,-1,  // v0-v3-v4-v5
-                        1, 1, 1,  1, 1,-1, -1, 1,-1, -1, 1, 1,  // v0-v5-v6-v1
-                      -1, 1, 1, -1, 1,-1, -1,-1,-1, -1,-1, 1,  // v1-v6-v7-v2
-                      -1,-1,-1,  1,-1,-1,  1,-1, 1, -1,-1, 1,  // v7-v4-v3-v2
-                        1,-1,-1, -1,-1,-1, -1, 1,-1,  1, 1,-1   // v4-v7-v6-v5
-                      }};
-```
-
---
-
-# Vertex Normals
-
-```
-// normal array
-std::array<GLfloat,12*6> normals = {{
-                      0, 0, 1,   0, 0, 1,  0, 0, 1,  0, 0, 1,     // v0-v1-v2-v3
-                      1, 0, 0,   1, 0, 0,  1, 0, 0,  1, 0, 0,     // v0-v3-v4-v5
-                      0, 1, 0,   0, 1, 0,  0, 1, 0,  0, 1, 0,     // v0-v5-v6-v1
-                      -1, 0, 0,  -1, 0, 0, -1, 0, 0, -1, 0, 0,     // v1-v6-v7-v2
-                      0,-1, 0,   0,-1, 0,  0,-1, 0,  0,-1, 0,     // v7-v4-v3-v2
-                      0, 0,-1,   0, 0, -1, 0, 0,-1,  0, 0,-1      // v4-v7-v6-v5
-                    }};
-```
-
---
-
-## Colours
-- Array of colour values for each vertex these will be interpolated across the faces
-```
-// color array
-std::array<GLfloat,12*6> colours =
-                    {{
-                      1,1,1,  1,1,0,  1,0,0,  1,0,1,  // v0-v1-v2-v3
-                      1,1,1,  1,0,1,  0,0,1,  0,1,1,  // v0-v3-v4-v5
-                      1,1,1,  0,1,1,  0,1,0,  1,1,0,  // v0-v5-v6-v1
-                      1,1,0,  0,1,0,  0,0,0,  1,0,0,  // v1-v6-v7-v2
-                      0,0,0,  0,0,1,  1,0,1,  1,0,0,  // v7-v4-v3-v2
-                      0,0,1,  0,0,0,  0,1,0,  0,1,1		// v4-v7-v6-v5
-                    }};
-```
-
---
-
-## Assigning the data
-- In this case we have 3 different arrays which we are going to combine into one VBO buffer.
-- The data will be packed in the format
-  - Vertices -> Normal -> Colour
-- First we have to allocate enough space for all 3 arrays
-
---
-
-## Assigning the data
-
-```
- // first we scale our vertices to _scale
-  for(int i=0; i<24*3; ++i)
-  {
-    vertices[i]*=_scale;
-  }
-  // now create the VBO
-  glGenBuffers(1, &m_vboPointer);
-  // now we bind this ID to an Array buffer
-  glBindBuffer(GL_ARRAY_BUFFER, m_vboPointer);
-
-  // this time our buffer is going to contain verts followed by normals
-  // so allocate enough space for all of them
-  unsigned long totalBuffSize=vertices.size()+normals.size()+colours.size();
-  std::cout<<"total buffer size= "<<totalBuffSize<<'\n';
-  std::cout<<"total buffer size bytes = "<<totalBuffSize*sizeof(GLfloat)<<'\n';
-
-  glBufferData(GL_ARRAY_BUFFER, totalBuffSize*sizeof(GLfloat) , 0, GL_STATIC_DRAW);
-  // now we copy the data for the verts into our buffer first
-  std::cout<<"vertices buffer size= "<<vertices.size()<<'\n';
-  std::cout<<"vertices buffer size bytes = "<<vertices.size()*sizeof(GLfloat)<<'\n';
-
-  glBufferSubData(GL_ARRAY_BUFFER,0,vertices.size()*sizeof(GLfloat),&vertices[0]);
-
-  // now we need to tag the normals onto the end of the verts
-  glBufferSubData(GL_ARRAY_BUFFER,vertices.size()*sizeof(GLfloat),
-                  normals.size()*sizeof(GLfloat),&normals[0]);
-
-  // now we need to tag the colours onto the end of the normals
-  glBufferSubData(GL_ARRAY_BUFFER,(vertices.size()+normals.size())*sizeof(GL_FLOAT),
-                  colours.size()*sizeof(GLfloat),&colours[0]);
-
-```
-
---
-
-## using std::array<>
-- The advantage of using std::array (or std::vector<>) is we can query the size
-- we still need to find the size of the data in bytes as this is all OpenGL uses
-- In the previous example we have
-
-```
-total buffer size= 216
-total buffer size bytes = 864
-vertices buffer size= 72
-vertices buffer size bytes = 288
-```
-
---
-
-## Drawing (Indexed Data)
-- In this case we are going to draw using Index data (however the data is in order)
-- We need to pass an array of indices which in this case will be 0,1,2,3,4,5 etc
-
-```
-void OpenGLWindow::paintGL()
-{
-  glViewport(0,0,m_width,m_height);
-  //GLubyte indices[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23};
-  std::vector<GLubyte> indices(24);
-  std::iota(std::begin(indices),std::end(indices),0);
-  // this macro is used to define the offset into the VBO data for our normals etc
-  // it needs to be a void pointer offset from 0
-  #define BUFFER_OFFSET(i) ((float *)nullptr + (i))
-
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glPushMatrix();
-    static int xrot=0;
-    static int yrot=0;
-    glRotatef(xrot++,1,0,0);
-    glRotatef(yrot++,0,1,0);
-    // enable  vertex array drawing
-    glEnableClientState(GL_VERTEX_ARRAY);
-    // enable Normal array
-    glEnableClientState(GL_NORMAL_ARRAY);
-    // enable the colour array
-    glEnableClientState(GL_COLOR_ARRAY);
-
-    // bind our VBO data to be the currently active one
-    glBindBuffer(GL_ARRAY_BUFFER, m_vboPointer);
-    // we need to tell GL where the verts start
-    glVertexPointer(3,GL_FLOAT,0,0);
-    // now we tell it where the nornals are (thes are basically at the end of the verts
-    glNormalPointer(GL_FLOAT, 0,BUFFER_OFFSET(24*3));
-    // now we tell it where the colours are (thes are basically at the end of the normals
-    glColorPointer(3,GL_FLOAT, 0,BUFFER_OFFSET(48*3));
-    glDrawElements(GL_QUADS,24,GL_UNSIGNED_BYTE,&indices[0]);
-    // now turn off the VBO client state as we have finished with it
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
-  glPopMatrix();  // finally swap the buffers to make visible
-}
 ```
 
 ---
@@ -443,6 +250,318 @@ glBindVertexArray(m_vaoID[0]);
 // draw first object 
 glDrawArrays(GL_TRIANGLES, 0, 3);
 ```
+
+---
+
+## [Case Study Points](https://github.com/NCCA/ModernGL/tree/master/PointsGL3WSDL)
+
+- This demo generates two arrays, one for x,y,z co-oridnates and one for colours
+- This is bound to a single VAO and rendered using a shader to draw points
+
+```
+GLuint createPoints(size_t _ammount)
+{
+  GLuint vaoID;
+  // allocate a VertexArray
+  glGenVertexArrays(1, &vaoID);
+  // now bind a vertex array object for our verts
+  glBindVertexArray(vaoID);
+  std::vector<float> points(_ammount*3);
+  std::vector<float> colours(_ammount*3);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> p(-4.0f, 4.0f);
+  std::uniform_real_distribution colour(0.0f, 1.0f);
+
+  for(size_t i=0; i<_ammount; ++i)
+  {
+    points[i*3]=p(gen);
+    points[i*3+1]=p(gen);
+    points[i*3+2]=p(gen);
+    colours[i*3]=colour(gen);
+    colours[i*3+1]=colour(gen);
+    colours[i*3+2]=colour(gen);
+  }
+  // we are going to allocate 3 buffers this time one for verts, colours and normals
+  GLuint vboID[2];
+  glGenBuffers(2, &vboID[0]);
+  // now bind this to the VBO buffer
+  glBindBuffer(GL_ARRAY_BUFFER, vboID[0]);
+  // allocate the buffer data
+  glBufferData(GL_ARRAY_BUFFER, points.size()*sizeof(float), &points[0], GL_STATIC_DRAW);
+  // now fix this to the attribute buffer 0
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  // enable and bind this attribute (will be inPosition in the shader)
+  glEnableVertexAttribArray(0);
+
+  // now bind this to the VBO buffer
+  glBindBuffer(GL_ARRAY_BUFFER, vboID[1]);
+  // allocate the buffer data
+  glBufferData(GL_ARRAY_BUFFER, colours.size()*sizeof(float), &colours[0], GL_STATIC_DRAW);
+  // now fix this to the attribute buffer 1
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  // enable and bind this attribute (will be inColour in the shader)
+  glEnableVertexAttribArray(1);
+
+  // this basically switches off the current Vertex array object
+  glBindVertexArray(0);
+  return vaoID;
+}
+```
+
+--
+
+## Case Study Points
+
+- In this demo we are use separate arrays for the data
+- This is advantageous if we want to change the colour of the points without having to re-upload the vertex data
+- It also makes setting the data easier as we can use the same VBO for all data types
+- It is also possible to share these buffers between VAOs
+
+---
+
+
+## [Case Study Line Grid](https://github.com/NCCA/ModernGL/tree/master/GridLines)
+
+- This demo creates a grid of lines by setting line pairs as the co-ordinates
+
+```
+std::pair<GLuint,size_t> createGrid(float _w, float _h, int _rows, int _cols)
+{
+  GLuint vaoID;
+  // allocate a VertexArray
+  glGenVertexArrays(1, &vaoID);
+  // now bind a vertex array object for our verts
+  glBindVertexArray(vaoID);
+  // going to generate points with the center at 0,0,0
+  // using half extents
+  std::vector<float> points;
+  // step values for x,y
+  float colStep=_w/_cols;
+  float rowStep=_h/_rows;
+
+  float x= _w*0.5f;
+  float z= -(_h*0.5f);
+
+  for(size_t i=0; i<_rows+1; ++i)
+  {
+    points.push_back(-x);
+    points.push_back(0.0f);
+    points.push_back(z);
+    points.push_back(x);
+    points.push_back(0.0f);
+    points.push_back(z);
+    z+=rowStep;
+  }
+  z= (_h*0.5f);
+  x= -(_w*0.5f);
+
+  for(size_t i=0; i<_cols+1; ++i)
+  {
+    points.push_back(x);
+    points.push_back(0.0f);
+    points.push_back(-z);
+    points.push_back(x);
+    points.push_back(0.0f);
+    points.push_back(z);
+    x+=colStep;
+  }
+
+  std::cout<<"rows "<<_rows<<" cols "<<_cols<<" points "<<points.size()/3<<"\n";
+  // we are going to allocate 3 buffers this time one for verts, colours and normals
+  GLuint vboID;
+  glGenBuffers(1, &vboID);
+  // now bind this to the VBO buffer
+  glBindBuffer(GL_ARRAY_BUFFER, vboID);
+  // allocate the buffer data
+  glBufferData(GL_ARRAY_BUFFER, points.size()*sizeof(float), &points[0], GL_STATIC_DRAW);
+  // now fix this to the attribute buffer 0
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  // enable and bind this attribute (will be inPosition in the shader)
+  glEnableVertexAttribArray(0);
+
+
+  // this basically switches off the current Vertex array object
+  glBindVertexArray(0);
+  return std::pair(vaoID,points.size()/3);
+}
+```
+
+--
+
+## [Case Study Triangle Grid](https://github.com/NCCA/ModernGL/tree/master/TriangleGrid)
+
+- This demo create a grid with triangles as well as setting the normals and UV co-ordinates
+- It uses a structure to store the data and this needs to be accounted for when setting the shader inputs and vertex arrays.
+
+```
+struct vertData
+{
+  float x;
+  float y;
+  float z;
+  float nx;
+  float ny;
+  float nz;
+  float u;
+  float v;
+};
+```
+
+---
+
+## [Case Study Triangle Grid](https://github.com/NCCA/ModernGL/tree/master/TriangleGrid)
+
+
+```
+std::pair<GLuint,size_t> createTrianglePlane( float _width, float _depth, int _wP,  int _dP, float _nx, float _ny,float _nz) 
+{
+
+  // as our plane is centered on 0.0 we range from Width/2.0 and Depth/2.0
+  float w2 = _width / 2.0f;
+  float d2 = _depth / 2.0f;
+  // calculate the steps for each quad / tri
+  float wStep = _width / _wP;
+  float dStep = _depth / _dP;
+  // texture co-ords start at 0,0
+  // texture steps
+  float du = 0.9f / _wP;
+  float dv = 0.9f / _dP;
+
+  float u = 0.0f;
+  float v = 0.0f;
+
+  // a std::vector to store our verts, remember vector packs contiguously so we can use it
+  std::vector< vertData > data;
+  vertData vert;
+
+  for(float d = -d2; d < d2; d += dStep)
+  {
+    for(float w = -w2; w < w2; w += wStep)
+    {
+      /* tri 1
+      // counter clock wise
+      3
+      | \
+      |  \
+      |   \
+      1____2
+      */
+      // the normals are always the same so set them for d first
+      vert.nx = _nx;
+      vert.ny = _ny;
+      vert.nz = _nz;
+      // y is always 0 as in a plane
+      vert.y = 0.0f;
+      // now for the per vert stuff
+      vert.u = u;
+      vert.v = v + dv;
+      vert.x = w;
+      vert.z = d + dStep;
+      data.push_back(vert);
+      // 2
+      vert.u = u + du;
+      vert.v = v + dv;
+      vert.x = w + wStep;
+      vert.z = d + dStep;
+      data.push_back(vert);
+      // 3
+      vert.u = u;
+      vert.v = v;
+      vert.x = w;
+      vert.z = d;
+      data.push_back(vert);
+
+      /* tri 2 w,0,d
+      // counter clock wise
+      3_____2
+      \    |
+      \  |
+      \ |
+      \|
+      1
+
+      */
+      vert.u = u + du;
+      vert.v = v + dv;
+      vert.x = w + wStep;
+      vert.z = d + dStep;
+      data.push_back(vert);
+      // 2
+      vert.u = u + du;
+      vert.v = v;
+      vert.x = w + wStep;
+      vert.z = d;
+      data.push_back(vert);
+      // 3
+      vert.u = u;
+      vert.v = v;
+      vert.x = w;
+      vert.z = d;
+      data.push_back(vert);
+      u += du;
+    } // end w loop
+    u = 0.0f;
+    v += du;
+  } // end d loop
+
+  GLuint vaoID;
+  // allocate a VertexArray
+  glGenVertexArrays(1, &vaoID);
+  // now bind a vertex array object for our verts
+  glBindVertexArray(vaoID);
+
+  GLuint vboID;
+  glGenBuffers(1, &vboID);
+  // now bind this to the VBO buffer
+  glBindBuffer(GL_ARRAY_BUFFER, vboID);
+  // allocate the buffer data
+  glBufferData(GL_ARRAY_BUFFER, data.size()*sizeof(vertData), &data[0].x, GL_STATIC_DRAW);
+  // now fix this to the attribute buffer 0
+  // enable and bind this attribute (will be inPosition in the shader)
+  glVertexAttribPointer(0,3, GL_FLOAT, GL_FALSE, sizeof(vertData), static_cast< float * >(nullptr) + 0); 
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(1,3, GL_FLOAT, GL_FALSE, sizeof(vertData), static_cast< float * >(nullptr) + 3);   
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(2,2, GL_FLOAT, GL_FALSE, sizeof(vertData), static_cast< float * >(nullptr) + 6); 
+  glEnableVertexAttribArray(2);
+
+  glBindVertexArray(0);
+  return std::pair(vaoID,data.size());
+}
+
+```
+
+
+---
+
+## [Case Study Mapping Buffers](https://github.com/NCCA/ModernGL/tree/master/MapBuffer)
+
+- In this demo we map the buffer created for the grid and update the data on the GPU
+
+```
+void updateBuffer(GLuint _bufferID,size_t _size)
+{
+  static float offset = 0.0f;
+
+  // bind the buffer object
+  glBindBuffer(GL_ARRAY_BUFFER,_bufferID);
+  // get the data from the buffer
+  auto ptr=static_cast<vertData *>( glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY));
+  // now update data to ptr
+  for(size_t i=0; i<_size; ++i)
+  {
+    ptr[i].y=sin(( ptr[i].x + offset)) + cos( ptr[i].x - offset);
+  }
+  // unmap the buffer object
+  glUnmapBuffer(GL_ARRAY_BUFFER);
+  // unbind the buffer object
+  glBindBuffer(GL_ARRAY_BUFFER,0);
+  offset += 0.01f;
+}
+
+```
+
 
 ---
 

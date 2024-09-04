@@ -7,17 +7,20 @@ jmacey@bournemouth.ac.uk
 
 # C++ 11 (-std=c++11)
 - was approved by ISO on 12 August 2011
-- Not all compilers support all features
-- clang++ 5.0 seems to do a good job as well as g++ 4.8, 
-- a good list of features / support [here](https://isocpp.org/wiki/faq/cpp11)
-- is now quite common in production
+- Pretty much 100% standard coverage in all compilers
+- Was a massive change when introduced, added core principles such as 
+	- RAII (Resource Acquisition Is Initialisation) as much as possible
+	- move semantics
+	- smart pointers
+	- lambdas
+	- auto
 
 --
 
 # C++ 14 (-std=c++14)
 
-- Is becoming quite common in most modern compilers
-- becoming more common (but mainly seen as a bug fix for c++ 11)
+- Seen as a minor update to C++ 11 with bug fixes
+- Fairly common and supported by most compilers
 - a good list of features / support [here](https://isocpp.org/wiki/faq/cpp14-language)
 
 --
@@ -25,38 +28,35 @@ jmacey@bournemouth.ac.uk
 
 # C++ 17 (-std=c++17)
 
-- not as common in production but being used more now. 
+- The standard used by the [vfx reference platform](https://vfxplatform.com/) for the last few years
 - some good new features especially in the standard library (```std::string_view std::optional std::any```) 
 - NGL uses some of these features
 
 --
 
-# C++ 17
-
-- this year we will mainly use C++ 17 as part of the [VFX reference platform](https://vfxplatform.com/)
-- core teaching will focus on C++ 11/14 features and style
-- NGL library is C++ 14
-- Most of my demos are C++ 14
-- Will occasionally use cool C++ 17 features as illustrations
-
---
 
 # C++ default versions
 
 ```
 g++ -x c++  -E -dM -< /dev/null | grep __cplusplus
-#define __cplusplus 201402L
+#define __cplusplus 201703L
 
 clang++ -x c++  -E -dM -< /dev/null | grep __cplusplus
-#define __cplusplus 199711L
+#define __cplusplus 201402L
 ```
 
-- This indicates that g++ defaults to c++14 and clang++ to C++ 11 (with some elements missing)
-- Note by adding the -std=c++17 to g++ we get full c++ 17
+- This show g++ defaults to 17 and clang to 14 in our current build. However we will use the CMake flags to set out default to 17 in most of our projects
+
+```
+# Set to C++ 17
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS ON)
+```
 
 ---
 
-# namespaces
+# [namespaces](https://www.learncpp.com/cpp-tutorial/naming-collisions-and-an-introduction-to-namespaces/)
 
 - namespaces allow us to separate program elements into different named logical units
 - By using namespaces we can declare functions, classes and other code that is only visible within the namespace
@@ -764,7 +764,7 @@ int main()
 
 ---
 
-# enums
+# [enums](https://www.learncpp.com/cpp-tutorial/introduction-to-program-defined-user-defined-types/)
 - In C and old C++ enums essentially convert to integers
 - This means we can compare all enums with each other as they are all of int type
 - This can lead to errors in code as the compiler doesn’t check these
@@ -840,12 +840,76 @@ int main()
 }
 ```
 
+
+--
+
+## [Example Usage](https://github.com/NCCA/ASELectureCode/blob/master/Lecture2/BoolFromString.cpp)
+
+- In C++ it is possible for types to be implicitly converted to other types.
+- This can be problematic 
+
+```c++
+#include <iostream>
+#include <string_view>
+
+void load(std::string_view a, bool b) 
+{
+    std::cout<<"bool version a "<<a<<b<<'\n';
+}
+
+void load(std::string_view a,std::string_view b) 
+{
+    std::cout<<"a "<<a<<b<<'\n';
+}
+
+int main()
+{
+    load("filea","fileb");
+    load("filea",true);
+}
+```
+
+--
+
+## [enum version](https://github.com/NCCA/ASELectureCode/blob/master/Lecture2/EnumParam.cpp)
+
+```c++
+#include <iostream>
+#include <string_view>
+
+enum class LoadType
+{
+    True,
+    False
+};
+
+void load(std::string_view a, LoadType b) 
+{
+    auto boolVal = static_cast<bool>(b);
+    std::cout<<"bool version a "<<a<<boolVal<<'\n';
+}
+
+void load(std::string_view a,std::string_view b) 
+{
+    std::cout<<"a "<<a<<b<<'\n';
+}
+
+int main()
+{
+    load("filea","fileb");
+    load("filea",LoadType::True);
+    load("filea",LoadType::False);
+}
+```
+
 ---
 
 # [cstdint](http://en.cppreference.com/w/cpp/header/cstdint)
 
 - One issue with C and C++ has been the lack of standard size for data types
 - This changes for different OS bit size dependant upon architecture
+- for more on the different types look [here](https://www.learncpp.com/cpp-tutorial/introduction-to-fundamental-data-types/)
+
 
 --
 
@@ -889,8 +953,9 @@ std::uint8_t = 1
 - In C++ NULL is #defined to 0 and is not even a pointer type
 - This can lead to weird bugs
 - C++ 11 introduces the nullptr type. It should replace NULL and you should just use it wherever you used to use NULL
+- more examples [here](https://www.learncpp.com/cpp-tutorial/null-pointers/)
 
---
+---
 
 # [auto](http://en.cppreference.com/w/cpp/language/auto)
 
@@ -929,7 +994,6 @@ auto itr=std::begin(vec);
 --
 
 
-
 # [for.cpp](https://github.com/NCCA/CPP11Demos/blob/master/for.cpp)
 
 ```
@@ -956,6 +1020,24 @@ int main()
 - more on this when we start looking at STL
 
 --
+
+## c++ 20 init statement
+
+```c++
+#include <iostream>
+
+int main()
+{
+	std::array<int, 5> arr{1, 2, 3, 4, 5};
+	for(int x=0; auto i : arr )
+	{
+		std::cout<<x++<<' '<<i<<'\n';
+	}
+}
+
+```
+
+---
 
 # [constexpr](http://en.cppreference.com/w/cpp/language/constexpr)
 - constexpr allows for computation to now take place at compile time rather than runtime
@@ -1052,6 +1134,78 @@ return EXIT_SUCCESS;
 
 --
 
+## [if constexpr](https://en.cppreference.com/w/cpp/language/if) since c++ 17
+
+- allows compile time if statements really useful in templates
+
+```c++
+#include <iostream>
+
+template <typename T>
+void test(T b) 
+{
+    if constexpr (std::is_same_v<T, bool>)
+    {
+        std::cout<<"bool version \n";
+    }
+    else if constexpr (std::is_same_v<T,int>)
+    {
+        std::cout<<"int version \n";
+    }
+}
+
+int main()
+{
+    test(true);
+    test(1);
+    test(1.0);
+   
+}
+```
+
+--
+
+## example
+
+<iframe width="800px" height="400px" src="https://godbolt.org/e#g:!((g:!((g:!((h:codeEditor,i:(filename:'1',fontScale:14,fontUsePx:'0',j:1,lang:c%2B%2B,selection:(endColumn:7,endLineNumber:19,positionColumn:7,positionLineNumber:19,selectionStartColumn:7,selectionStartLineNumber:19,startColumn:7,startLineNumber:19),source:'%23include+%3Ciostream%3E%0A%0Atemplate+%3Ctypename+T%3E%0Avoid+test(T+b)+%0A%7B%0A++++if+constexpr+(std::is_same_v%3CT,+bool%3E)%0A++++%7B%0A++++++++std::cout%3C%3C%22bool+version+%5Cn%22%3B%0A++++%7D%0A++++else+if+constexpr+(std::is_same_v%3CT,int%3E)%0A++++%7B%0A++++++++std::cout%3C%3C%22int+version+%5Cn%22%3B%0A++++%7D%0A%7D%0A%0Aint+main()%0A%7B%0A++++//test(true)%3B%0A++++//test(1)%3B%0A++++test(1.0)%3B%0A++++%0A%7D'),l:'5',n:'0',o:'C%2B%2B+source+%231',t:'0')),k:51.71208944793851,l:'4',n:'0',o:'',s:0,t:'0'),(g:!((h:compiler,i:(compiler:g132,deviceViewOpen:'1',filters:(b:'0',binary:'1',binaryObject:'1',commentOnly:'0',debugCalls:'1',demangle:'0',directives:'0',execute:'1',intel:'0',libraryCode:'0',trim:'1'),flagsViewOpen:'1',fontScale:14,fontUsePx:'0',j:1,lang:c%2B%2B,libs:!(),options:'',overrides:!(),selection:(endColumn:1,endLineNumber:1,positionColumn:1,positionLineNumber:1,selectionStartColumn:1,selectionStartLineNumber:1,startColumn:1,startLineNumber:1),source:1),l:'5',n:'0',o:'+x86-64+gcc+13.2+(Editor+%231)',t:'0')),k:47.06099449447735,l:'4',n:'0',o:'',s:0,t:'0'),(g:!((h:output,i:(compilerName:'x86-64+gcc+13.2',editorid:1,fontScale:14,fontUsePx:'0',j:1,wrap:'1'),l:'5',n:'0',o:'Output+of+x86-64+gcc+13.2+(Compiler+%231)',t:'0')),k:1.2269160575841405,l:'4',n:'0',o:'',s:0,t:'0')),l:'2',n:'0',o:'',t:'0')),version:4"></iframe>
+
+
+---
+
+
+## [If statement with initializer](https://github.com/NCCA/ASELectureCode/blob/master/Lecture2/ifinit.cpp)
+
+- New to c++ 17, designed to stop scope leaking of variables
+
+```c++
+#include <iostream>
+
+bool found()
+{
+    return true;
+}
+
+int main()
+{
+    // old style
+    auto value=found();
+    if(value)
+    {
+        std::cout<<"found\n";
+    }
+
+    // new style
+    if(auto value=found();value)
+    {
+        std::cout<<"found\n";
+    }
+
+}
+```
+
+---
+
+
 # [String literals](http://en.cppreference.com/w/cpp/language/string_literal)
 - Normal C/C++ allows us to represent strings in the by using the quotes
 - Any special characters including the quotes must be escaped using the backslash
@@ -1066,7 +1220,7 @@ return EXIT_SUCCESS;
 
 static const std::string shader =
 
-R"DELIM(
+R"(
 #version 400 core
 // first attribute the vertex values from our VAO
 layout (location = 0) in vec3 inVert;
@@ -1081,13 +1235,14 @@ void main()
 	// pass the UV values to the frag shader
 	vertUV=inUV.st;
 }
-)DELIM";
+)";
 
 int main()
 {
   std::cout<<shader<<"\n";
 }
 ```
+
 
 ---
 
@@ -1189,6 +1344,79 @@ int main()
 ```
 
 ---
+
+## [std::filesystem](https://en.cppreference.com/w/cpp/filesystem)
+
+- std::filesystem was originally based on boost.filesystem
+- It is now part of the standard library
+- It is a cross platform library for working with files and directories
+- It is a much better alternative to the old C style functions
+
+--
+
+## [std::filesystem::path](https://en.cppreference.com/w/cpp/filesystem/path)
+
+- represents a file system path can work cross platform
+
+```c++
+#include <filesystem>
+#include <iostream>
+namespace fs = std::filesystem;
+ 
+int main()
+{
+    std::cout << "Current root name is: " << fs::current_path() << '\n';
+    std::cout << "Current root name is: " << fs::current_path().root_name() << '\n';
+    std::cout << "Current root name is: " << fs::current_path().root_directory() << '\n';
+    auto path = fs::path("/");
+    path.append("home");
+    path.append("jmacey");
+    std::cout<<path<<'\n';
+    
+    fs::path windows_path("c:\a\\b\\c");
+    fs::path  posix_path("/a/b/c");
+ 
+    std::cout
+        << "Windows path: "
+        << windows_path << " -> "
+        << windows_path.make_preferred() << '\n'
+        << "POSIX path: "
+        << posix_path << " -> "
+        << posix_path.make_preferred() << '\n';
+
+}
+```
+
+--
+
+## Directory Iterator
+
+```c++
+#include <filesystem>
+#include <iostream>
+
+
+int main()
+{
+ const std::filesystem::path current_dir{"./"};
+ 
+std::cout << "directory_iterator:\n";
+// directory_iterator can be iterated using a range-for loop
+for (auto const& dir_entry : std::filesystem::directory_iterator{current_dir}) 
+    std::cout << dir_entry.path() << '\n';
+}
+```
+
+--
+
+## Filesytem
+
+- there are lots more examples in the cppreference link for the filesystem library [here](https://en.cppreference.com/w/cpp/filesystem)
+- It is also quite similar to the python [pathlib]((https://docs.python.org/3/library/pathlib.html) module so if you are familiar with that it should be easy to pick up 
+
+
+---
+
 
 #References
 - http://en.cppreference.com/w/cpp/language/auto

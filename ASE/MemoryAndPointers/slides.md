@@ -130,8 +130,8 @@ address of f is 0x7fff52ebc71c
 
 # [Data Segment BSS](https://en.wikipedia.org/wiki/Data_segment)
 - Block Started by Symbol
-- This is where global (declared outside main) data that is not assigned a value is stored
-- Also any data prefixed with static and not assigned a default value
+- This is where [global](https://www.learncpp.com/cpp-tutorial/introduction-to-global-variables/) (declared outside main) data that is not assigned a value is stored
+- Also any data prefixed with [static](https://www.learncpp.com/cpp-tutorial/static-local-variables/) and not assigned a default value
 - By default this is assigned zero unless given a default value
 
 --
@@ -148,7 +148,7 @@ address of f is 0x7fff52ebc71c
 --
 
 #[stack](https://en.wikipedia.org/wiki/Stack-based_memory_allocation)
-- The stack is where local variables are allocated (automatic variables)
+- The [stack](https://www.learncpp.com/cpp-tutorial/the-stack-and-the-heap/) is where [local variables are allocated](https://www.learncpp.com/cpp-tutorial/local-variables/) (automatic variables)
 - This is denoted by the { for scope
 - The data is popped or pushed into the stack following the Last In First Out(LIFO) rule
 - The stack is also used to hold information about functions such as return values and parameters passed (more later)
@@ -173,161 +173,20 @@ address of f is 0x7fff52ebc71c
 
 <img src="images/stack3.png" width="60%">
 
---
-
-
-# [functionstack.cpp](https://github.com/NCCA/ASELectureCode/blob/master/Lecture3/functionstack.cpp)
-
-```
-#include <iostream>
-#include <cstdlib>
-#include <execinfo.h>
-#include <cxxabi.h>
-#include <unistd.h>
-
-void foo();
-void bar(int);
-void trace();
-
-int main()
-{
-	trace();
-	foo();
-}
-
-void bar(int a)
-{	
-	std::cout<<"in bar trace()\n";
-
-	trace();
-}
-
-
-void foo()
-{
-	std::cout<<"in foo trace()\n";
-	trace();
-	bar(10);
-}
-
-void trace()
-{
-	void* callstack[128];
-	int frames = backtrace(callstack, 128);
-	char** strs = backtrace_symbols(callstack, frames);
-	for (int i = 0; i < frames; ++i) 
-	{
-	   std::cout<<strs[i]<<'\n';
-	}
-	free(strs);
-}
-
-```
-
 
 --
 
-# [functionstack.cpp](https://github.com/NCCA/ASELectureCode/blob/master/Lecture3/functionstack.cpp)
-
-
-```
-0   a.out                               0x00000001067d722a _Z5tracev + 42
-1   a.out                               0x00000001067d71e9 main + 9
-2   libdyld.dylib                       0x00007fff9c1b4255 start + 1
-3   ???                                 0x0000000000000001 0x0 + 1
-in foo trace()
-0   a.out                               0x00000001067d722a _Z5tracev + 42
-1   a.out                               0x00000001067d7304 _Z3foov + 36
-2   a.out                               0x00000001067d71ee main + 14
-3   libdyld.dylib                       0x00007fff9c1b4255 start + 1
-4   ???                                 0x0000000000000001 0x0 + 1
-in bar trace()
-0   a.out                               0x00000001067d722a _Z5tracev + 42
-1   a.out                               0x00000001067d734a _Z3bari + 42
-2   a.out                               0x00000001067d730e _Z3foov + 46
-3   a.out                               0x00000001067d71ee main + 14
-4   libdyld.dylib                       0x00007fff9c1b4255 start + 1
-5   ???                                 0x0000000000000001 0x0 + 1
-```
-
---
-
-#recursion
+# Recursion
 - A recursive function is a function that can call itself
 - Typical examples are things like calculating factorials or traversing tree like structures
 - It is possible to get a stack overflow using these types of functions
+- Recursion doesn't always play nicely with the cache so it can cause performance issues
 
 --
 
-
-```
-
-#include <iostream>
-#include <cstdlib>
-#include <execinfo.h>
-#include <cxxabi.h>
-#include <unistd.h>
-void trace()
-{
-// void *array[10];
-//   size_t size;
-
-//   // get void*'s for all entries on the stack
-//   size = backtrace(array, 10);
-
-//   // print out all the frames to stderr
-//   backtrace_symbols_fd(array, size, STDERR_FILENO);
-void* callstack[128];
-int i, frames = backtrace(callstack, 128);
-char** strs = backtrace_symbols(callstack, frames);
-for (i = 0; i < frames; ++i) 
-{
-   printf("%s\n", strs[i]);
-}
-free(strs);
-
-}
-
-int fact( int n ) 
-{
-	trace();
-	if ( n == 0 )
-		return 1 ;
-	else
-		return fact( n - 1 ) * n ;
-}
-
-int main()
-{
-	fact(-1);
-}
-```
-
---
-
-#Output
-
-
-```
-116 a.out                               0x0000000105370ef8 _Z4facti + 56
-117 a.out                               0x0000000105370ef8 _Z4facti + 56
-118 a.out                               0x0000000105370ef8 _Z4facti + 56
-119 a.out                               0x0000000105370ef8 _Z4facti + 56
-120 a.out                               0x0000000105370ef8 _Z4facti + 56
-121 a.out                               0x0000000105370ef8 _Z4facti + 56
-122 a.out                               0x0000000105370ef8 _Z4facti + 56
-123 a.out                               0x0000000105370ef8 _Z4facti + 56
-124 a.out                               0x0000000105370ef8 _Z4facti + 56
-125 a.out                               0x0000000105370ef8 _Z4facti + 56
-126 a.out                               0x0000000105370ef8 _Z4facti + 56
-127 a.out                               0x0000000105370ef8 _Z4facti + 56
-Segmentation fault: 11
-```
-
---
 
 # [heap](https://en.wikipedia.org/wiki/Memory_management#DYNAMIC)
-- The heap is used for the programmer to define dynamic memory
+- The [heap](https://www.learncpp.com/cpp-tutorial/the-stack-and-the-heap/) is used for the programmer to define dynamic memory
 - Data on the heap is anonymous (i.e. not linked to a variable) and the only way we can access it is via a memory address
 - The programmer will then have to manage this data and is one of the most important parts of programming in a “non managed” language such as C/C++
 - to manage this we use an abstraction called a pointer
@@ -351,7 +210,7 @@ int *data;
 - C and C++ allow the programmer to point into a program and at memory
 - Pointers point to a memory address where a declared variable lives
 - This allows us to create and manipulate dynamic data structures which can grow or shrink depending upon the program need.
-- It also lets us allocate memory dynamically within a program.
+- [It also lets us allocate memory dynamically within a program](https://www.learncpp.com/cpp-tutorial/dynamic-memory-allocation-with-new-and-delete/).
 
 --
 
@@ -480,7 +339,7 @@ value 9324 address 0x7fff5495c250
 ---
 
 # [L-Values and R-Values](https://goo.gl/sWQRJd)
-- Every C++ expression is either an lvalue or an rvalue. 
+- Every C++ expression is either an [lvalue or an rvalue](https://www.learncpp.com/cpp-tutorial/value-categories-lvalues-and-rvalues/). 
 - An lvalue refers to an object that persists beyond a single expression. You can think of an lvalue as an object that has a name. 
 - All variables, including const variables, are lvalues. 
 - An rvalue is a temporary value that does not persist beyond the expression that uses it. 
@@ -546,7 +405,7 @@ lvalues2.cpp:19:5: error: read-only variable is not assignable
 
 --
 
-# [References are Aliases not Pointers](http://www.haroldserrano.com/blog/c-tip-16-references-are-aliases-not-pointers)
+## [References are Aliases not Pointers](http://www.haroldserrano.com/blog/c-tip-16-references-are-aliases-not-pointers)
 - A reference is another name for an existing object.
 	- They are not pointers!
 	- There are no null references all references require initialisation
@@ -565,8 +424,8 @@ ref1.cpp:8:7: error: declaration of reference variable 'x' requires an initializ
 - In C++ the ```&``` is an explicit reference
 - This means that the object passed using the & prefix is effectively a pointer but we are not using the * prefix as used in C
 - In C++ ```*_a``` indicates that the value is a pointer and we may modify it in a function
-- In C++ ```&_a``` is a reference (means we don’t copy the value) but still behaves like a pointer
-- const ```&_a``` means that it is a constant reference to a value. This means it is copied like a pointer but is read only.
+- In C++ [```&_a```](https://www.learncpp.com/cpp-tutorial/pass-by-lvalue-reference/) is a reference (means we don’t copy the value) but still behaves like a pointer
+- const [```&_a```](https://www.learncpp.com/cpp-tutorial/pass-by-const-lvalue-reference/) means that it is a constant reference to a value. This means it is copied like a pointer but is read only.
 
 --
 
@@ -623,7 +482,7 @@ int main()
 
 --
 
-# [References are Aliases not Pointers](http://www.haroldserrano.com/blog/c-tip-16-references-are-aliases-not-pointers)
+## [References are Aliases not Pointers](http://www.haroldserrano.com/blog/c-tip-16-references-are-aliases-not-pointers)
 
 
 - A reference is an alias for an object that already exists prior to the initialisation of the reference
@@ -632,7 +491,7 @@ int main()
 
 ---
 
-# [Dynamic memory Allocation](https://en.wikipedia.org/wiki/C_dynamic_memory_allocation)
+## [Dynamic memory Allocation](https://en.wikipedia.org/wiki/C_dynamic_memory_allocation)
 - When we dynamically allocate memory in a C program we allocate to the heap.
 - This means that the data will be persistent throughout the program lifetime.
 - This means we have to manage this memory ourselves.
@@ -872,7 +731,7 @@ std::free()
 
 --
 
-# new / delete 
+# [new / delete](https://www.learncpp.com/cpp-tutorial/dynamic-memory-allocation-with-new-and-delete/) 
 ```
 int *data = new int [100];
 ```
@@ -913,7 +772,7 @@ int main()
 
 ---
 
-# pointers and C++ 11
+# Pointers in modern C++
 
 - One of the biggest problems in programming is managing the lifetime of objects.
 - Automatic objects are easy because they are destroyed when they go out of scope.
@@ -922,7 +781,7 @@ int main()
 
 --
 
-# smart pointers (C++ 11)
+## [smart pointers and move semantics](https://www.learncpp.com/cpp-tutorial/introduction-to-smart-pointers-move-semantics/)
 
 - C++ 11 introduced an number of smart pointers to help manage the lifetime of raw pointers.
 - These should be preferred to using raw pointers.
@@ -965,7 +824,9 @@ int main()
 
 --
 
-# [make_unique c++ 14](http://en.cppreference.com/w/cpp/memory/unique_ptr/make_unique)
+# [make_unique (c++ 14)](http://en.cppreference.com/w/cpp/memory/unique_ptr/make_unique)
+
+- [make_unique](https://www.learncpp.com/cpp-tutorial/stdunique_ptr/) allows us to create a unique_ptr without having to use new we should prefer this to using new.
 
 ```
 #include <iostream>

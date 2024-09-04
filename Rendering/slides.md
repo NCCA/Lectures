@@ -655,7 +655,7 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 
 ## PBR in Practice
 
-- Most modern renderers have a PBR or ["principled"](https://disney-animation.s3.amazonaws.com/library/s2012_pbs_disney_brdf_notes_v2.pdf) shader.
+- Most modern renderers have a PBR or ["principled"](https://media.disneyanimation.com/uploads/production/publication_asset/48/asset/s2012_pbs_disney_brdf_notes_v3.pdf) shader.
 - most use the techniques we have just discussed
 - Most have the same parameter names (IOR, roughness, metalness etc)
 - However there are still some differences, usually in how the Specular,Diffuse, transmission and Sub surface scattering are mixed.
