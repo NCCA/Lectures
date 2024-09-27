@@ -176,15 +176,17 @@ r=a/b;
 
 ## Python
 
-- Python is a versatile programming language used for a wide range of applications. Here are some of the main uses:
-		**Data Science and Machine Learning**
-		**Web Development**
-		**Automation and Scripting**
-		**Cybersecurity**
-		**Digital Content Creation (DCC) Tools and Pipelines***
-		
+- Python is a versatile programming language used for a wide range of applications such as:
+
+  - Data Science and Machine Learning
+  - Web Development
+  - Automation and Scripting
+  - Cybersecurity
+  - Digital Content Creation (DCC) Tools and Pipelines
+
 
 --
+
 ## Why python?
 
 - In recent years python has become a core language for Digital Content Creation
@@ -219,7 +221,6 @@ r=a/b;
 - Most machine learning tools are written in C++ with Python bindings.
 - This is true of machine learning tools as well which are typically written in C++ / CUDA and have python as a front end.
 
---
 
 ---
 
@@ -248,6 +249,7 @@ r=a/b;
 ---
 
 ## Getting started
+
 - At it’s simplest level python can be used as a simple command interpreter
 - We type python into the terminal and we get a prompt which lets us enter commands
 - This is know as the REPL [Read, Eval, Print, Loop](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop)

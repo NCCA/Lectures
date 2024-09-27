@@ -72,7 +72,7 @@
 
 ## Identifier rules
 
-1. **Must Begin with a Letter or an Underscore (****_****):** Identifiers cannot start with a number. They must start with a letter (A-Z or a-z) or an underscore (_).
+1. **Must Begin with a Letter or an Underscore (```_```):** Identifiers cannot start with a number. They must start with a letter (A-Z or a-z) or an underscore (```_```).
 2. **Can Contain Letters, Digits, and Underscores:** After the first character, identifiers can include letters, digits (0-9), and underscores.
 3. **Case Sensitive:** Identifiers are case-sensitive, meaning var, Var, and VAR would be treated as different identifiers.
 4. **No Reserved Keywords:** Identifiers cannot be the same as Python’s reserved keywords 
@@ -83,11 +83,11 @@
 
 - Whilst the rules above are fairly simple, choosing good identifiers is hard
 - Good names are crucial for readability, maintainability, and understanding the purpose of your code. 
-  - Be Descriptive and Specific
-  - Use Consistent Naming Conventions (see PEP-8)
-  - Avoid Ambiguity and Confusion
+  - Be descriptive and specific
+  - Use consistent naming conventions (see PEP-8)
+  - Avoid ambiguity and confusion
   - Keep it simple and clear (short but not too short)
-  - Use Context from the Code / problem domain
+  - Use context from the code / problem domain
 
 --
 
@@ -126,8 +126,6 @@
 ```python
 #!/usr/bin/env python
 
-#!/usr/bin/env python
-
 integer_variable=1  
 float_variable=1.2
 complex_variable=4+5j
@@ -135,7 +133,6 @@ complex_variable=4+5j
 print(f"{integer_variable} is of type {type(integer_variable)}")
 print(f"{float_variable} is of type {type(float_variable)}")
 print(f"{complex_variable} is of type {type(complex_variable)}")
-
 
 ```
 

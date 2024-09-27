@@ -42,10 +42,10 @@ g++ -x c++  -E -dM -< /dev/null | grep __cplusplus
 #define __cplusplus 201703L
 
 clang++ -x c++  -E -dM -< /dev/null | grep __cplusplus
-#define __cplusplus 201402L
+#define __cplusplus 201703L
 ```
 
-- This show g++ defaults to 17 and clang to 14 in our current build. However we will use the CMake flags to set out default to 17 in most of our projects
+- Both compiler default to c++17  however we will use the CMake flags to set out default to 17 in most of our projects
 
 ```
 # Set to C++ 17

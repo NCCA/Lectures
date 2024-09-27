@@ -38,7 +38,7 @@ jmacey@bournemouth.ac.uk
 
 - Animation Software Engineering (Jon Macey)
 - CGI Tools (Ari Sarafopolous , Phil Spicer (Jon Macey))
-- CGI Techniques (Jian Zhang, Jian Chang)
+- CGI Techniques (Jian Chang)
 
 --
 
@@ -52,14 +52,24 @@ jmacey@bournemouth.ac.uk
 
 ## Semester 3
 
-- MSc Project (Jian Chang + team)
+- MSc Project (MSc Team)
+- worth 60 Credits
+- See previous years projects [here](https://nccastaff.bournemouth.ac.uk/jmacey/MastersProject/) 
 
+--
+
+## Assessment
+
+- Each unit is assessed by coursework
+- CGI Tools and Simulation and Rendering have 2 components, you need to pass both
+- The MSc project has a thesis and an artefact
+- We will go into much more detail in each unit once the course is underway.
 
 ---
 
 ## Timetable
 
-The online timetable can be found here https://timetable.bournemouth.ac.uk/
+- The online timetable can be found here https://timetable.bournemouth.ac.uk/
 
 ![](timetable.png)
 
@@ -68,12 +78,40 @@ The online timetable can be found here https://timetable.bournemouth.ac.uk/
 
 ## Your Lab
 
-- WG04 (Weymouth House Ground floor room 4)
-- Door code C1695Z
+- W120 (Weymouth House first floor room 20)
+- Door code C1973X
 - I will take you on a tour and show you the room later
 
 
 ---
+
+### [Academic engagement and attendance](https://www.bournemouth.ac.uk/students/learning/academic-engagement-attendance)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/sQdtaQEJepQ?si=QSTsMyj-Yv-hw4ne" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+--
+
+## Communication
+
+- We will use Microsoft Teams for communication you should have been added to the MSc CAVE team
+- If you have any issues please let me know
+- There will be a weekly news email sent by me (Friday)
+- email should always be checked and sent via the BU email address (student number)
+
+
+--
+
+## Student Reps
+
+- We will be electing student reps for the course I will give more detrails later
+- This is your chance to have a say in how the course is run and feedback any issues you have.
+- We have 1 rep from each of the masters programs
+- Once you get to know each other you can choose your rep.
+- training will be provided by SUBU.
+
+
+--
+
 
 ## Any Questions?
 
