@@ -995,6 +995,7 @@ for i in range(0, 100000):
     turtle.color(current_colour)
     turtle.goto(random.uniform(-100, 100), random.uniform(-100, 100))
 ```
+
 --
 
 ## Python Iterators
