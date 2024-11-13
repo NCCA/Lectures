@@ -193,6 +193,7 @@ Fri Oct 18 11:53:32 2024
 
 --
 
+
 ## Lab install
 
 - whilst we have CUDA 12.5 in the lab we will install the latest version of PyTorch as this will work with the older version of CUDA 12.4 
@@ -221,6 +222,35 @@ import torch
 torch.backends.mps.is_available()
 ```
 
+--
+
+## AMD Version
+
+- I don't have access to an AMD GPU but you can follow instructions here if you do have one.
+  - https://pytorch.org/blog/pytorch-for-amd-rocm-platform-now-available-as-python-package/
+- Once this is done it should work the same as the standard cuda versions. 
+
+
+
+
 ---
 
 
+## Which Device
+
+- We can check which device a tensor is stored on using the `.device` attribute
+- If we want to write code to determine what devices we have available we can do the following
+
+```
+def get_device() -> torch.device:
+    """
+    Returns the appropriate device for the current environment.
+    """
+    if torch.cuda.is_available():
+        return torch.device('cuda')
+    elif torch.backends.mps.is_available(): # mac metal backend
+        return torch.device('mps')
+    else:
+        return torch.device('cpu')
+
+```
